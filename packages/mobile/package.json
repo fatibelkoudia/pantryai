@@ -1,0 +1,32 @@
+{
+  "name": "@pantryai/mobile",
+  "version": "0.0.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "lint": "eslint src/ app/",
+    "test": "vitest run",
+    "clean": "rm -rf .expo dist"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^14.0.0",
+    "@pantryai/shared": "workspace:*",
+    "@tanstack/react-query": "^5.68.0",
+    "expo": "~55.0.0",
+    "expo-camera": "~16.0.0",
+    "expo-router": "~5.0.0",
+    "expo-status-bar": "~2.2.0",
+    "react": "19.2.0",
+    "react-native": "0.79.0",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.0",
+    "@types/react": "~19.0.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.0.0"
+  }
+}

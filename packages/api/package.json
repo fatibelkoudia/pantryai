@@ -1,0 +1,41 @@
+{
+  "name": "@pantryai/api",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "nest build",
+    "dev": "nest start --watch",
+    "start": "node dist/main",
+    "lint": "eslint src/",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/platform-fastify": "^11.0.0",
+    "@nestjs/swagger": "^11.0.0",
+    "@nestjs/jwt": "^11.0.0",
+    "@nestjs/passport": "^11.0.0",
+    "@pantryai/shared": "workspace:*",
+    "@prisma/adapter-pg": "^7.0.0",
+    "@prisma/client": "^7.0.0",
+    "bullmq": "^5.0.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "pg": "^8.13.3",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
+    "@nestjs/testing": "^11.0.0",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.11.11",
+    "prisma": "^7.0.0",
+    "typescript": "^5.8.3",
+    "vitest": "^3.0.0"
+  }
+}
