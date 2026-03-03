@@ -12,7 +12,10 @@
     "lint": "turbo run lint",
     "test": "turbo run test",
     "format": "prettier --write \"**/*.{ts,tsx,json,md}\"",
-    "clean": "turbo run clean && rm -rf node_modules"
+    "clean": "turbo run clean && rm -rf node_modules",
+    "docker:up": "podman-compose up -d",
+    "docker:down": "podman-compose down",
+    "docker:reset": "podman-compose down -v && podman-compose up -d"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
@@ -24,10 +27,12 @@
     "onlyBuiltDependencies": [
       "@nestjs/core",
       "@prisma/engines",
+      "bcrypt",
       "esbuild",
       "msgpackr-extract",
       "prisma",
       "sharp",
+      "tesseract.js",
       "unrs-resolver"
     ]
   }

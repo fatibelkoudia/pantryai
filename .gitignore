@@ -7,3 +7,9 @@ dist/
 .expo/
 *.tgz
 .turbo/
+help/
+.mpc.json
+
+# Receipt image fixtures contain PII: only .ocr.txt / .expected.json are committed
+packages/api/src/ocr/__tests__/fixtures/**/*.jpg
+packages/api/src/ocr/__tests__/fixtures/**/*.pdf
