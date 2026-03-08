@@ -5,63 +5,80 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
-  id         String      @id @default(uuid())
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  deletedAt  DateTime?
-  stockItems StockItem[]
-  ocrJobs    OcrJob[]
+  id           String      @id @default(uuid())
+  email        String      @unique
+  name         String?
+  passwordHash String
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  deletedAt    DateTime?
+  stockItems   StockItem[]
+  ocrJobs      OcrJob[]
 
+  @@index([email])
   @@map("users")
 }
 
 model Product {
-  id         String      @id @default(uuid())
-  name       String
-  barcode    String?     @unique
-  category   String?
-  imageUrl   String?
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  stockItems StockItem[]
+  id            String      @id @default(uuid())
+  name          String
+  brand         String?
+  ean13         String?     @unique
+  category      String?
+  imageUrl      String?
+  nutritionData Json?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  stockItems    StockItem[]
 
-  @@index([barcode])
+  @@index([ean13])
   @@index([category])
   @@map("products")
 }
 
+enum StockLocation {
+  FRIDGE
+  FREEZER
+  PANTRY
+}
+
 model StockItem {
-  id        String    @id @default(uuid())
-  userId    String
-  productId String
-  quantity  Float
-  unit      String
-  expiresAt DateTime?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-  user      User      @relation(fields: [userId], references: [id])
-  product   Product   @relation(fields: [productId], references: [id])
+  id             String        @id @default(uuid())
+  userId         String
+  productId      String
+  quantity       Float
+  unit           String
+  expirationDate DateTime?
+  location       StockLocation @default(PANTRY)
+  addedAt        DateTime      @default(now())
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  deletedAt      DateTime?
+  user           User          @relation(fields: [userId], references: [id])
+  product        Product       @relation(fields: [productId], references: [id])
 
   @@index([userId])
-  @@index([expiresAt])
+  @@index([productId])
+  @@index([expirationDate])
   @@map("stock_items")
 }
 
 model OcrJob {
-  id         String    @id @default(uuid())
-  userId     String
-  status     OcrStatus @default(PENDING)
-  receiptUrl String?
-  result     Json?
-  error      String?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  user       User      @relation(fields: [userId], references: [id])
+  id          String    @id @default(uuid())
+  userId      String
+  status      OcrStatus @default(PENDING)
+  imageKey    String?
+  retailer    String?
+  rawText     String?
+  parsedItems Json?
+  error       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+  user        User      @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([status])
