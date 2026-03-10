@@ -4,25 +4,19 @@ export interface OcrJob {
   id: string;
   userId: string;
   status: OcrJobStatus;
-  receiptUrl?: string;
-  result?: OcrResult;
+  imageKey?: string;
+  retailer?: string;
+  rawText?: string;
+  parsedItems?: OcrParsedItem[];
   error?: string;
   createdAt: string;
   updatedAt: string;
+  completedAt?: string;
 }
 
-export interface OcrResult {
-  retailer?: string;
-  items: OcrLineItem[];
-  total?: number;
-  currency?: string;
-}
-
-export interface OcrLineItem {
+export interface OcrParsedItem {
   name: string;
   quantity?: number;
   unit?: string;
-  unitPrice?: number;
-  totalPrice?: number;
   confidence: number;
 }
