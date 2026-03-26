@@ -1,6 +1,31 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { BullModule } from '@nestjs/bullmq';
+import { ConfigModule } from '@nestjs/config';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { AuthModule } from './auth/auth.module.js';
+import { validateEnv } from './config/env.validation.js';
+import { OcrModule } from './ocr/ocr.module.js';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { ProductModule } from './product/product.module.js';
+import { StockModule } from './stock/stock.module.js';
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true, cache: true, validate: validateEnv }),
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
+    BullModule.forRoot({
+      connection: {
+        host: process.env['REDIS_HOST'] ?? 'localhost',
+        port: parseInt(process.env['REDIS_PORT'] ?? '6379', 10),
+      },
+    }),
+    PrismaModule,
+    AuthModule,
+    ProductModule,
+    StockModule,
+    OcrModule,
+  ],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}
