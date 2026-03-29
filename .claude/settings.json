@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Grep",
+      "Glob",
+      "Write(packages/**)",
+      "Edit(packages/**)",
+      "Bash(pnpm *)",
+      "Bash(npx prisma *)",
+      "Bash(npx vitest *)",
+      "Bash(docker compose *)"
+    ],
+    "deny": ["Bash(rm -rf *)", "Write(.env*)", "Bash(curl *)", "Bash(wget *)"]
+  },
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "NODE_ENV": "development"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}
