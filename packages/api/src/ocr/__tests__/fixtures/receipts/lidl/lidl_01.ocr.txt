@@ -1,0 +1,126 @@
+DAN route departementale 7
+FRANZITOIS L'ENCOUR LOUBET
+Ticket de vente
+
+<table><tr><th>Article</th><th>P.O./DAN</th><th>Qra</th><th>DUR</th></tr><tr><td>Alimée merch circus</td><td>1,14</td><td>1,14</td><td>1,14</td></tr><tr><td>Ménocline Ltd. Plus</td><td></td><td></td><td>-2,55</td></tr><tr><td>1</td><td></td><td></td><td></td></tr><tr><td>Cristalini</td><td>0,79</td><td>18</td><td>0,62</td></tr><tr><td>Chou-Tiayis en Flor</td><td>1,31</td><td>1,31</td><td>1,31</td></tr><tr><td>Brinollis en Fleurati</td><td>1,77</td><td>1</td><td>1,77</td></tr><tr><td>Friton allumettes</td><td>1,85</td><td>1</td><td>1,85</td></tr><tr><td>Rumili Fruitis rouges</td><td>2,27</td><td>1</td><td>2,27</td></tr><tr><td>Lavernier</td><td>1,55</td><td>2</td><td>1,55</td></tr><tr><td>L'Y 2 baguettes près</td><td>0,95</td><td>2</td><td>1,30</td></tr><tr><td>Lemil Les ceruls</td><td>1,55</td><td>2</td><td>1,55</td></tr><tr><td>Lavernier</td><td>1,55</td><td>2</td><td>1,55</td></tr><tr><td>Fouetis Fruits</td><td>0,99</td><td>1</td><td>0,99</td></tr><tr><td>Fouetis citron pots</td><td>1,45</td><td>1</td><td>1,45</td></tr><tr><td>Elisabette</td><td>0,99</td><td>0,14</td><td>1</td></tr><tr><td>Lignon Ice Box Dossé</td><td>0,34</td><td>2</td><td>0,58</td></tr><tr><td>Prix en haise</td><td></td><td></td><td>-0,75</td></tr><tr><td>Algo Lattes poulet</td><td>11,39</td><td>1</td><td>11,39</td></tr><tr><td>A jonds de suumur</td><td>10,21</td><td>1</td><td>10,21</td></tr><tr><td>Bouquet</td><td>1,31</td><td>1</td><td>1,31</td></tr><tr><td>Belange de noix</td><td>2,49</td><td>1</td><td>2,49</td></tr><tr><td>PavinoTie 2 lédarès</td><td>3,94</td><td>1</td><td>3,94</td></tr><tr><td>PavinoTie 2 lés</td><td>3,94</td><td>1</td><td>3,94</td></tr><tr><td>Marisette meilloux</td><td>1,83</td><td>1</td><td>1,83</td></tr><tr><td>Belange de noix</td><td>2,49</td><td>1</td><td>2,49</td></tr><tr><td>Girnouis chevre roué</td><td>2,78</td><td>2</td><td>5,00</td></tr><tr><td>Courbelle grillée</td><td>0,58</td><td>1</td><td>0,58</td></tr><tr><td>Courbelle grillée</td><td>0,58</td><td>1</td><td>0,58</td></tr><tr><td>Boc syrux vanille</td><td>1,25</td><td>1</td><td>1,25</td></tr><tr><td>Deuf L'azel Rouge</td><td>1,79</td><td>1</td><td>1,79</td></tr><tr><td>Courbelle grillée</td><td>1,83</td><td>1</td><td>1,83</td></tr><tr><td>Tomates pâches Bio</td><td>1,04</td><td>2</td><td>2,08</td></tr><tr><td>Sauce soja ourche</td><td>0,99</td><td>1</td><td>0,99</td></tr><tr><td>Pomme de trème</td><td>2,14</td><td>1</td><td>2,14</td></tr><tr><td>Crème boiseri sirame</td><td>0,89</td><td>1</td><td>0,89</td></tr><tr><td>Cachir poulet</td><td>1,89</td><td>1</td><td>1,89</td></tr><tr><td>Champignon dejocks</td><td>1,07</td><td>2</td><td>2,14</td></tr><tr><td>Por jus d'ominoi</td><td>1,94</td><td>2</td><td>3,94</td></tr><tr><td>Pomme de trème</td><td>2,14</td><td>2</td><td>3,94</td></tr><tr><td>Pire en haise</td><td></td><td></td><td>-0,24</td></tr><tr><td>Leffe Blonde Obli</td><td>1,89</td><td>6</td><td>11,34</td></tr><tr><td>Blume de bon denier</td><td>2,81</td><td>1</td><td>2,81</td></tr><tr><td>Nombre de lignes: 38</td><td></td><td></td><td></td></tr></table>
+
+A payer
+177,62,45
+TOTAL ELIGIBLE 78 (7) : 100,28
+TOTAL 84 (7) : 100,28
+
+<table><tr><th>Type</th><th>VAT</th></tr><tr><td>Tirtre Restaurant</td><td>25,00</td></tr><tr><td>Sorte</td><td>102,00</td></tr></table>
+
+Pays en Tirres Restaurant :
+25,00
+Total Remetier
+102,00
+TOTAL 84
+VAT 102,00
+TOTAL 84
+VAT 100,28
+
+<table><tr><th>Type</th><th>VAT</th></tr><tr><td>Tire</td><td>102,00</td></tr><tr><td>Tire</td><td>100,28</td></tr></table>
+
+VAT 102,00
+TOTAL 100,28
+
+<table><tr><th>Type</th><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table><tr><th>VAT</th></tr></table>
+
+102,00
+
+<table></table>
+
+102,00
+
+<table></table>
+
+102,00
+
+<table></table>
+
+102,00
+
+<table></table>
+
+102,00
+
+<table></table>
+
+102,00
+
+<table></table>
+
+102,00
+
+<table></table>
+
+102,00

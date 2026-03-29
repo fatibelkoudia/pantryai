@@ -1,0 +1,121 @@
+{
+  "retailer": "GRAND FRAIS",
+  "items": [
+    {
+      "name": "Mais Epi",
+      "price": 5,
+      "quantity": 4,
+      "confidence": 0.85
+    },
+    {
+      "name": "Pdt Non Lavee Prim",
+      "price": 2.68,
+      "quantity": 1.345,
+      "unit": "kg",
+      "confidence": 0.85
+    },
+    {
+      "name": "Fraise Colis Impor",
+      "price": 7.99,
+      "confidence": 0.85
+    },
+    {
+      "name": "Concombre Noa Fran",
+      "price": 1.75,
+      "quantity": 0.7,
+      "unit": "kg",
+      "confidence": 0.85
+    },
+    {
+      "name": "Courgette Filet 1",
+      "price": 2.5,
+      "confidence": 0.85
+    },
+    {
+      "name": "Tomate Noire De Cr",
+      "price": 5.81,
+      "quantity": 1.455,
+      "unit": "kg",
+      "confidence": 0.85
+    },
+    {
+      "name": "Melon Charentais J",
+      "price": 3.2,
+      "quantity": 2.13,
+      "unit": "kg",
+      "confidence": 0.85
+    },
+    {
+      "name": "Mangue Au Kilo",
+      "price": 2.69,
+      "quantity": 0.675,
+      "unit": "kg",
+      "confidence": 0.85
+    },
+    {
+      "name": "Panache De Tomates",
+      "price": 5.99,
+      "confidence": 0.85
+    },
+    {
+      "name": "Oignon Botte",
+      "price": 1.99,
+      "confidence": 0.85
+    },
+    {
+      "name": "Radis Botte",
+      "price": 1.29,
+      "confidence": 0.85
+    },
+    {
+      "name": "Melange De Jeunes",
+      "price": 1.29,
+      "confidence": 0.85
+    },
+    {
+      "name": "Mache 150g",
+      "price": 1.79,
+      "confidence": 0.85
+    },
+    {
+      "name": "Tomate Divinina",
+      "price": 1.84,
+      "quantity": 0.735,
+      "unit": "kg",
+      "confidence": 0.85
+    },
+    {
+      "name": "Melange Croquant 3",
+      "price": 1.99,
+      "confidence": 0.85
+    },
+    {
+      "name": "Pastique Zebree",
+      "price": 4.35,
+      "quantity": 1.74,
+      "unit": "kg",
+      "confidence": 0.85
+    },
+    {
+      "name": "Kombucha Bio Peche",
+      "price": 2.49,
+      "confidence": 0.85
+    },
+    {
+      "name": "Sangria Boisson A",
+      "price": 6.58,
+      "quantity": 2,
+      "confidence": 0.85
+    },
+    {
+      "name": "Gazpacho Tomates 1",
+      "price": 3.29,
+      "confidence": 0.85
+    },
+    {
+      "name": "Haribo Banan'S Vra",
+      "price": 1.34,
+      "confidence": 0.85
+    }
+  ]
+}

@@ -1,0 +1,234 @@
+{
+  "retailer": "AUCHAN",
+  "items": [
+    {
+      "name": "Vrac Vanill",
+      "price": 3.32,
+      "confidence": 0.8
+    },
+    {
+      "name": "Glace Coco",
+      "price": 2.81,
+      "confidence": 0.8
+    },
+    {
+      "name": "Yaourt Morceau",
+      "price": 3.69,
+      "confidence": 0.8
+    },
+    {
+      "name": "Eau Aromati",
+      "price": 1.2,
+      "quantity": 3,
+      "confidence": 0.8
+    },
+    {
+      "name": "Eau Gazeuse",
+      "price": 0.48,
+      "quantity": 4,
+      "confidence": 0.8
+    },
+    {
+      "name": "Bio 300 Ltrs Yrts",
+      "price": 2.06,
+      "confidence": 0.8
+    },
+    {
+      "name": "Bio 300 Ltr From B",
+      "price": 1.92,
+      "confidence": 0.8
+    },
+    {
+      "name": "Choucroute",
+      "price": 3.32,
+      "confidence": 0.8
+    },
+    {
+      "name": "Sal Strasbo",
+      "price": 2.89,
+      "confidence": 0.8
+    },
+    {
+      "name": "Jbon Cuit A",
+      "price": 5.09,
+      "confidence": 0.8
+    },
+    {
+      "name": "Mmm Vrac 12% 3500",
+      "price": 6.55,
+      "confidence": 0.8
+    },
+    {
+      "name": "Bons Mayennais Cam",
+      "price": 2.35,
+      "confidence": 0.8
+    },
+    {
+      "name": "Fleury Des Jambon",
+      "price": 3.15,
+      "confidence": 0.8
+    },
+    {
+      "name": "Tortilla Pdt Natur",
+      "price": 3.97,
+      "confidence": 0.8
+    },
+    {
+      "name": "Nems Porc X",
+      "price": 2.82,
+      "confidence": 0.8
+    },
+    {
+      "name": "Emmental Bl",
+      "price": 2.89,
+      "confidence": 0.8
+    },
+    {
+      "name": "Mache Orig",
+      "price": 1.53,
+      "confidence": 0.8
+    },
+    {
+      "name": "Rana Tort Auberg T",
+      "price": 3.82,
+      "confidence": 0.8
+    },
+    {
+      "name": "Champignon Blanc P",
+      "price": 0.56,
+      "confidence": 0.8
+    },
+    {
+      "name": "Herta Knacki Origi",
+      "price": 1.81,
+      "confidence": 0.8
+    },
+    {
+      "name": "Emmental Ra",
+      "price": 2,
+      "confidence": 0.8
+    },
+    {
+      "name": "Creme 15% P",
+      "price": 0.72,
+      "confidence": 0.8
+    },
+    {
+      "name": "Gou Feta Gr",
+      "price": 2.8,
+      "confidence": 0.8
+    },
+    {
+      "name": "Tarte Poire",
+      "price": 1.39,
+      "confidence": 0.8
+    },
+    {
+      "name": "Galbani Mozza Burr",
+      "price": 4.01,
+      "quantity": 2,
+      "confidence": 0.8
+    },
+    {
+      "name": "Beurre Ml D",
+      "price": 2.75,
+      "confidence": 0.8
+    },
+    {
+      "name": "Sg Thon Mayonnaise",
+      "price": 6.9,
+      "confidence": 0.8
+    },
+    {
+      "name": "Bridou Bacon 16t 1",
+      "price": 2.35,
+      "confidence": 0.8
+    },
+    {
+      "name": "Sg Thon Mayonnaise",
+      "price": 6.9,
+      "confidence": 0.8
+    },
+    {
+      "name": "Pate En Cro",
+      "price": 2.98,
+      "confidence": 0.8
+    },
+    {
+      "name": "Tomate Cotelee Jaune",
+      "price": 1.67,
+      "confidence": 0.8
+    },
+    {
+      "name": "Laitue Iceberg",
+      "price": 1.49,
+      "confidence": 0.8
+    },
+    {
+      "name": "Ceuf Village Pa Ee",
+      "price": 3.17,
+      "confidence": 0.8
+    },
+    {
+      "name": "Lindt Excellence No",
+      "price": 1.81,
+      "confidence": 0.8
+    },
+    {
+      "name": "Clives Vertes Dend",
+      "price": 2.22,
+      "confidence": 0.8
+    },
+    {
+      "name": "Jus Abc Mul",
+      "price": 1.32,
+      "confidence": 0.8
+    },
+    {
+      "name": "Bio Saupiquet File",
+      "price": 5.4,
+      "confidence": 0.8
+    },
+    {
+      "name": "Supremes De Ma",
+      "price": 1.39,
+      "confidence": 0.8
+    },
+    {
+      "name": "Sardines Ma",
+      "price": 1.4,
+      "confidence": 0.8
+    },
+    {
+      "name": "Petit Navire Thon",
+      "price": 3.56,
+      "confidence": 0.8
+    },
+    {
+      "name": "St Michel Mad Coqu",
+      "price": 4.6,
+      "quantity": 2,
+      "confidence": 0.8
+    },
+    {
+      "name": "Abricot",
+      "price": 1.73,
+      "confidence": 0.8
+    },
+    {
+      "name": "Tomate Ronde En Gr",
+      "price": 0.98,
+      "confidence": 0.8
+    },
+    {
+      "name": "Bonne Maman Confit",
+      "price": 2.27,
+      "confidence": 0.8
+    },
+    {
+      "name": "Vahine Levure Chim",
+      "price": 0.48,
+      "confidence": 0.8
+    }
+  ]
+}
