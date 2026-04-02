@@ -1,4 +1,8 @@
 {
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "NODE_ENV": "development"
+  },
   "permissions": {
     "allow": [
       "Read",
@@ -12,10 +16,6 @@
       "Bash(docker compose *)"
     ],
     "deny": ["Bash(rm -rf *)", "Write(.env*)", "Bash(curl *)", "Bash(wget *)"]
-  },
-  "env": {
-    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
-    "NODE_ENV": "development"
   },
   "hooks": {
     "PostToolUse": [
