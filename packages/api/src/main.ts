@@ -1,11 +1,11 @@
-import 'dotenv/config';
-import 'reflect-metadata';
+import fastifyHelmet from '@fastify/helmet';
+import fastifyMultipart from '@fastify/multipart';
+import { ValidationPipe } from '@nestjs/common';
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import fastifyMultipart from '@fastify/multipart';
-import fastifyHelmet from '@fastify/helmet';
+import 'dotenv/config';
+import 'reflect-metadata';
 import { AppModule } from './app.module.js';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
 import { TransformResponseInterceptor } from './common/interceptors/transform-response.interceptor.js';

@@ -5,8 +5,8 @@ export interface ParsedReceiptItem {
   price?: number;
   ean13?: string;
   /**
-    * DLC/DDM date read from the receipt (ex: ISO or dd/MM/yyyy).
-    * If present, it pre-fills StockItem.expirationDate.
+   * DLC/DDM date read from the receipt (ex: ISO or dd/MM/yyyy).
+   * If present, it pre-fills StockItem.expirationDate.
    */
   expirationDate?: string;
   confidence: number;

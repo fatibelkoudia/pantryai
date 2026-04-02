@@ -44,15 +44,15 @@ vi.mock('@nestjs/bullmq', () => ({
 
 // Imports
 
+import { type Job } from 'bullmq';
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { type Job } from 'bullmq';
+import type { PrismaService } from '../../prisma/prisma.service.js';
 import { testPrisma } from '../../test-setup.integration.js';
 import { OcrProcessor } from '../ocr.processor.js';
 import type { OcrJobPayload } from '../ocr.service.js';
 import type { ParsedReceiptItem } from '../parsers/index.js';
-import type { PrismaService } from '../../prisma/prisma.service.js';
 
 // Constants, helpers, and types
 

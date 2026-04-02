@@ -5,8 +5,8 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { GenericParser, ParserRegistry } from '../src/ocr/parsers/index.js';
 import type { ParsedReceiptItem } from '../src/ocr/parsers/index.js';
+import { GenericParser, ParserRegistry } from '../src/ocr/parsers/index.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FIXTURES_DIR = path.resolve(__dirname, '../src/ocr/__tests__/fixtures/receipts');
