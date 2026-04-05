@@ -1,8 +1,13 @@
-import type { ApiResponse } from '../types/api.js';
-import type { AuthResponse, AuthTokens, LoginDto, RegisterDto } from '../types/auth.js';
+import type { ApiMeta, ApiResponse } from '../types/api.js';
+import type { AuthResponse, LoginDto, RegisterDto } from '../types/auth.js';
 import type { OcrJob } from '../types/ocr.js';
-import type { Product } from '../types/product.js';
-import type { CreateStockItemDto, StockItem } from '../types/stock.js';
+import type { CreateProductDto, Product } from '../types/product.js';
+import type {
+  CreateStockItemDto,
+  StockItemWithProduct,
+  StockQuery,
+  UpdateStockItemDto,
+} from '../types/stock.js';
 
 export class ApiClientError extends Error {
   constructor(
@@ -15,32 +20,81 @@ export class ApiClientError extends Error {
   }
 }
 
+export interface ScanReceiptOptions {
+  onUploadProgress?: (percent: number) => void;
+  signal?: AbortSignal;
+}
+
+const DEFAULT_TIMEOUT_MS = 15_000;
+
 export class PantryApiClient {
   private accessToken: string | null = null;
 
-  constructor(private readonly baseUrl: string) {}
+  constructor(
+    private readonly baseUrl: string,
+    private readonly timeoutMs: number = DEFAULT_TIMEOUT_MS,
+  ) {}
 
   setAccessToken(token: string | null): void {
     this.accessToken = token;
   }
 
+  private authHeaders(): Record<string, string> {
+    return this.accessToken ? { Authorization: `Bearer ${this.accessToken}` } : {};
+  }
+
   private async request<T>(path: string, init: RequestInit = {}): Promise<T> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...(init.headers as Record<string, string>),
+      ...this.authHeaders(),
+      ...(init.headers as Record<string, string> | undefined),
     };
 
-    if (this.accessToken) {
-      headers['Authorization'] = `Bearer ${this.accessToken}`;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), this.timeoutMs);
+
+    let response: Response;
+    try {
+      response = await fetch(`${this.baseUrl}${path}`, {
+        ...init,
+        headers,
+        signal: controller.signal,
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        throw new ApiClientError('TIMEOUT', `Request to ${path} timed out`, 0);
+      }
+      throw new ApiClientError(
+        'NETWORK_ERROR',
+        error instanceof Error ? error.message : 'Network request failed',
+        0,
+      );
+    } finally {
+      clearTimeout(timeout);
     }
 
-    const response = await fetch(`${this.baseUrl}${path}`, { ...init, headers });
-    const body = (await response.json()) as ApiResponse<T>;
+    // 204 No Content (e.g. DELETE) and empty bodies have no JSON to parse.
+    if (response.status === 204) {
+      return undefined as T;
+    }
 
-    if (!response.ok || !body.success) {
+    let body: ApiResponse<T> | null = null;
+    const text = await response.text();
+    if (text.length > 0) {
+      try {
+        body = JSON.parse(text) as ApiResponse<T>;
+      } catch {
+        if (!response.ok) {
+          throw new ApiClientError('UNKNOWN_ERROR', text || response.statusText, response.status);
+        }
+        return undefined as T;
+      }
+    }
+
+    if (!response.ok || !body || body.success === false) {
       throw new ApiClientError(
-        body.error?.code ?? 'UNKNOWN_ERROR',
-        body.error?.message ?? 'An unexpected error occurred',
+        body?.error?.code ?? 'UNKNOWN_ERROR',
+        body?.error?.message ?? 'An unexpected error occurred',
         response.status,
       );
     }
@@ -63,8 +117,9 @@ export class PantryApiClient {
     });
   }
 
-  refresh(refreshToken: string): Promise<AuthTokens> {
-    return this.request<AuthTokens>('/auth/refresh', {
+  /** The API issues a new access token only — the refresh token is not rotated. */
+  refresh(refreshToken: string): Promise<{ accessToken: string }> {
+    return this.request<{ accessToken: string }>('/auth/refresh', {
       method: 'POST',
       body: JSON.stringify({ refreshToken }),
     });
@@ -75,15 +130,110 @@ export class PantryApiClient {
     return this.request<Product>(`/products/ean/${ean13}`);
   }
 
-  // Stock
-  createStockItem(dto: CreateStockItemDto): Promise<StockItem> {
-    return this.request<StockItem>('/stocks', {
+  createProduct(dto: CreateProductDto): Promise<Product> {
+    return this.request<Product>('/products', {
       method: 'POST',
       body: JSON.stringify(dto),
     });
   }
 
-  // OCR / QR receipts
+  // Stock
+  listStocks(query: StockQuery = {}): Promise<{ items: StockItemWithProduct[]; meta: ApiMeta }> {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value !== undefined && value !== null && value !== '') {
+        params.set(key, String(value));
+      }
+    }
+    const qs = params.toString();
+    return this.request<{ items: StockItemWithProduct[]; meta: ApiMeta }>(
+      `/stocks${qs ? `?${qs}` : ''}`,
+    );
+  }
+
+  getStock(id: string): Promise<StockItemWithProduct> {
+    return this.request<StockItemWithProduct>(`/stocks/${id}`);
+  }
+
+  createStockItem(dto: CreateStockItemDto): Promise<StockItemWithProduct> {
+    return this.request<StockItemWithProduct>('/stocks', {
+      method: 'POST',
+      body: JSON.stringify(dto),
+    });
+  }
+
+  updateStock(id: string, dto: UpdateStockItemDto): Promise<StockItemWithProduct> {
+    return this.request<StockItemWithProduct>(`/stocks/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(dto),
+    });
+  }
+
+  deleteStock(id: string): Promise<void> {
+    return this.request<void>(`/stocks/${id}`, { method: 'DELETE' });
+  }
+
+  // OCR / receipts
+  /**
+   * Upload a receipt image for async OCR. Uses XMLHttpRequest so upload progress is
+   * observable (fetch cannot report upload progress) — works in the browser and React Native.
+   */
+  scanReceipt(file: Blob, options: ScanReceiptOptions = {}): Promise<{ jobId: string }> {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const form = new FormData();
+      form.append('file', file);
+
+      xhr.open('POST', `${this.baseUrl}/ocr/scan`);
+      xhr.timeout = this.timeoutMs;
+      if (this.accessToken) {
+        xhr.setRequestHeader('Authorization', `Bearer ${this.accessToken}`);
+      }
+
+      if (options.onUploadProgress) {
+        xhr.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            options.onUploadProgress?.(Math.round((event.loaded / event.total) * 100));
+          }
+        };
+      }
+
+      if (options.signal) {
+        if (options.signal.aborted) {
+          xhr.abort();
+          reject(new ApiClientError('ABORTED', 'Upload aborted', 0));
+          return;
+        }
+        options.signal.addEventListener('abort', () => xhr.abort(), { once: true });
+      }
+
+      xhr.onload = () => {
+        let body: ApiResponse<{ jobId: string }> | null = null;
+        try {
+          body = JSON.parse(xhr.responseText) as ApiResponse<{ jobId: string }>;
+        } catch {
+          body = null;
+        }
+        if (xhr.status >= 200 && xhr.status < 300 && body?.success && body.data) {
+          resolve(body.data);
+        } else {
+          reject(
+            new ApiClientError(
+              body?.error?.code ?? 'UNKNOWN_ERROR',
+              body?.error?.message ?? 'Receipt upload failed',
+              xhr.status,
+            ),
+          );
+        }
+      };
+      xhr.onerror = () => reject(new ApiClientError('NETWORK_ERROR', 'Receipt upload failed', 0));
+      xhr.ontimeout = () => reject(new ApiClientError('TIMEOUT', 'Receipt upload timed out', 0));
+      xhr.onabort = () => reject(new ApiClientError('ABORTED', 'Upload aborted', 0));
+
+      xhr.send(form);
+    });
+  }
+
   scanQrReceipt(url: string): Promise<{ jobId: string }> {
     return this.request<{ jobId: string }>('/ocr/scan-qr', {
       method: 'POST',

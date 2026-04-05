@@ -50,7 +50,7 @@ export class OcrService {
         secretAccessKey: process.env['R2_SECRET_ACCESS_KEY'] ?? '',
       },
     });
-    this.bucket = process.env['R2_BUCKET_NAME'] ?? 'pantryai-receipts';
+    this.bucket = process.env['R2_BUCKET_NAME'] ?? 'pantryai';
   }
 
   async createJob(

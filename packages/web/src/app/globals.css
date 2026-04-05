@@ -1,1 +1,36 @@
 @import 'tailwindcss';
+
+/*
+ * Neutral design tokens for the MVP. The "Trashy" brand palette + Nunito land in
+ * task 4.3a (design system) — keep these neutral and contrast-safe (WCAG AA) for now.
+ */
+@theme {
+  --color-brand: #15803d; /* green-700 — AA on white */
+  --color-brand-fg: #ffffff;
+  --color-surface: #f8fafc; /* slate-50 */
+  --color-surface-card: #ffffff;
+  --color-border: #e2e8f0; /* slate-200 */
+
+  /* Expiration badge palette (text colours are AA on their tinted backgrounds) */
+  --color-expiry-ok: #166534; /* green-800 */
+  --color-expiry-ok-bg: #dcfce7; /* green-100 */
+  --color-expiry-soon: #854d0e; /* yellow-800 */
+  --color-expiry-soon-bg: #fef9c3; /* yellow-100 */
+  --color-expiry-expired: #991b1b; /* red-800 */
+  --color-expiry-expired-bg: #fee2e2; /* red-100 */
+  --color-expiry-none: #334155; /* slate-700 */
+  --color-expiry-none-bg: #f1f5f9; /* slate-100 */
+
+  --radius-card: 0.75rem;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: #0f172a; /* slate-900 */
+}
+
+/* Visible keyboard focus everywhere (RGAA). */
+:focus-visible {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 2px;
+}
