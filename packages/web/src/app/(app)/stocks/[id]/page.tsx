@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiClientError } from '@pantryai/shared';
-import type { StockLocation, UpdateStockItemDto } from '@pantryai/shared';
+import type { StockItemWithProduct, StockLocation, UpdateStockItemDto } from '@pantryai/shared';
 import { ExpirationBadge } from '@/components/ExpirationBadge';
 import { apiClient } from '@/lib/api';
 
@@ -20,55 +20,11 @@ function toDateInput(iso: string | undefined): string {
 export default function StockDetailPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
-  const router = useRouter();
-  const queryClient = useQueryClient();
 
   const stock = useQuery({
     queryKey: ['stocks', id],
     queryFn: () => apiClient.getStock(id),
   });
-
-  const [quantity, setQuantity] = useState('');
-  const [unit, setUnit] = useState('');
-  const [expiration, setExpiration] = useState('');
-  const [location, setLocation] = useState<StockLocation>('PANTRY');
-  const [error, setError] = useState<string | null>(null);
-
-  // Hydrate the form once the item loads.
-  useEffect(() => {
-    if (stock.data) {
-      setQuantity(String(stock.data.quantity));
-      setUnit(stock.data.unit);
-      setExpiration(toDateInput(stock.data.expirationDate));
-      setLocation(stock.data.location);
-    }
-  }, [stock.data]);
-
-  const update = useMutation({
-    mutationFn: (dto: UpdateStockItemDto) => apiClient.updateStock(id, dto),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['stocks'] });
-      router.push('/stocks');
-    },
-    onError: (err) => setError(err instanceof ApiClientError ? err.message : 'Update failed'),
-  });
-
-  const remove = useMutation({
-    mutationFn: () => apiClient.deleteStock(id),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['stocks'] });
-      router.push('/stocks');
-    },
-    onError: (err) => setError(err instanceof ApiClientError ? err.message : 'Delete failed'),
-  });
-
-  function onSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    setError(null);
-    const dto: UpdateStockItemDto = { quantity: Number(quantity), unit, location };
-    if (expiration) dto.expirationDate = new Date(expiration).toISOString();
-    update.mutate(dto);
-  }
 
   if (stock.isLoading) {
     return (
@@ -97,6 +53,54 @@ export default function StockDetailPage() {
         <ExpirationBadge expirationDate={stock.data.expirationDate} />
       </header>
 
+      {/* `key` remounts the form (re-seeding its state) if a different item loads. */}
+      <StockEditForm key={stock.data.id} item={stock.data} />
+    </section>
+  );
+}
+
+/**
+ * Editable form for a loaded stock item. State is seeded directly from `item`
+ * on mount, so the parent must only render this once the item is available.
+ */
+function StockEditForm({ item }: { item: StockItemWithProduct }) {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const [quantity, setQuantity] = useState(String(item.quantity));
+  const [unit, setUnit] = useState(item.unit);
+  const [expiration, setExpiration] = useState(toDateInput(item.expirationDate));
+  const [location, setLocation] = useState<StockLocation>(item.location);
+  const [error, setError] = useState<string | null>(null);
+
+  const update = useMutation({
+    mutationFn: (dto: UpdateStockItemDto) => apiClient.updateStock(item.id, dto),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['stocks'] });
+      router.push('/stocks');
+    },
+    onError: (err) => setError(err instanceof ApiClientError ? err.message : 'Update failed'),
+  });
+
+  const remove = useMutation({
+    mutationFn: () => apiClient.deleteStock(item.id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['stocks'] });
+      router.push('/stocks');
+    },
+    onError: (err) => setError(err instanceof ApiClientError ? err.message : 'Delete failed'),
+  });
+
+  function onSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    setError(null);
+    const dto: UpdateStockItemDto = { quantity: Number(quantity), unit, location };
+    if (expiration) dto.expirationDate = new Date(expiration).toISOString();
+    update.mutate(dto);
+  }
+
+  return (
+    <>
       {error ? (
         <p role="alert" className="text-sm text-expiry-expired">
           {error}
@@ -181,6 +185,6 @@ export default function StockDetailPage() {
           </button>
         </div>
       </form>
-    </section>
+    </>
   );
 }
