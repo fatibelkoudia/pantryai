@@ -20,6 +20,7 @@ export const OcrStatus = {
   PENDING: 'PENDING',
   PROCESSING: 'PROCESSING',
   COMPLETED: 'COMPLETED',
+  CONFIRMED: 'CONFIRMED',
   FAILED: 'FAILED',
 } as const;
 

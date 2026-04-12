@@ -1,4 +1,4 @@
-export type OcrJobStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
+export type OcrJobStatus = 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'CONFIRMED' | 'FAILED';
 
 export interface OcrJob {
   id: string;

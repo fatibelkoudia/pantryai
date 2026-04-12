@@ -3,11 +3,12 @@
 import { useCallback, useEffect, useId, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiClientError } from '@pantryai/shared';
-import type { OcrJob } from '@pantryai/shared';
+import type { OcrJob, OcrParsedItem } from '@pantryai/shared';
 import { apiClient } from '@/lib/api';
+import { ReceiptReviewModal } from '@/components/ReceiptReviewModal';
 
-const ACCEPTED = ['image/jpeg', 'image/png', 'image/webp'];
-const TERMINAL = ['COMPLETED', 'FAILED'] as const;
+const ACCEPTED = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
+const TERMINAL = ['COMPLETED', 'CONFIRMED', 'FAILED'] as const;
 
 export function ReceiptUploader() {
   const inputId = useId();
@@ -16,14 +17,19 @@ export function ReceiptUploader() {
   const [jobId, setJobId] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [reviewing, setReviewing] = useState(false);
+  const [addedCount, setAddedCount] = useState<number | null>(null);
 
   const upload = useMutation({
     mutationFn: (file: File) => {
       setProgress(0);
-      return apiClient.scanReceipt(file, { onUploadProgress: setProgress });
+      // autoCommit: false → the API parses the receipt but does NOT add items yet.
+      // The user reviews and confirms a selection below.
+      return apiClient.scanReceipt(file, { onUploadProgress: setProgress, autoCommit: false });
     },
     onSuccess: ({ jobId: id }) => {
       setError(null);
+      setAddedCount(null);
       setJobId(id);
     },
     onError: (err) => {
@@ -41,23 +47,37 @@ export function ReceiptUploader() {
     },
   });
 
-  // When the job completes, refresh the stock list so the new items appear.
+  // Open the review modal once the job finishes parsing.
   const jobStatus = job.data?.status;
   useEffect(() => {
     if (jobStatus === 'COMPLETED') {
-      void queryClient.invalidateQueries({ queryKey: ['stocks'] });
+      setReviewing(true);
     }
-  }, [jobStatus, queryClient]);
+  }, [jobStatus]);
+
+  const confirm = useMutation({
+    mutationFn: (indices: number[]) => apiClient.confirmOcrJob(jobId as string, indices),
+    onSuccess: ({ added }) => {
+      void queryClient.invalidateQueries({ queryKey: ['stocks'] });
+      setAddedCount(added);
+      setReviewing(false);
+      setJobId(null);
+    },
+    onError: (err) => {
+      setError(err instanceof ApiClientError ? err.message : 'Could not add the selected items');
+    },
+  });
 
   const handleFile = useCallback(
     (file: File | undefined) => {
       if (!file) return;
       if (!ACCEPTED.includes(file.type)) {
-        setError('Unsupported file type — use JPEG, PNG or WebP.');
+        setError('Unsupported file type, use JPEG, PNG, WebP or PDF.');
         return;
       }
       setError(null);
       setJobId(null);
+      setReviewing(false);
       upload.mutate(file);
     },
     [upload],
@@ -72,9 +92,15 @@ export function ReceiptUploader() {
     [handleFile],
   );
 
+  const closeReview = useCallback(() => {
+    setReviewing(false);
+    setJobId(null);
+  }, []);
+
   const uploading = upload.isPending;
   const status = job.data?.status;
   const polling = jobId !== null && status !== 'COMPLETED' && status !== 'FAILED';
+  const parsedItems: OcrParsedItem[] = job.data?.parsedItems ?? [];
 
   return (
     <div className="flex flex-col gap-4">
@@ -90,8 +116,10 @@ export function ReceiptUploader() {
           dragOver ? 'border-brand bg-green-50' : 'border-border bg-surface-card'
         }`}
       >
-        <span className="font-medium">Drag &amp; drop a receipt image here</span>
-        <span className="text-sm text-slate-500">or click to choose a file (JPEG, PNG, WebP)</span>
+        <span className="font-medium">Drag &amp; drop a receipt here</span>
+        <span className="text-sm text-slate-500">
+          or click to choose a file (JPEG, PNG, WebP, PDF)
+        </span>
         <input
           id={inputId}
           type="file"
@@ -135,22 +163,20 @@ export function ReceiptUploader() {
         </p>
       ) : null}
 
-      {status === 'COMPLETED' ? (
-        <div className="flex flex-col gap-2">
-          <p role="status" className="text-sm font-medium text-expiry-ok">
-            Receipt processed — {job.data?.parsedItems?.length ?? 0} item(s) added to your stock.
-          </p>
-          {job.data?.parsedItems?.length ? (
-            <ul className="list-inside list-disc text-sm text-slate-700">
-              {job.data.parsedItems.map((p, i) => (
-                <li key={`${p.name}-${i}`}>
-                  {p.name}
-                  {p.quantity ? ` — ${p.quantity}${p.unit ? ` ${p.unit}` : ''}` : ''}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
+      {addedCount !== null ? (
+        <p role="status" className="text-sm font-medium text-expiry-ok">
+          Added {addedCount} item(s) to your stock.
+        </p>
+      ) : null}
+
+      {reviewing ? (
+        <ReceiptReviewModal
+          items={parsedItems}
+          retailer={job.data?.retailer}
+          pending={confirm.isPending}
+          onConfirm={(indices) => confirm.mutate(indices)}
+          onCancel={closeReview}
+        />
       ) : null}
     </div>
   );

@@ -6,9 +6,11 @@ import { Job } from 'bullmq';
 import { lookup } from 'node:dns/promises';
 import Tesseract from 'tesseract.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { OcrService } from './ocr.service.js';
 import type { OcrJobPayload, QrJobPayload } from './ocr.service.js';
 import type { ParsedReceipt, ParsedReceiptItem } from './parsers/index.js';
 import { GenericParser, ParserRegistry } from './parsers/index.js';
+import { extractPdfTextLayer, hasUsableText } from './pdf-text.js';
 
 const RECEIPT_PARSE_PROMPT = `You are a receipt parser. Given OCR text from a French supermarket receipt, extract the product list.
 Return a JSON object with the following shape:
@@ -32,7 +34,10 @@ export class OcrProcessor extends WorkerHost {
   private readonly parserRegistry = new ParserRegistry();
   private readonly genericParser = new GenericParser();
 
-  constructor(private readonly prisma: PrismaService) {
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly ocr: OcrService,
+  ) {
     super();
     this.s3 = new S3Client({
       region: 'auto',
@@ -54,7 +59,7 @@ export class OcrProcessor extends WorkerHost {
   }
 
   private async processImageJob(job: Job<OcrJobPayload>): Promise<void> {
-    const { jobId, userId, imageKey, mimeType } = job.data;
+    const { jobId, userId, imageKey, mimeType, autoCommit } = job.data;
     let imageBuffer: Buffer | null = null;
 
     try {
@@ -65,21 +70,38 @@ export class OcrProcessor extends WorkerHost {
 
       imageBuffer = await this.downloadFromR2(imageKey);
 
-      // Try Mistral first, then Tesseract if it fails.
       let rawText: string;
-      try {
-        rawText = await this.runMistralOcr(imageBuffer, mimeType ?? 'image/jpeg');
-        this.logger.log(`Mistral OCR succeeded for job ${jobId}`);
-      } catch (mistralErr) {
-        this.logger.warn(
-          `Mistral OCR failed for job ${jobId}, falling back to Tesseract: ${(mistralErr as Error).message}`,
-        );
-        rawText = await this.runTesseractOcr(imageBuffer);
+      if (mimeType === 'application/pdf') {
+        // Digital receipts carry an exact text layer — read it directly. OCR
+        // (image recognition) is only a fallback for scanned/image-only PDFs,
+        // and would otherwise introduce character errors on clean PDFs.
+        rawText = await this.extractPdfText(imageBuffer);
+        if (hasUsableText(rawText)) {
+          this.logger.log(`Extracted PDF text layer for job ${jobId}`);
+        } else {
+          this.logger.log(`No PDF text layer for job ${jobId}, falling back to Mistral OCR`);
+          rawText = await this.runMistralOcrPdf(imageBuffer);
+        }
+      } else {
+        // Images: try Mistral first, then Tesseract if it fails.
+        try {
+          rawText = await this.runMistralOcr(imageBuffer, mimeType ?? 'image/jpeg');
+          this.logger.log(`Mistral OCR succeeded for job ${jobId}`);
+        } catch (mistralErr) {
+          this.logger.warn(
+            `Mistral OCR failed for job ${jobId}, falling back to Tesseract: ${(mistralErr as Error).message}`,
+          );
+          rawText = await this.runTesseractOcr(imageBuffer);
+        }
       }
 
       const parsed = await this.parseReceiptText(rawText);
 
-      await this.upsertStockItems(userId, parsed.items);
+      // Web review flow (autoCommit === false): keep the items on the job and let the user
+      // confirm a selection later. Mobile and QR keep auto-adding (autoCommit defaults to true).
+      if (autoCommit !== false) {
+        await this.ocr.commitParsedItems(userId, parsed.items);
+      }
 
       await this.prisma.ocrJob.update({
         where: { id: jobId },
@@ -158,7 +180,9 @@ export class OcrProcessor extends WorkerHost {
       } else if (isPdf) {
         const buf = Buffer.from(await response.arrayBuffer());
         if (buf.length > 5 * 1024 * 1024) throw new Error('PDF exceeds 5 MB limit');
-        rawText = await this.runMistralOcrPdf(buf);
+        // Prefer the embedded text layer; OCR only if the PDF is image-only.
+        rawText = await this.extractPdfText(buf);
+        if (!hasUsableText(rawText)) rawText = await this.runMistralOcrPdf(buf);
         parsed = await this.parseReceiptText(rawText);
       } else {
         rawText = await this.readBodyWithLimit(response, 5 * 1024 * 1024);
@@ -166,7 +190,7 @@ export class OcrProcessor extends WorkerHost {
         parsed = await this.parseReceiptText(text);
       }
 
-      await this.upsertStockItems(userId, parsed.items);
+      await this.ocr.commitParsedItems(userId, parsed.items);
 
       await this.prisma.ocrJob.update({
         where: { id: jobId },
@@ -216,48 +240,6 @@ export class OcrProcessor extends WorkerHost {
     });
   }
 
-  // Create/find products, then add stock items.
-  private async upsertStockItems(userId: string, items: ParsedReceiptItem[]): Promise<void> {
-    for (const item of items) {
-      const name = this.normalizeName(item.name);
-
-      // EAN-13 match is the safest match.
-      let product = item.ean13
-        ? await this.prisma.product.findFirst({ where: { ean13: item.ean13 } })
-        : null;
-
-      // No ean13: match by name only on generic OCR products.
-      // This avoids mixing fuzzy OCR lines with real EAN-13 products.
-      if (!product && !item.ean13) {
-        product = await this.prisma.product.findFirst({
-          where: { name: { equals: name, mode: 'insensitive' }, ean13: null },
-        });
-      }
-
-      if (!product) {
-        product = await this.prisma.product.create({
-          data: { name, ...(item.ean13 && { ean13: item.ean13 }) },
-        });
-      }
-
-      await this.prisma.stockItem.create({
-        data: {
-          userId,
-          productId: product.id,
-          quantity: item.quantity ?? 1,
-          unit: item.unit ?? 'unit',
-          location: 'PANTRY',
-          // If receipt has an expiry date, copy it to the stock item.
-          ...(item.expirationDate && { expirationDate: new Date(item.expirationDate) }),
-        },
-      });
-    }
-  }
-
-  private normalizeName(name: string): string {
-    return name.trim().replace(/\s+/g, ' ');
-  }
-
   private async validatePublicUrl(rawUrl: string): Promise<void> {
     const parsed = new URL(rawUrl);
     const { address } = await lookup(parsed.hostname);
@@ -282,6 +264,16 @@ export class OcrProcessor extends WorkerHost {
       },
     });
     return response.pages.map((p: { markdown: string }) => p.markdown).join('\n');
+  }
+
+  // Read the PDF's embedded text layer; returns '' if it has none (image-only).
+  private async extractPdfText(buf: Buffer): Promise<string> {
+    try {
+      return await extractPdfTextLayer(buf);
+    } catch (err) {
+      this.logger.warn(`PDF text-layer extraction failed: ${(err as Error).message}`);
+      return '';
+    }
   }
 
   private stripHtml(html: string): string {
@@ -416,12 +408,22 @@ export class OcrProcessor extends WorkerHost {
   private async parseReceiptText(rawText: string): Promise<ParsedReceipt> {
     // First try a store-specific parser.
     const parser = this.parserRegistry.detect(rawText);
+    let detectedRetailer: string | undefined;
     if (parser) {
-      this.logger.log(`Using ${parser.retailerName} parser`);
-      return { retailer: parser.retailerName, items: parser.parse(rawText) };
+      const items = parser.parse(rawText);
+      if (items.length > 0) {
+        this.logger.log(`Using ${parser.retailerName} parser`);
+        return { retailer: parser.retailerName, items };
+      }
+      // Recognised the retailer but its layout didn't parse — fall through to
+      // Mistral Chat / GenericParser instead of returning zero items.
+      detectedRetailer = parser.retailerName;
+      this.logger.warn(
+        `${parser.retailerName} parser found no items, falling back to Mistral Chat`,
+      );
     }
 
-    // If store is unknown, ask Mistral Chat.
+    // If store is unknown (or its parser found nothing), ask Mistral Chat.
     try {
       const response = await this.mistral.chat.complete({
         model: 'mistral-small-latest',
@@ -451,11 +453,13 @@ export class OcrProcessor extends WorkerHost {
 
       const result: ParsedReceipt = { items };
       if (raw.retailer) result.retailer = raw.retailer;
+      else if (detectedRetailer) result.retailer = detectedRetailer;
       return result;
     } catch {
       // If Mistral fails, use GenericParser.
       this.logger.warn('Mistral Chat failed, using GenericParser fallback');
-      return { items: this.genericParser.parse(rawText) };
+      const items = this.genericParser.parse(rawText);
+      return detectedRetailer ? { retailer: detectedRetailer, items } : { items };
     }
   }
 }

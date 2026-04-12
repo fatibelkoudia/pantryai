@@ -89,5 +89,6 @@ enum OcrStatus {
   PENDING
   PROCESSING
   COMPLETED
+  CONFIRMED
   FAILED
 }

@@ -12,6 +12,7 @@ vi.mock('node:dns/promises', () => ({ lookup: vi.fn() }));
 
 vi.mock('@nestjs/bullmq', () => ({
   Processor: () => () => undefined,
+  InjectQueue: () => () => undefined,
   WorkerHost: class {
     async process(): Promise<void> {}
   },
@@ -40,11 +41,14 @@ import type { ParsedReceipt } from '../parsers/index.js';
 type StripHtml = (html: string) => string;
 type ParseJsonReceipt = (json: unknown) => ParsedReceipt;
 type ValidatePublicUrl = (url: string) => Promise<void>;
+type ParseReceiptText = (rawText: string) => Promise<ParsedReceipt>;
 
 interface PrivateHelpers {
   stripHtml: StripHtml;
   parseJsonReceipt: ParseJsonReceipt;
   validatePublicUrl: ValidatePublicUrl;
+  parseReceiptText: ParseReceiptText;
+  mistral: { chat: { complete: ReturnType<typeof vi.fn> } };
 }
 
 const mockLookup = vi.mocked(lookup);
@@ -54,7 +58,7 @@ const mockLookup = vi.mocked(lookup);
 let helpers: PrivateHelpers;
 
 beforeEach(() => {
-  const processor = new OcrProcessor({} as never);
+  const processor = new OcrProcessor({} as never, {} as never);
   helpers = processor as unknown as PrivateHelpers;
   vi.clearAllMocks();
 });
@@ -296,6 +300,32 @@ describe('parseJsonReceipt()', () => {
     const { items } = helpers.parseJsonReceipt(json);
     expect(items[0]).not.toHaveProperty('quantity');
     expect(items[0]).not.toHaveProperty('price');
+  });
+});
+
+// parseReceiptText
+
+describe('parseReceiptText()', () => {
+  it('falls back to Mistral Chat when a detected parser yields no items', async () => {
+    // The footer triggers Grand Frais detection, but the body has no parsable rows.
+    const rawText = 'random header\nunparseable line\nVOTRE MAGASIN GRAND FRAIS';
+    const processor = new OcrProcessor({} as never, {} as never) as unknown as PrivateHelpers;
+    processor.mistral.chat.complete.mockResolvedValue({
+      choices: [
+        {
+          message: {
+            content: JSON.stringify({ retailer: null, items: [{ name: 'Pain', quantity: 1 }] }),
+          },
+        },
+      ],
+    });
+
+    const result = await processor.parseReceiptText(rawText);
+
+    expect(processor.mistral.chat.complete).toHaveBeenCalled();
+    expect(result.items).toHaveLength(1);
+    // Detected retailer is preserved even though Chat returned none.
+    expect(result.retailer).toBe('GRAND FRAIS');
   });
 });
 
