@@ -37,6 +37,7 @@ vi.mock('tesseract.js', () => ({ default: mockTesseract }));
 
 vi.mock('@nestjs/bullmq', () => ({
   Processor: () => () => undefined,
+  InjectQueue: () => () => undefined,
   WorkerHost: class {
     async process(): Promise<void> {}
   },
@@ -51,6 +52,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { PrismaService } from '../../prisma/prisma.service.js';
 import { testPrisma } from '../../test-setup.integration.js';
 import { OcrProcessor } from '../ocr.processor.js';
+import { OcrService } from '../ocr.service.js';
 import type { OcrJobPayload } from '../ocr.service.js';
 import type { ParsedReceiptItem } from '../parsers/index.js';
 
@@ -103,7 +105,8 @@ function loadFixture(
 let processor: OcrProcessor;
 
 beforeEach(() => {
-  processor = new OcrProcessor(testPrisma as unknown as PrismaService);
+  const ocrService = new OcrService(testPrisma as unknown as PrismaService, {} as never);
+  processor = new OcrProcessor(testPrisma as unknown as PrismaService, ocrService);
   vi.clearAllMocks();
   mockS3Send.mockResolvedValue({});
 });

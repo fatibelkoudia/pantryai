@@ -8,7 +8,7 @@ dist/
 *.tgz
 .turbo/
 help/
-.mpc.json
+tsconfig.tsbuildinfo
 
 # Receipt image fixtures contain PII: only .ocr.txt / .expected.json are committed
 packages/api/src/ocr/__tests__/fixtures/**/*.jpg
