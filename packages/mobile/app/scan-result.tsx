@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import type { OcrJob, OcrParsedItem } from '@pantryai/shared';
 import { apiClient } from '../src/api/client';
-import { useAuthStore } from '../src/store/auth';
 
 const POLL_MS = 2_000;
 const TIMEOUT_MS = 60_000;
@@ -19,10 +18,7 @@ const TIMEOUT_MS = 60_000;
 export default function ScanResultScreen() {
   const { jobId } = useLocalSearchParams<{ jobId: string }>();
   const router = useRouter();
-  const accessToken = useAuthStore((s) => s.accessToken);
   const startedAt = useRef(Date.now());
-
-  apiClient.setAccessToken(accessToken);
 
   const {
     data: job,
