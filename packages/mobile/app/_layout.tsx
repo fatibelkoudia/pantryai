@@ -53,6 +53,10 @@ export default function RootLayout() {
             options={{ title: 'Add to Stock', presentation: 'modal' }}
           />
           <Stack.Screen
+            name="manual-entry"
+            options={{ title: 'Add manually', presentation: 'modal' }}
+          />
+          <Stack.Screen
             name="scan-result"
             options={{ title: 'Receipt Result', presentation: 'modal' }}
           />

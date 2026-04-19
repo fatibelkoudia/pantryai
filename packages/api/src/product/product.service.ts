@@ -26,9 +26,12 @@ export class ProductService {
     const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
 
+    const search = query.search?.trim();
+    const where = search ? { name: { contains: search, mode: 'insensitive' as const } } : {};
+
     const [items, total] = await Promise.all([
-      this.prisma.product.findMany({ skip, take: limit, orderBy: { createdAt: 'desc' } }),
-      this.prisma.product.count(),
+      this.prisma.product.findMany({ where, skip, take: limit, orderBy: { createdAt: 'desc' } }),
+      this.prisma.product.count({ where }),
     ]);
 
     return { items, meta: { page, limit, total } };

@@ -1,8 +1,13 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class ProductQueryDto {
+  @ApiPropertyOptional({ example: 'yogurt', description: 'Filter by name (case-insensitive)' })
+  @IsString()
+  @IsOptional()
+  search?: string;
+
   @ApiPropertyOptional({ example: 1, default: 1 })
   @IsInt()
   @Min(1)

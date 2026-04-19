@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useId, useState } from 'react';
+import { useCallback, useId, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiClientError } from '@pantryai/shared';
 import type { OcrJob, OcrParsedItem } from '@pantryai/shared';
@@ -17,7 +17,6 @@ export function ReceiptUploader() {
   const [jobId, setJobId] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [reviewing, setReviewing] = useState(false);
   const [addedCount, setAddedCount] = useState<number | null>(null);
 
   const upload = useMutation({
@@ -47,20 +46,11 @@ export function ReceiptUploader() {
     },
   });
 
-  // Open the review modal once the job finishes parsing.
-  const jobStatus = job.data?.status;
-  useEffect(() => {
-    if (jobStatus === 'COMPLETED') {
-      setReviewing(true);
-    }
-  }, [jobStatus]);
-
   const confirm = useMutation({
     mutationFn: (indices: number[]) => apiClient.confirmOcrJob(jobId as string, indices),
     onSuccess: ({ added }) => {
       void queryClient.invalidateQueries({ queryKey: ['stocks'] });
       setAddedCount(added);
-      setReviewing(false);
       setJobId(null);
     },
     onError: (err) => {
@@ -77,7 +67,6 @@ export function ReceiptUploader() {
       }
       setError(null);
       setJobId(null);
-      setReviewing(false);
       upload.mutate(file);
     },
     [upload],
@@ -93,7 +82,6 @@ export function ReceiptUploader() {
   );
 
   const closeReview = useCallback(() => {
-    setReviewing(false);
     setJobId(null);
   }, []);
 
@@ -101,6 +89,8 @@ export function ReceiptUploader() {
   const status = job.data?.status;
   const polling = jobId !== null && status !== 'COMPLETED' && status !== 'FAILED';
   const parsedItems: OcrParsedItem[] = job.data?.parsedItems ?? [];
+  // Show the review modal once parsing completes; closing/confirming clears jobId, which hides it.
+  const reviewing = jobId !== null && status === 'COMPLETED';
 
   return (
     <div className="flex flex-col gap-4">
