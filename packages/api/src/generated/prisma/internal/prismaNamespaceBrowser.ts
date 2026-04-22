@@ -49,6 +49,7 @@ export const AnyNull = runtime.AnyNull;
 
 export const ModelName = {
   User: 'User',
+  UserDevice: 'UserDevice',
   Product: 'Product',
   StockItem: 'StockItem',
   OcrJob: 'OcrJob',
@@ -82,6 +83,17 @@ export const UserScalarFieldEnum = {
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
 
+export const UserDeviceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  expoPushToken: 'expoPushToken',
+  platform: 'platform',
+  createdAt: 'createdAt',
+} as const;
+
+export type UserDeviceScalarFieldEnum =
+  (typeof UserDeviceScalarFieldEnum)[keyof typeof UserDeviceScalarFieldEnum];
+
 export const ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -104,6 +116,7 @@ export const StockItemScalarFieldEnum = {
   quantity: 'quantity',
   unit: 'unit',
   expirationDate: 'expirationDate',
+  expirationNotifiedAt: 'expirationNotifiedAt',
   location: 'location',
   addedAt: 'addedAt',
   createdAt: 'createdAt',

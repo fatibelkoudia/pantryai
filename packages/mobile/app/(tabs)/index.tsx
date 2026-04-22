@@ -86,6 +86,9 @@ export default function StockScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>Your pantry</Text>
         <View style={styles.headerActions}>
+          <TouchableOpacity onPress={() => router.push('/expiring')} accessibilityRole="button">
+            <Text style={styles.addManually}>Expiring soon</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push('/manual-entry')} accessibilityRole="button">
             <Text style={styles.addManually}>+ Add manually</Text>
           </TouchableOpacity>

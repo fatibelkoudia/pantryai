@@ -40,6 +40,7 @@ export type StockItemMinAggregateOutputType = {
   quantity: number | null;
   unit: string | null;
   expirationDate: Date | null;
+  expirationNotifiedAt: Date | null;
   location: $Enums.StockLocation | null;
   addedAt: Date | null;
   createdAt: Date | null;
@@ -54,6 +55,7 @@ export type StockItemMaxAggregateOutputType = {
   quantity: number | null;
   unit: string | null;
   expirationDate: Date | null;
+  expirationNotifiedAt: Date | null;
   location: $Enums.StockLocation | null;
   addedAt: Date | null;
   createdAt: Date | null;
@@ -68,6 +70,7 @@ export type StockItemCountAggregateOutputType = {
   quantity: number;
   unit: number;
   expirationDate: number;
+  expirationNotifiedAt: number;
   location: number;
   addedAt: number;
   createdAt: number;
@@ -91,6 +94,7 @@ export type StockItemMinAggregateInputType = {
   quantity?: true;
   unit?: true;
   expirationDate?: true;
+  expirationNotifiedAt?: true;
   location?: true;
   addedAt?: true;
   createdAt?: true;
@@ -105,6 +109,7 @@ export type StockItemMaxAggregateInputType = {
   quantity?: true;
   unit?: true;
   expirationDate?: true;
+  expirationNotifiedAt?: true;
   location?: true;
   addedAt?: true;
   createdAt?: true;
@@ -119,6 +124,7 @@ export type StockItemCountAggregateInputType = {
   quantity?: true;
   unit?: true;
   expirationDate?: true;
+  expirationNotifiedAt?: true;
   location?: true;
   addedAt?: true;
   createdAt?: true;
@@ -223,6 +229,7 @@ export type StockItemGroupByOutputType = {
   quantity: number;
   unit: string;
   expirationDate: Date | null;
+  expirationNotifiedAt: Date | null;
   location: $Enums.StockLocation;
   addedAt: Date;
   createdAt: Date;
@@ -257,6 +264,7 @@ export type StockItemWhereInput = {
   quantity?: Prisma.FloatFilter<'StockItem'> | number;
   unit?: Prisma.StringFilter<'StockItem'> | string;
   expirationDate?: Prisma.DateTimeNullableFilter<'StockItem'> | Date | string | null;
+  expirationNotifiedAt?: Prisma.DateTimeNullableFilter<'StockItem'> | Date | string | null;
   location?: Prisma.EnumStockLocationFilter<'StockItem'> | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeFilter<'StockItem'> | Date | string;
   createdAt?: Prisma.DateTimeFilter<'StockItem'> | Date | string;
@@ -273,6 +281,7 @@ export type StockItemOrderByWithRelationInput = {
   quantity?: Prisma.SortOrder;
   unit?: Prisma.SortOrder;
   expirationDate?: Prisma.SortOrderInput | Prisma.SortOrder;
+  expirationNotifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   location?: Prisma.SortOrder;
   addedAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
@@ -293,6 +302,7 @@ export type StockItemWhereUniqueInput = Prisma.AtLeast<
     quantity?: Prisma.FloatFilter<'StockItem'> | number;
     unit?: Prisma.StringFilter<'StockItem'> | string;
     expirationDate?: Prisma.DateTimeNullableFilter<'StockItem'> | Date | string | null;
+    expirationNotifiedAt?: Prisma.DateTimeNullableFilter<'StockItem'> | Date | string | null;
     location?: Prisma.EnumStockLocationFilter<'StockItem'> | $Enums.StockLocation;
     addedAt?: Prisma.DateTimeFilter<'StockItem'> | Date | string;
     createdAt?: Prisma.DateTimeFilter<'StockItem'> | Date | string;
@@ -311,6 +321,7 @@ export type StockItemOrderByWithAggregationInput = {
   quantity?: Prisma.SortOrder;
   unit?: Prisma.SortOrder;
   expirationDate?: Prisma.SortOrderInput | Prisma.SortOrder;
+  expirationNotifiedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   location?: Prisma.SortOrder;
   addedAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
@@ -337,6 +348,11 @@ export type StockItemScalarWhereWithAggregatesInput = {
   quantity?: Prisma.FloatWithAggregatesFilter<'StockItem'> | number;
   unit?: Prisma.StringWithAggregatesFilter<'StockItem'> | string;
   expirationDate?: Prisma.DateTimeNullableWithAggregatesFilter<'StockItem'> | Date | string | null;
+  expirationNotifiedAt?:
+    | Prisma.DateTimeNullableWithAggregatesFilter<'StockItem'>
+    | Date
+    | string
+    | null;
   location?: Prisma.EnumStockLocationWithAggregatesFilter<'StockItem'> | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeWithAggregatesFilter<'StockItem'> | Date | string;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'StockItem'> | Date | string;
@@ -349,6 +365,7 @@ export type StockItemCreateInput = {
   quantity: number;
   unit: string;
   expirationDate?: Date | string | null;
+  expirationNotifiedAt?: Date | string | null;
   location?: $Enums.StockLocation;
   addedAt?: Date | string;
   createdAt?: Date | string;
@@ -365,6 +382,7 @@ export type StockItemUncheckedCreateInput = {
   quantity: number;
   unit: string;
   expirationDate?: Date | string | null;
+  expirationNotifiedAt?: Date | string | null;
   location?: $Enums.StockLocation;
   addedAt?: Date | string;
   createdAt?: Date | string;
@@ -377,6 +395,7 @@ export type StockItemUpdateInput = {
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number;
   unit?: Prisma.StringFieldUpdateOperationsInput | string;
   expirationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  expirationNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   location?: Prisma.EnumStockLocationFieldUpdateOperationsInput | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -393,6 +412,7 @@ export type StockItemUncheckedUpdateInput = {
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number;
   unit?: Prisma.StringFieldUpdateOperationsInput | string;
   expirationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  expirationNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   location?: Prisma.EnumStockLocationFieldUpdateOperationsInput | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -407,6 +427,7 @@ export type StockItemCreateManyInput = {
   quantity: number;
   unit: string;
   expirationDate?: Date | string | null;
+  expirationNotifiedAt?: Date | string | null;
   location?: $Enums.StockLocation;
   addedAt?: Date | string;
   createdAt?: Date | string;
@@ -419,6 +440,7 @@ export type StockItemUpdateManyMutationInput = {
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number;
   unit?: Prisma.StringFieldUpdateOperationsInput | string;
   expirationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  expirationNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   location?: Prisma.EnumStockLocationFieldUpdateOperationsInput | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -433,6 +455,7 @@ export type StockItemUncheckedUpdateManyInput = {
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number;
   unit?: Prisma.StringFieldUpdateOperationsInput | string;
   expirationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  expirationNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   location?: Prisma.EnumStockLocationFieldUpdateOperationsInput | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -457,6 +480,7 @@ export type StockItemCountOrderByAggregateInput = {
   quantity?: Prisma.SortOrder;
   unit?: Prisma.SortOrder;
   expirationDate?: Prisma.SortOrder;
+  expirationNotifiedAt?: Prisma.SortOrder;
   location?: Prisma.SortOrder;
   addedAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
@@ -475,6 +499,7 @@ export type StockItemMaxOrderByAggregateInput = {
   quantity?: Prisma.SortOrder;
   unit?: Prisma.SortOrder;
   expirationDate?: Prisma.SortOrder;
+  expirationNotifiedAt?: Prisma.SortOrder;
   location?: Prisma.SortOrder;
   addedAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
@@ -489,6 +514,7 @@ export type StockItemMinOrderByAggregateInput = {
   quantity?: Prisma.SortOrder;
   unit?: Prisma.SortOrder;
   expirationDate?: Prisma.SortOrder;
+  expirationNotifiedAt?: Prisma.SortOrder;
   location?: Prisma.SortOrder;
   addedAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
@@ -689,6 +715,7 @@ export type StockItemCreateWithoutUserInput = {
   quantity: number;
   unit: string;
   expirationDate?: Date | string | null;
+  expirationNotifiedAt?: Date | string | null;
   location?: $Enums.StockLocation;
   addedAt?: Date | string;
   createdAt?: Date | string;
@@ -703,6 +730,7 @@ export type StockItemUncheckedCreateWithoutUserInput = {
   quantity: number;
   unit: string;
   expirationDate?: Date | string | null;
+  expirationNotifiedAt?: Date | string | null;
   location?: $Enums.StockLocation;
   addedAt?: Date | string;
   createdAt?: Date | string;
@@ -761,6 +789,7 @@ export type StockItemScalarWhereInput = {
   quantity?: Prisma.FloatFilter<'StockItem'> | number;
   unit?: Prisma.StringFilter<'StockItem'> | string;
   expirationDate?: Prisma.DateTimeNullableFilter<'StockItem'> | Date | string | null;
+  expirationNotifiedAt?: Prisma.DateTimeNullableFilter<'StockItem'> | Date | string | null;
   location?: Prisma.EnumStockLocationFilter<'StockItem'> | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeFilter<'StockItem'> | Date | string;
   createdAt?: Prisma.DateTimeFilter<'StockItem'> | Date | string;
@@ -773,6 +802,7 @@ export type StockItemCreateWithoutProductInput = {
   quantity: number;
   unit: string;
   expirationDate?: Date | string | null;
+  expirationNotifiedAt?: Date | string | null;
   location?: $Enums.StockLocation;
   addedAt?: Date | string;
   createdAt?: Date | string;
@@ -787,6 +817,7 @@ export type StockItemUncheckedCreateWithoutProductInput = {
   quantity: number;
   unit: string;
   expirationDate?: Date | string | null;
+  expirationNotifiedAt?: Date | string | null;
   location?: $Enums.StockLocation;
   addedAt?: Date | string;
   createdAt?: Date | string;
@@ -841,6 +872,7 @@ export type StockItemCreateManyUserInput = {
   quantity: number;
   unit: string;
   expirationDate?: Date | string | null;
+  expirationNotifiedAt?: Date | string | null;
   location?: $Enums.StockLocation;
   addedAt?: Date | string;
   createdAt?: Date | string;
@@ -853,6 +885,7 @@ export type StockItemUpdateWithoutUserInput = {
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number;
   unit?: Prisma.StringFieldUpdateOperationsInput | string;
   expirationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  expirationNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   location?: Prisma.EnumStockLocationFieldUpdateOperationsInput | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -867,6 +900,7 @@ export type StockItemUncheckedUpdateWithoutUserInput = {
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number;
   unit?: Prisma.StringFieldUpdateOperationsInput | string;
   expirationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  expirationNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   location?: Prisma.EnumStockLocationFieldUpdateOperationsInput | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -880,6 +914,7 @@ export type StockItemUncheckedUpdateManyWithoutUserInput = {
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number;
   unit?: Prisma.StringFieldUpdateOperationsInput | string;
   expirationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  expirationNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   location?: Prisma.EnumStockLocationFieldUpdateOperationsInput | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -893,6 +928,7 @@ export type StockItemCreateManyProductInput = {
   quantity: number;
   unit: string;
   expirationDate?: Date | string | null;
+  expirationNotifiedAt?: Date | string | null;
   location?: $Enums.StockLocation;
   addedAt?: Date | string;
   createdAt?: Date | string;
@@ -905,6 +941,7 @@ export type StockItemUpdateWithoutProductInput = {
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number;
   unit?: Prisma.StringFieldUpdateOperationsInput | string;
   expirationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  expirationNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   location?: Prisma.EnumStockLocationFieldUpdateOperationsInput | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -919,6 +956,7 @@ export type StockItemUncheckedUpdateWithoutProductInput = {
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number;
   unit?: Prisma.StringFieldUpdateOperationsInput | string;
   expirationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  expirationNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   location?: Prisma.EnumStockLocationFieldUpdateOperationsInput | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -932,6 +970,7 @@ export type StockItemUncheckedUpdateManyWithoutProductInput = {
   quantity?: Prisma.FloatFieldUpdateOperationsInput | number;
   unit?: Prisma.StringFieldUpdateOperationsInput | string;
   expirationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  expirationNotifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   location?: Prisma.EnumStockLocationFieldUpdateOperationsInput | $Enums.StockLocation;
   addedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -949,6 +988,7 @@ export type StockItemSelect<
     quantity?: boolean;
     unit?: boolean;
     expirationDate?: boolean;
+    expirationNotifiedAt?: boolean;
     location?: boolean;
     addedAt?: boolean;
     createdAt?: boolean;
@@ -970,6 +1010,7 @@ export type StockItemSelectCreateManyAndReturn<
     quantity?: boolean;
     unit?: boolean;
     expirationDate?: boolean;
+    expirationNotifiedAt?: boolean;
     location?: boolean;
     addedAt?: boolean;
     createdAt?: boolean;
@@ -991,6 +1032,7 @@ export type StockItemSelectUpdateManyAndReturn<
     quantity?: boolean;
     unit?: boolean;
     expirationDate?: boolean;
+    expirationNotifiedAt?: boolean;
     location?: boolean;
     addedAt?: boolean;
     createdAt?: boolean;
@@ -1009,6 +1051,7 @@ export type StockItemSelectScalar = {
   quantity?: boolean;
   unit?: boolean;
   expirationDate?: boolean;
+  expirationNotifiedAt?: boolean;
   location?: boolean;
   addedAt?: boolean;
   createdAt?: boolean;
@@ -1025,6 +1068,7 @@ export type StockItemOmit<
   | 'quantity'
   | 'unit'
   | 'expirationDate'
+  | 'expirationNotifiedAt'
   | 'location'
   | 'addedAt'
   | 'createdAt'
@@ -1067,6 +1111,7 @@ export type $StockItemPayload<
       quantity: number;
       unit: string;
       expirationDate: Date | null;
+      expirationNotifiedAt: Date | null;
       location: $Enums.StockLocation;
       addedAt: Date;
       createdAt: Date;
@@ -1675,6 +1720,7 @@ export interface StockItemFieldRefs {
   readonly quantity: Prisma.FieldRef<'StockItem', 'Float'>;
   readonly unit: Prisma.FieldRef<'StockItem', 'String'>;
   readonly expirationDate: Prisma.FieldRef<'StockItem', 'DateTime'>;
+  readonly expirationNotifiedAt: Prisma.FieldRef<'StockItem', 'DateTime'>;
   readonly location: Prisma.FieldRef<'StockItem', 'StockLocation'>;
   readonly addedAt: Prisma.FieldRef<'StockItem', 'DateTime'>;
   readonly createdAt: Prisma.FieldRef<'StockItem', 'DateTime'>;

@@ -1,5 +1,6 @@
 import type { ApiMeta, ApiResponse } from '../types/api.js';
 import type { AuthResponse, LoginDto, RegisterDto } from '../types/auth.js';
+import type { RegisterDeviceDto } from '../types/device.js';
 import type { OcrJob } from '../types/ocr.js';
 import type { CreateProductDto, Product, ProductQuery } from '../types/product.js';
 import type {
@@ -216,6 +217,14 @@ export class PantryApiClient {
 
   deleteStock(id: string): Promise<void> {
     return this.request<void>(`/stocks/${id}`, { method: 'DELETE' });
+  }
+
+  // Devices / push notifications
+  registerDevice(dto: RegisterDeviceDto): Promise<void> {
+    return this.request<void>('/devices/register', {
+      method: 'POST',
+      body: JSON.stringify(dto),
+    });
   }
 
   // OCR / receipts

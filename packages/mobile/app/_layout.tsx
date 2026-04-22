@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack, useRootNavigationState, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { registerForPushNotifications } from '../src/lib/push';
 import { useAuthStore } from '../src/store/auth';
 
 const queryClient = new QueryClient();
@@ -17,6 +18,13 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     void hydrate();
   }, [hydrate]);
+
+  // once we know the user is logged in, register this device for push alerts
+  useEffect(() => {
+    if (status === 'authed') {
+      void registerForPushNotifications();
+    }
+  }, [status]);
 
   // send people to the login screen if they're not logged in, or to the tabs if they are
   // we wait for navState.key so we don't try to navigate before the navigator is ready
@@ -60,6 +68,7 @@ export default function RootLayout() {
             name="scan-result"
             options={{ title: 'Receipt Result', presentation: 'modal' }}
           />
+          <Stack.Screen name="expiring" options={{ title: 'Expiring soon' }} />
         </Stack>
       </AuthGate>
     </QueryClientProvider>
