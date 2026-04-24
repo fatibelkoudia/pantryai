@@ -25,12 +25,27 @@ const mockPrismaService = {
   },
 };
 
+// Tiny in-memory stand-in for ioredis. Only get/set with an EX ttl are used.
+function createRedisMock() {
+  const store = new Map<string, string>();
+  return {
+    get: vi.fn(async (key: string) => store.get(key) ?? null),
+    set: vi.fn(async (key: string, value: string) => {
+      store.set(key, value);
+      return 'OK';
+    }),
+    store,
+  };
+}
+
 describe('ProductService', () => {
   let service: ProductService;
+  let redis: ReturnType<typeof createRedisMock>;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    service = new ProductService(mockPrismaService as never);
+    redis = createRedisMock();
+    service = new ProductService(mockPrismaService as never, redis as never);
   });
 
   describe('findAll', () => {
@@ -217,6 +232,57 @@ describe('ProductService', () => {
       vi.stubGlobal('fetch', mockFetch);
 
       await expect(service.findByEan13('0000000000000')).rejects.toThrow(NotFoundException);
+
+      vi.unstubAllGlobals();
+    });
+
+    it('serves a repeat lookup from cache without hitting Open Food Facts again', async () => {
+      // DB never has it, so both lookups would normally reach OFF.
+      mockPrismaService.product.findUnique.mockResolvedValue(null);
+      mockPrismaService.product.create.mockResolvedValue(mockProduct);
+
+      const mockFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: vi.fn().mockResolvedValue({
+          status: 1,
+          product: { product_name: 'Greek Yogurt', brands: 'Danone' },
+        }),
+      });
+      vi.stubGlobal('fetch', mockFetch);
+
+      await service.findByEan13('3033490004934');
+      await service.findByEan13('3033490004934');
+
+      // First call goes to OFF, second is served from the Redis cache.
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+
+      vi.unstubAllGlobals();
+    });
+
+    it('still returns a previously seen product when Open Food Facts is down', async () => {
+      mockPrismaService.product.findUnique.mockResolvedValue(null);
+      mockPrismaService.product.create.mockResolvedValue(mockProduct);
+
+      // First lookup succeeds and warms the cache.
+      const okFetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: vi.fn().mockResolvedValue({
+          status: 1,
+          product: { product_name: 'Greek Yogurt', brands: 'Danone' },
+        }),
+      });
+      vi.stubGlobal('fetch', okFetch);
+      await service.findByEan13('3033490004934');
+      vi.unstubAllGlobals();
+
+      // Now OFF is unreachable, but the cached product should still come back.
+      const downFetch = vi.fn().mockRejectedValue(new Error('network down'));
+      vi.stubGlobal('fetch', downFetch);
+
+      const result = await service.findByEan13('3033490004934');
+
+      expect(result).toEqual(mockProduct);
+      expect(downFetch).not.toHaveBeenCalled();
 
       vi.unstubAllGlobals();
     });
