@@ -8,6 +8,7 @@ const LINKS = [
   { href: '/stocks', label: 'My stock' },
   { href: '/stocks/new', label: 'Add item' },
   { href: '/scan', label: 'Scan receipt' },
+  { href: '/recipes', label: 'Recipes' },
 ];
 
 export function Navbar() {

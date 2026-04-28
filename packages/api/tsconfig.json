@@ -12,7 +12,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "paths": {
-      "@pantryai/shared": ["../shared/src/index.ts"]
+      "@pantryai/shared": ["../shared/dist/index.d.ts"]
     }
   },
   "include": ["src"],

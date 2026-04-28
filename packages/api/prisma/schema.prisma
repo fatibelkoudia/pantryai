@@ -106,3 +106,35 @@ enum OcrStatus {
   CONFIRMED
   FAILED
 }
+
+enum RecipeSource {
+  LOCAL
+  THEMEALDB
+}
+
+model Recipe {
+  id           String             @id @default(uuid())
+  externalId   String?            @unique // TheMealDB idMeal
+  name         String
+  category     String?
+  instructions String?
+  imageUrl     String?
+  source       RecipeSource       @default(LOCAL)
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+  ingredients  RecipeIngredient[]
+
+  @@index([source])
+  @@map("recipes")
+}
+
+model RecipeIngredient {
+  id       String @id @default(uuid())
+  recipeId String
+  name     String
+  measure  String
+  recipe   Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([recipeId])
+  @@map("recipe_ingredients")
+}

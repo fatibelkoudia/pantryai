@@ -12,4 +12,6 @@ export type * from './models/UserDevice';
 export type * from './models/Product';
 export type * from './models/StockItem';
 export type * from './models/OcrJob';
+export type * from './models/Recipe';
+export type * from './models/RecipeIngredient';
 export type * from './commonInputTypes';
