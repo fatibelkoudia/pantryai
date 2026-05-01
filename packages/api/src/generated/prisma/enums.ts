@@ -32,3 +32,11 @@ export const RecipeSource = {
 } as const;
 
 export type RecipeSource = (typeof RecipeSource)[keyof typeof RecipeSource];
+
+export const ShoppingItemSource = {
+  LOW_STOCK: 'LOW_STOCK',
+  RECIPE: 'RECIPE',
+  MANUAL: 'MANUAL',
+} as const;
+
+export type ShoppingItemSource = (typeof ShoppingItemSource)[keyof typeof ShoppingItemSource];

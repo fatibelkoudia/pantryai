@@ -12,6 +12,7 @@ import { PrismaModule } from './prisma/prisma.module.js';
 import { ProductModule } from './product/product.module.js';
 import { RecipesModule } from './recipes/recipes.module.js';
 import { RedisModule } from './redis/redis.module.js';
+import { ShoppingListModule } from './shopping-list/shopping-list.module.js';
 import { StockModule } from './stock/stock.module.js';
 
 @Module({
@@ -30,6 +31,7 @@ import { StockModule } from './stock/stock.module.js';
     ProductModule,
     StockModule,
     RecipesModule,
+    ShoppingListModule,
     OcrModule,
     DevicesModule,
     NotificationsModule,

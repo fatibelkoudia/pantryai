@@ -18,6 +18,7 @@ model User {
   stockItems   StockItem[]
   ocrJobs      OcrJob[]
   devices      UserDevice[]
+  shoppingItems ShoppingItem[]
 
   @@index([email])
   @@map("users")
@@ -137,4 +138,25 @@ model RecipeIngredient {
 
   @@index([recipeId])
   @@map("recipe_ingredients")
+}
+
+enum ShoppingItemSource {
+  LOW_STOCK
+  RECIPE
+  MANUAL
+}
+
+model ShoppingItem {
+  id        String             @id @default(uuid())
+  userId    String
+  name      String
+  quantity  Float?
+  unit      String?
+  checked   Boolean            @default(false)
+  source    ShoppingItemSource @default(MANUAL)
+  createdAt DateTime           @default(now())
+  user      User               @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("shopping_items")
 }
