@@ -1,0 +1,177 @@
+[
+  {
+    "id": "fruits-fridge-vs-counter",
+    "category": "fruits",
+    "title": "Tous les fruits ne vont pas au frigo",
+    "body": "Bananes, agrumes, melons et fruits encore un peu fermes se gardent mieux a temperature ambiante. Une fois bien murs, vous pouvez les passer au refrigerateur pour gagner quelques jours.",
+    "source": "ADEME, guide anti-gaspillage alimentaire"
+  },
+  {
+    "id": "fruits-separate-ethylene",
+    "category": "fruits",
+    "title": "Eloignez les pommes du reste",
+    "body": "Pommes, poires et bananes degagent de l'ethylene, un gaz qui accelere le murissement des fruits et legumes voisins. Rangez-les a part pour eviter que tout murisse trop vite.",
+    "source": "ADEME, guide anti-gaspillage alimentaire"
+  },
+  {
+    "id": "fruits-berries-wash-late",
+    "category": "fruits",
+    "title": "Ne lavez les fruits rouges qu'au dernier moment",
+    "body": "Fraises, framboises et myrtilles s'abiment vite si elles restent humides. Gardez-les au frais dans leur barquette et lavez-les juste avant de les manger.",
+    "source": "ANSES, conseils de conservation des aliments"
+  },
+  {
+    "id": "fruits-freeze-overripe",
+    "category": "fruits",
+    "title": "Congelez les fruits trop murs",
+    "body": "Plutot que de jeter des fruits trop murs, coupez-les et congelez-les. Ils seront parfaits plus tard pour un smoothie, une compote ou une patisserie.",
+    "source": "ADEME, guide anti-gaspillage alimentaire"
+  },
+  {
+    "id": "fruits-bruised-cut",
+    "category": "fruits",
+    "title": "Un fruit tache n'est pas un fruit perdu",
+    "body": "Une zone molle ou abimee se retire au couteau, le reste du fruit reste bon a manger. Inspectez avant de jeter.",
+    "source": "ANSES, conseils de conservation des aliments"
+  },
+  {
+    "id": "legumes-leafy-humidity",
+    "category": "legumes",
+    "title": "Salades et herbes aiment l'humidite",
+    "body": "Enveloppez salade, epinards et herbes fraiches dans un linge humide au bac a legumes. Elles resteront croquantes plusieurs jours de plus.",
+    "source": "ADEME, guide anti-gaspillage alimentaire"
+  },
+  {
+    "id": "legumes-potatoes-dark",
+    "category": "legumes",
+    "title": "Pommes de terre, oignons et ail au sec et a l'abri",
+    "body": "Gardez-les dans un endroit sombre, sec et aere, jamais au refrigerateur. Le froid transforme l'amidon des pommes de terre en sucre et change leur gout.",
+    "source": "ANSES, conseils de conservation des aliments"
+  },
+  {
+    "id": "legumes-separate-potato-onion",
+    "category": "legumes",
+    "title": "Ne stockez pas pommes de terre et oignons ensemble",
+    "body": "Cote a cote, ils se font germer et pourrir plus vite. Rangez-les dans deux endroits separes pour qu'ils durent plus longtemps.",
+    "source": "ADEME, guide anti-gaspillage alimentaire"
+  },
+  {
+    "id": "legumes-tomatoes-room-temp",
+    "category": "legumes",
+    "title": "Les tomates ont meilleur gout hors du frigo",
+    "body": "Le froid coupe leur arome et les rend farineuses. Gardez-les a temperature ambiante, a l'abri du soleil direct.",
+    "source": "ADEME, guide anti-gaspillage alimentaire"
+  },
+  {
+    "id": "legumes-soup-leftovers",
+    "category": "legumes",
+    "title": "Les legumes fatigues finissent en soupe",
+    "body": "Un legume un peu mou est encore tout a fait bon cuit. Soupe, poelee ou bouillon sont parfaits pour utiliser ce qui traine dans le bac.",
+    "source": "ADEME, guide anti-gaspillage alimentaire"
+  },
+  {
+    "id": "laitiers-coldest-shelf",
+    "category": "produits-laitiers",
+    "title": "Les produits laitiers vont au plus froid",
+    "body": "Rangez lait, yaourts et fromages frais dans la partie la plus froide du refrigerateur, entre 0 et 4 degres, pas dans la porte ou la temperature varie.",
+    "source": "ANSES, recommandations de temperature du refrigerateur"
+  },
+  {
+    "id": "laitiers-ddm-not-dlc",
+    "category": "produits-laitiers",
+    "title": "Sur un yaourt, c'est une DDM, pas une DLC",
+    "body": "La mention \"a consommer de preference avant\" est une date de durabilite minimale. Passee cette date, un yaourt bien conserve reste souvent consommable s'il a bon aspect, bonne odeur et bon gout.",
+    "source": "ANSES, difference entre DLC et DDM"
+  },
+  {
+    "id": "laitiers-hard-cheese-mold",
+    "category": "produits-laitiers",
+    "title": "Une moisissure sur un fromage dur se coupe",
+    "body": "Sur un fromage a pate dure, retirez environ 2 cm autour de la tache et le reste se mange. Sur un fromage frais ou rape, mieux vaut tout jeter.",
+    "source": "ANSES, conseils de conservation des aliments"
+  },
+  {
+    "id": "laitiers-freeze-cheese-butter",
+    "category": "produits-laitiers",
+    "title": "Beurre et fromage rape se congelent",
+    "body": "Si vous en avez trop, congelez le beurre et le fromage rape. Le rape s'utilise directement a la cuisson, sans decongelation.",
+    "source": "ADEME, guide anti-gaspillage alimentaire"
+  },
+  {
+    "id": "laitiers-milk-close-cold",
+    "category": "produits-laitiers",
+    "title": "Refermez et remettez vite le lait au froid",
+    "body": "Une fois ouvert, un lait frais se garde quelques jours au refrigerateur. Refermez bien la brique et ne la laissez pas trainer a temperature ambiante.",
+    "source": "ANSES, conseils de conservation des aliments"
+  },
+  {
+    "id": "viande-coldest-bottom",
+    "category": "viande",
+    "title": "Viande et poisson en bas du frigo",
+    "body": "Placez la viande et le poisson crus dans la zone la plus froide, en bas, et sur une assiette pour eviter que le jus ne coule sur les autres aliments.",
+    "source": "ANSES, recommandations de temperature du refrigerateur"
+  },
+  {
+    "id": "viande-respect-dlc",
+    "category": "viande",
+    "title": "Sur la viande, la DLC se respecte",
+    "body": "Viande, poisson et charcuterie portent une date limite de consommation. Apres cette date le risque sanitaire augmente, ne les consommez pas meme s'ils semblent corrects.",
+    "source": "ANSES, difference entre DLC et DDM"
+  },
+  {
+    "id": "viande-fish-same-day",
+    "category": "viande",
+    "title": "Le poisson frais se cuisine vite",
+    "body": "Le poisson frais se conserve a peine un a deux jours au refrigerateur. Cuisinez-le rapidement ou congelez-le le jour meme de l'achat s'il etait bien frais.",
+    "source": "ANSES, conseils de conservation des aliments"
+  },
+  {
+    "id": "viande-freeze-fresh",
+    "category": "viande",
+    "title": "Congelez la viande tant qu'elle est fraiche",
+    "body": "Pour congeler, faites-le avant la date limite, pas a la derniere minute. Decongelez ensuite au refrigerateur et jamais a temperature ambiante.",
+    "source": "ANSES, conseils de conservation des aliments"
+  },
+  {
+    "id": "viande-cooked-leftovers",
+    "category": "viande",
+    "title": "Les restes de viande cuite, 3 jours maxi",
+    "body": "Refroidissez vite un plat de viande, couvrez-le et gardez-le au refrigerateur deux a trois jours au plus. Au moindre doute sur l'odeur, ne prenez pas de risque.",
+    "source": "ANSES, conseils de conservation des aliments"
+  },
+  {
+    "id": "cereales-airtight-dry",
+    "category": "cereales",
+    "title": "Pates, riz et farine au sec et a l'abri",
+    "body": "Conservez-les dans des boites hermetiques, dans un placard sec. Cela les protege de l'humidite et des insectes et evite que les odeurs ne s'y melent.",
+    "source": "ADEME, guide anti-gaspillage alimentaire"
+  },
+  {
+    "id": "cereales-bread-paper-not-plastic",
+    "category": "cereales",
+    "title": "Le pain se garde dans un linge, pas dans du plastique",
+    "body": "Un sac plastique ramollit la croute et favorise les moisissures. Enveloppez le pain dans un torchon ou une boite a pain. Rassis, il sera parfait en pain perdu ou en croutons.",
+    "source": "ADEME, guide anti-gaspillage alimentaire"
+  },
+  {
+    "id": "cereales-freeze-bread",
+    "category": "cereales",
+    "title": "Congelez le pain en tranches",
+    "body": "Coupez le pain avant de le congeler, vous n'aurez qu'a prelever ce qu'il vous faut. Un passage au grille-pain suffit a lui redonner du croquant.",
+    "source": "ADEME, guide anti-gaspillage alimentaire"
+  },
+  {
+    "id": "cereales-dry-goods-ddm",
+    "category": "cereales",
+    "title": "Pates et riz se gardent tres longtemps",
+    "body": "Les produits secs portent une DDM. Bien stockes, ils restent consommables longtemps apres la date indiquee, il suffit de verifier qu'ils n'ont ni odeur ni insecte.",
+    "source": "ANSES, difference entre DLC et DDM"
+  },
+  {
+    "id": "cereales-cooked-rice-cool-fast",
+    "category": "cereales",
+    "title": "Refroidissez vite le riz cuit",
+    "body": "Le riz cuit laisse a temperature ambiante peut developper des bacteries. Mettez-le au refrigerateur rapidement et consommez-le sous 24 heures.",
+    "source": "ANSES, conseils de conservation des aliments"
+  }
+]

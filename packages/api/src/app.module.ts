@@ -6,6 +6,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module.js';
 import { validateEnv } from './config/env.validation.js';
 import { DevicesModule } from './devices/devices.module.js';
+import { LearningModule } from './learning/learning.module.js';
 import { NotificationsModule } from './notifications/notifications.module.js';
 import { OcrModule } from './ocr/ocr.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
@@ -32,6 +33,7 @@ import { StockModule } from './stock/stock.module.js';
     StockModule,
     RecipesModule,
     ShoppingListModule,
+    LearningModule,
     OcrModule,
     DevicesModule,
     NotificationsModule,
