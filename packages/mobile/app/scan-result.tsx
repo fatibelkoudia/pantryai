@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import type { OcrJob, OcrParsedItem } from '@pantryai/shared';
 import { apiClient } from '../src/api/client';
+import { colors } from '../src/theme';
 
 const POLL_MS = 2_000;
 const TIMEOUT_MS = 60_000;
@@ -57,7 +58,7 @@ export default function ScanResultScreen() {
   if (!job || job.status === 'PENDING' || job.status === 'PROCESSING') {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#2e7d32" />
+        <ActivityIndicator size="large" color={colors.leafGreen} />
         <Text style={styles.processingText}>Processing your receipt…</Text>
         <Text style={styles.processingSubText}>This usually takes a few seconds</Text>
       </View>
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
   button: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: colors.leafGreen,
     paddingHorizontal: 24,
     paddingVertical: 14,
     borderRadius: 8,

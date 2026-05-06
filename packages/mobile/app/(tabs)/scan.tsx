@@ -4,6 +4,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { apiClient } from '../../src/api/client';
+import { colors, font } from '../../src/theme';
 
 type ScanMode = 'ean' | 'qr';
 
@@ -192,15 +193,15 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   button: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: colors.leafGreen,
     paddingHorizontal: 24,
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 12,
   },
   buttonText: {
-    color: '#fff',
+    color: colors.onBrand,
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: font.semibold,
   },
   dimOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -261,7 +262,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   modeButtonTextActive: {
-    color: '#2e7d32',
+    color: colors.leafGreen,
     fontWeight: '700',
   },
 });

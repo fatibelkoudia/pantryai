@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { apiClient } from '../api/client';
 import { getTipsDisabled, setTipsDisabled } from '../lib/tips';
+import { colors } from '../theme';
 
 interface ConservationTipCardProps {
   items: StockItemWithProduct[];
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
   kicker: {
     fontSize: 12,
     fontWeight: '700',
-    color: '#2e7d32',
+    color: colors.leafGreen,
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },

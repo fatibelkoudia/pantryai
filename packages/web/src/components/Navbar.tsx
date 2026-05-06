@@ -20,7 +20,7 @@ export function Navbar() {
     <nav aria-label="Main" className="border-b border-border bg-surface-card">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3">
         <div className="flex items-center gap-6">
-          <Link href="/stocks" className="text-lg font-bold text-brand">
+          <Link href="/stocks" className="text-lg font-extrabold tracking-tight text-brand">
             PantryAI
           </Link>
           <ul className="flex items-center gap-4 text-sm">

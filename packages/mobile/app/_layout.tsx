@@ -1,9 +1,17 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  Nunito_400Regular,
+  Nunito_600SemiBold,
+  Nunito_700Bold,
+  Nunito_800ExtraBold,
+  useFonts,
+} from '@expo-google-fonts/nunito';
 import { Stack, useRootNavigationState, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { registerForPushNotifications } from '../src/lib/push';
 import { useAuthStore } from '../src/store/auth';
+import { colors } from '../src/theme';
 
 const queryClient = new QueryClient();
 
@@ -41,7 +49,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
   if (status === 'loading') {
     return (
       <View style={styles.splash}>
-        <ActivityIndicator size="large" color="#2e7d32" />
+        <ActivityIndicator size="large" color={colors.leafGreen} />
       </View>
     );
   }
@@ -50,6 +58,22 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 }
 
 export default function RootLayout() {
+  // hold render until Nunito is ready so we never flash the system font
+  const [fontsLoaded] = useFonts({
+    Nunito_400Regular,
+    Nunito_600SemiBold,
+    Nunito_700Bold,
+    Nunito_800ExtraBold,
+  });
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.splash}>
+        <ActivityIndicator size="large" color={colors.leafGreen} />
+      </View>
+    );
+  }
+
   return (
     <QueryClientProvider client={queryClient}>
       <AuthGate>
@@ -80,6 +104,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.softMint,
   },
 });

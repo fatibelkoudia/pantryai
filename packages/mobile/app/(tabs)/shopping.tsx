@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { apiClient } from '../../src/api/client';
+import { colors } from '../../src/theme';
 
 const SOURCE_LABELS: Record<ShoppingItem['source'], string> = {
   LOW_STOCK: 'Low / expiring',
@@ -88,7 +89,7 @@ export default function ShoppingScreen() {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#2e7d32" />
+        <ActivityIndicator size="large" color={colors.leafGreen} />
       </View>
     );
   }
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
   },
   actions: { paddingHorizontal: 16, paddingBottom: 8 },
   generateButton: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: colors.leafGreen,
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 8,
@@ -199,7 +200,7 @@ const styles = StyleSheet.create({
     color: '#111',
   },
   addButton: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: colors.leafGreen,
     paddingHorizontal: 18,
     borderRadius: 8,
     justifyContent: 'center',
@@ -222,11 +223,11 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 5,
     borderWidth: 2,
-    borderColor: '#2e7d32',
+    borderColor: colors.leafGreen,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  checkboxChecked: { backgroundColor: '#2e7d32' },
+  checkboxChecked: { backgroundColor: colors.leafGreen },
   checkmark: { color: '#fff', fontSize: 14, fontWeight: '700' },
   rowBody: { flex: 1 },
   itemName: { fontSize: 15, fontWeight: '600', color: '#1a1a1a' },

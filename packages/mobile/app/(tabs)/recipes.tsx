@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { apiClient } from '../../src/api/client';
+import { colors } from '../../src/theme';
 
 function RecipeCard({ suggestion }: { suggestion: RecipeSuggestion }) {
   const { recipe, score, matchedIngredients, missingIngredients } = suggestion;
@@ -58,7 +59,7 @@ export default function RecipesScreen() {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#2e7d32" />
+        <ActivityIndicator size="large" color={colors.leafGreen} />
       </View>
     );
   }
@@ -154,7 +155,7 @@ const styles = StyleSheet.create({
     color: '#1a1a1a',
   },
   badge: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: colors.leafGreen,
     borderRadius: 999,
     paddingHorizontal: 10,
     paddingVertical: 4,
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
   complete: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#2e7d32',
+    color: colors.leafGreen,
     marginTop: 6,
   },
   emptyTitle: {
@@ -211,7 +212,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: colors.leafGreen,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
