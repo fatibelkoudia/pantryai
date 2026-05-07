@@ -1,12 +1,35 @@
+import 'dotenv/config';
 import 'reflect-metadata';
-import { NestFactory } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import fastifyMultipart from '@fastify/multipart';
+import fastifyHelmet from '@fastify/helmet';
 import { AppModule } from './app.module.js';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
+import { TransformResponseInterceptor } from './common/interceptors/transform-response.interceptor.js';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+
+  // Cast needed: pnpm can hoist different fastify versions and break plugin typing.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await app.register(fastifyMultipart as any, {
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await app.register(fastifyHelmet as any, {
+    // Swagger UI at /api/docs needs inline scripts/styles.
+    contentSecurityPolicy: false,
+  });
+
+  const corsOrigins = (process.env['CORS_ORIGINS'] ?? 'http://localhost:3000')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  app.enableCors({ origin: corsOrigins, credentials: true });
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -25,6 +48,9 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
+
+  app.useGlobalInterceptors(new TransformResponseInterceptor());
+  app.useGlobalFilters(new HttpExceptionFilter(app.get(HttpAdapterHost)));
 
   const port = process.env['PORT'] ?? 3001;
   await app.listen(port, '0.0.0.0');
