@@ -15,6 +15,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard.js';
 import { CreateStockItemDto } from './dto/create-stock-item.dto.js';
+import { DeleteStockQueryDto } from './dto/delete-stock-query.dto.js';
 import { StockQueryDto } from './dto/stock-query.dto.js';
 import { UpdateStockItemDto } from './dto/update-stock-item.dto.js';
 import { StockService } from './stock.service.js';
@@ -63,10 +64,15 @@ export class StockController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Soft-delete a stock item (user-scoped)' })
+  @ApiOperation({
+    summary: 'Soft-delete a stock item (user-scoped)',
+    description:
+      'Records how the item left the pantry via the optional ?disposition= query param ' +
+      '(CONSUMED | DISCARDED | EXPIRED) for the Waste Level score.',
+  })
   @ApiResponse({ status: 204, description: 'Stock item deleted' })
   @ApiResponse({ status: 404, description: 'Stock item not found' })
-  remove(@Param('id') id: string, @Request() req: JwtRequest) {
-    return this.stockService.remove(id, req.user.userId);
+  remove(@Param('id') id: string, @Query() query: DeleteStockQueryDto, @Request() req: JwtRequest) {
+    return this.stockService.remove(id, req.user.userId, query.disposition);
   }
 }

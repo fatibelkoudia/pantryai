@@ -121,6 +121,7 @@ export const StockItemScalarFieldEnum = {
   expirationDate: 'expirationDate',
   expirationNotifiedAt: 'expirationNotifiedAt',
   location: 'location',
+  disposition: 'disposition',
   addedAt: 'addedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',

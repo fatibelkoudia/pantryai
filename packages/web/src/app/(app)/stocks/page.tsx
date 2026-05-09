@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { StockLocation, StockQuery } from '@pantryai/shared';
+import type { StockDisposition, StockLocation, StockQuery } from '@pantryai/shared';
 import { StockCard } from '@/components/StockCard';
+import { WasteMoodCard } from '@/components/WasteMoodCard';
 import { apiClient } from '@/lib/api';
 
 const LOCATION_TABS: { value: StockLocation | 'ALL'; label: string }[] = [
@@ -38,12 +39,19 @@ export default function StocksPage() {
   });
 
   const remove = useMutation({
-    mutationFn: (id: string) => apiClient.deleteStock(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['stocks'] }),
+    mutationFn: ({ id, disposition }: { id: string; disposition: StockDisposition }) =>
+      apiClient.deleteStock(id, disposition),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['stocks'] });
+      // Resolving an item changes the Waste Level, so refresh Trashy's mood too.
+      queryClient.invalidateQueries({ queryKey: ['waste'] });
+    },
   });
 
   return (
     <section className="flex flex-col gap-6">
+      <WasteMoodCard />
+
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold">My stock</h1>
         <Link
@@ -107,7 +115,10 @@ export default function StocksPage() {
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {stocks.data.items.map((item) => (
             <li key={item.id}>
-              <StockCard item={item} onDelete={(id) => remove.mutate(id)} />
+              <StockCard
+                item={item}
+                onRemove={(id, disposition) => remove.mutate({ id, disposition })}
+              />
             </li>
           ))}
         </ul>

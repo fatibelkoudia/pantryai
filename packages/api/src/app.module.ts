@@ -15,6 +15,7 @@ import { RecipesModule } from './recipes/recipes.module.js';
 import { RedisModule } from './redis/redis.module.js';
 import { ShoppingListModule } from './shopping-list/shopping-list.module.js';
 import { StockModule } from './stock/stock.module.js';
+import { WasteModule } from './waste/waste.module.js';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { StockModule } from './stock/stock.module.js';
     AuthModule,
     ProductModule,
     StockModule,
+    WasteModule,
     RecipesModule,
     ShoppingListModule,
     LearningModule,

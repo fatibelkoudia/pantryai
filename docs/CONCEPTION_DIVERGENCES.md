@@ -1,6 +1,6 @@
 # Divergences from the conception
 
-Last updated: 2026-06-17
+Last updated: 2026-06-18
 
 This file tracks everything where the real code is different from what we wrote
 in the conception dossier (`help/pantry_ai_conception.pdf`) or in the features
@@ -10,19 +10,20 @@ instead and why. We should update the dossier later so it matches.
 
 ## Quick table
 
-| #   | Area                    | What the docs say                                                                                                                     | What we actually did                                                                                     | Why                                                                                                                                                                   |
-| --- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Row-Level Security      | Conception §9.5 and §9.9 say data isolation is done with PostgreSQL RLS. Features list says "Supabase RLS on all user-facing tables". | No RLS. We filter every query by `userId` in the service code instead.                                   | RLS does not fit our auth (see below).                                                                                                                                |
-| 2   | Supabase Auth           | Features list (line 32) mentions "Supabase Auth".                                                                                     | We use our own JWT auth. Supabase is only the database.                                                  | We decided Supabase is just the Postgres host, nothing else. The conception §9.6 ("JWT stateless") already matches this, only the features list was wrong.            |
-| 3   | Next.js version         | Conception §9.9 says Next.js 14.                                                                                                      | We use Next.js 16.2 (App Router, Turbopack).                                                             | 16 was the current stable version when we started building.                                                                                                           |
-| 4   | Expo SDK version        | Conception §9.9 and §10.2 say Expo SDK 51.                                                                                            | We use Expo SDK 55 (React Native 0.83).                                                                  | Newer SDK available, better camera support.                                                                                                                           |
-| 5   | PostgreSQL version      | Conception §9.5 says PostgreSQL 15.                                                                                                   | We use PostgreSQL 17 (on Supabase).                                                                      | Newer version offered by Supabase.                                                                                                                                    |
-| 6   | `ConservationTip` table | The conception ERD lists a `ConservationTip` database table for the Learning Path (Feature 15).                                       | No table. The tips are bundled as static JSON and served by a `learning` module.                         | The tips are fixed reference content (ANSES/ADEME) with no per-user state, so a database table would add nothing. See below.                                          |
-| 7   | Retailer parsers        | Conception §8 (and the features list) name 4 receipt parsers: Carrefour, Lidl, Leclerc, and a generic fallback.                       | 6 parsers: we added Auchan and Grand Frais on top of the 4.                                              | We had real Auchan and Grand Frais receipts on hand while testing, so we wrote parsers for them too. See below.                                                       |
-| 8   | Node.js version         | Conception §9.9 says Node.js 20.                                                                                                      | We use Node.js 22.x LTS.                                                                                 | Newer LTS line, same as the other version bumps.                                                                                                                      |
-| 9   | OCR worker process      | The conception deployment diagram draws the OCR worker as its own isolated container/process.                                         | The BullMQ worker (`OcrProcessor`) runs inside the API process as a NestJS provider.                     | One process is simpler to deploy for the MVP. It is still a real queue, so we can split it out later. See below.                                                      |
-| 10  | PDF parsing library     | Conception §8 says native PDF receipts (Carrefour/Leclerc) are read with `pdf-parse` at "Niveau 1".                                   | We read the PDF text layer with `unpdf` instead, then fall back to Mistral OCR only for image-only PDFs. | `unpdf` is pure JS/ESM and fits our Rust-free, ESM-first setup better. Same two-tier idea, different library. See below.                                              |
-| 11  | Brand typeface          | The brand doc (`help/UX.md`) names the typeface "Nunito Rounded".                                                                     | We ship plain **Nunito**.                                                                                | "Nunito Rounded" is not a real Google Fonts family. Nunito is the rounded-feel font Google actually serves, and it is what the design system was built on. See below. |
+| #   | Area                    | What the docs say                                                                                                                     | What we actually did                                                                                     | Why                                                                                                                                                                             |
+| --- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Row-Level Security      | Conception §9.5 and §9.9 say data isolation is done with PostgreSQL RLS. Features list says "Supabase RLS on all user-facing tables". | No RLS. We filter every query by `userId` in the service code instead.                                   | RLS does not fit our auth (see below).                                                                                                                                          |
+| 2   | Supabase Auth           | Features list (line 32) mentions "Supabase Auth".                                                                                     | We use our own JWT auth. Supabase is only the database.                                                  | We decided Supabase is just the Postgres host, nothing else. The conception §9.6 ("JWT stateless") already matches this, only the features list was wrong.                      |
+| 3   | Next.js version         | Conception §9.9 says Next.js 14.                                                                                                      | We use Next.js 16.2 (App Router, Turbopack).                                                             | 16 was the current stable version when we started building.                                                                                                                     |
+| 4   | Expo SDK version        | Conception §9.9 and §10.2 say Expo SDK 51.                                                                                            | We use Expo SDK 55 (React Native 0.83).                                                                  | Newer SDK available, better camera support.                                                                                                                                     |
+| 5   | PostgreSQL version      | Conception §9.5 says PostgreSQL 15.                                                                                                   | We use PostgreSQL 17 (on Supabase).                                                                      | Newer version offered by Supabase.                                                                                                                                              |
+| 6   | `ConservationTip` table | The conception ERD lists a `ConservationTip` database table for the Learning Path (Feature 15).                                       | No table. The tips are bundled as static JSON and served by a `learning` module.                         | The tips are fixed reference content (ANSES/ADEME) with no per-user state, so a database table would add nothing. See below.                                                    |
+| 7   | Retailer parsers        | Conception §8 (and the features list) name 4 receipt parsers: Carrefour, Lidl, Leclerc, and a generic fallback.                       | 6 parsers: we added Auchan and Grand Frais on top of the 4.                                              | We had real Auchan and Grand Frais receipts on hand while testing, so we wrote parsers for them too. See below.                                                                 |
+| 8   | Node.js version         | Conception §9.9 says Node.js 20.                                                                                                      | We use Node.js 22.x LTS.                                                                                 | Newer LTS line, same as the other version bumps.                                                                                                                                |
+| 9   | OCR worker process      | The conception deployment diagram draws the OCR worker as its own isolated container/process.                                         | The BullMQ worker (`OcrProcessor`) runs inside the API process as a NestJS provider.                     | One process is simpler to deploy for the MVP. It is still a real queue, so we can split it out later. See below.                                                                |
+| 10  | PDF parsing library     | Conception §8 says native PDF receipts (Carrefour/Leclerc) are read with `pdf-parse` at "Niveau 1".                                   | We read the PDF text layer with `unpdf` instead, then fall back to Mistral OCR only for image-only PDFs. | `unpdf` is pure JS/ESM and fits our Rust-free, ESM-first setup better. Same two-tier idea, different library. See below.                                                        |
+| 11  | Brand typeface          | The brand doc (`help/UX.md`) names the typeface "Nunito Rounded".                                                                     | We ship plain **Nunito**.                                                                                | "Nunito Rounded" is not a real Google Fonts family. Nunito is the rounded-feel font Google actually serves, and it is what the design system was built on. See below.           |
+| 12  | Waste Level formula     | The dossier names a "Waste Level" / Trashy mood but never defines the formula (DEV_PLAN §5.3 flagged it as a blocker).                | We defined it: waste = discarded + expired; score = consumed / (all resolved) over a 30-day window.      | The mascot mechanic needed a concrete number. We picked a simple, explainable ratio and recorded the disposition on the existing soft-delete instead of a new table. See below. |
 
 ## 1. Row-Level Security (the important one)
 
@@ -149,6 +150,33 @@ the features list): the source of truth is `help/UX.md` / `Trashy.jpg`, not the
 and could not be checked. See DEV_PLAN §5.1.
 
 What to fix in the dossier: where it says "Nunito Rounded", say "Nunito".
+
+## 12. Waste Level formula (the Trashy mood mechanic)
+
+The Trashy mascot's mood is driven by a "Waste Level" score, but the dossier never
+said how that number is computed (DEV_PLAN §5.3 flagged it as a blocker). We agreed
+on a simple, explainable rule:
+
+- Every time a stock item is removed we record how it left the pantry: `CONSUMED`,
+  `DISCARDED`, or `EXPIRED`. Both DISCARDED and EXPIRED count as waste; only CONSUMED
+  is the "good" outcome.
+- `score = round(100 * consumed / (consumed + discarded + expired))`, over the
+  trailing **30 days**.
+- Mood bands: EXCELLENT >=90, GOOD >=70, OKAY >=50, BAD >=30, AWFUL <30.
+- A brand-new user with nothing resolved yet gets 100 / EXCELLENT (encouraging tone,
+  no guilt-trips, matching the brand voice).
+
+We did not add a new events table for this. The signal is a `disposition` column on
+`stock_items`, set when the row is soft-deleted (`deletedAt` is the event time), so
+the already-soft-deleted rows are the event log we query over the window. This keeps
+the data model minimal, the same reasoning as the ConservationTip decision (#6).
+
+The mascot art (`packages/shared/src/theme/mascot.ts`) is five code-drawn SVG
+placeholders (one expression per mood) so the mood UI works on both clients from one
+source; final illustrated art can replace the strings later without touching the UI.
+
+What to fix in the dossier: write down the Waste Level formula and the disposition
+field, and note that the mascot uses placeholder SVG art for now.
 
 ## Notes
 

@@ -1,5 +1,5 @@
-import type { StockItemWithProduct, StockLocation } from '@pantryai/shared';
-import { useQuery } from '@tanstack/react-query';
+import type { StockDisposition, StockItemWithProduct, StockLocation } from '@pantryai/shared';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import {
@@ -44,10 +44,21 @@ function ExpirationBadge({ expirationDate }: { expirationDate?: string }) {
 export default function StockScreen() {
   const logout = useAuthStore((s) => s.logout);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data, isLoading, isError, error, refetch, isRefetching } = useQuery({
     queryKey: ['stocks'],
     queryFn: () => apiClient.listStocks(),
+  });
+
+  const remove = useMutation({
+    mutationFn: ({ id, disposition }: { id: string; disposition: StockDisposition }) =>
+      apiClient.deleteStock(id, disposition),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['stocks'] });
+      // Resolving an item moves the Waste Level, so refresh Trashy's mood too.
+      void queryClient.invalidateQueries({ queryKey: ['waste'] });
+    },
   });
 
   const sections = useMemo<StockSection[]>(() => {
@@ -88,6 +99,9 @@ export default function StockScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>Your pantry</Text>
         <View style={styles.headerActions}>
+          <TouchableOpacity onPress={() => router.push('/mood')} accessibilityRole="button">
+            <Text style={styles.addManually}>Trashy</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push('/expiring')} accessibilityRole="button">
             <Text style={styles.addManually}>Expiring soon</Text>
           </TouchableOpacity>
@@ -123,15 +137,33 @@ export default function StockScreen() {
             </Text>
           )}
           renderItem={({ item }) => (
-            <View style={styles.itemRow}>
-              <View style={styles.itemInfo}>
-                <Text style={styles.itemName}>{item.product.name}</Text>
-                <Text style={styles.itemMeta}>
-                  {item.quantity} {item.unit}
-                  {item.product.brand ? ` · ${item.product.brand}` : ''}
-                </Text>
+            <View style={styles.itemCard}>
+              <View style={styles.itemRow}>
+                <View style={styles.itemInfo}>
+                  <Text style={styles.itemName}>{item.product.name}</Text>
+                  <Text style={styles.itemMeta}>
+                    {item.quantity} {item.unit}
+                    {item.product.brand ? ` · ${item.product.brand}` : ''}
+                  </Text>
+                </View>
+                <ExpirationBadge expirationDate={item.expirationDate} />
               </View>
-              <ExpirationBadge expirationDate={item.expirationDate} />
+              <View style={styles.itemActions}>
+                <TouchableOpacity
+                  accessibilityRole="button"
+                  disabled={remove.isPending}
+                  onPress={() => remove.mutate({ id: item.id, disposition: 'CONSUMED' })}
+                >
+                  <Text style={styles.usedAction}>Used it</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  accessibilityRole="button"
+                  disabled={remove.isPending}
+                  onPress={() => remove.mutate({ id: item.id, disposition: 'DISCARDED' })}
+                >
+                  <Text style={styles.tossedAction}>Threw it out</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           )}
         />
@@ -194,14 +226,34 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 4,
   },
+  itemCard: {
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    gap: 10,
+  },
   itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    backgroundColor: colors.white,
-    borderRadius: 16,
+  },
+  itemActions: {
+    flexDirection: 'row',
+    gap: 20,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    paddingTop: 8,
+  },
+  usedAction: {
+    fontSize: 13,
+    fontFamily: font.semibold,
+    color: colors.leafGreen,
+  },
+  tossedAction: {
+    fontSize: 13,
+    fontFamily: font.semibold,
+    color: colors.coralOrange,
   },
   itemInfo: {
     flex: 1,

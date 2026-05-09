@@ -18,6 +18,7 @@ import type {
   StockQuery,
   UpdateStockItemDto,
 } from '../types/stock.js';
+import type { StockDisposition, WasteLevelResponse } from '../types/waste.js';
 
 export class ApiClientError extends Error {
   constructor(
@@ -224,8 +225,16 @@ export class PantryApiClient {
     });
   }
 
-  deleteStock(id: string): Promise<void> {
-    return this.request<void>(`/stocks/${id}`, { method: 'DELETE' });
+  /** Remove a stock item. `disposition` records how it left the pantry for the Waste Level. */
+  deleteStock(id: string, disposition?: StockDisposition): Promise<void> {
+    const qs = disposition ? `?disposition=${disposition}` : '';
+    return this.request<void>(`/stocks/${id}${qs}`, { method: 'DELETE' });
+  }
+
+  // Waste Level / Trashy mood
+  /** The caller's Waste Level over the trailing window: score 0-100 + mascot mood. */
+  getWasteLevel(): Promise<WasteLevelResponse> {
+    return this.request<WasteLevelResponse>('/waste/level');
   }
 
   // Recipes

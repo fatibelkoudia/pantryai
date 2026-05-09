@@ -93,6 +93,7 @@ export default function RootLayout() {
             options={{ title: 'Receipt Result', presentation: 'modal' }}
           />
           <Stack.Screen name="expiring" options={{ title: 'Expiring soon' }} />
+          <Stack.Screen name="mood" options={{ title: "Trashy's Mood" }} />
         </Stack>
       </AuthGate>
     </QueryClientProvider>

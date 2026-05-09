@@ -220,6 +220,22 @@ export type EnumStockLocationFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumStockLocationFilter<$PrismaModel> | $Enums.StockLocation;
 };
 
+export type EnumStockDispositionNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.StockDisposition | Prisma.EnumStockDispositionFieldRefInput<$PrismaModel> | null;
+  in?:
+    | $Enums.StockDisposition[]
+    | Prisma.ListEnumStockDispositionFieldRefInput<$PrismaModel>
+    | null;
+  notIn?:
+    | $Enums.StockDisposition[]
+    | Prisma.ListEnumStockDispositionFieldRefInput<$PrismaModel>
+    | null;
+  not?:
+    | Prisma.NestedEnumStockDispositionNullableFilter<$PrismaModel>
+    | $Enums.StockDisposition
+    | null;
+};
+
 export type FloatWithAggregatesFilter<$PrismaModel = never> = {
   equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
   in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
@@ -244,6 +260,25 @@ export type EnumStockLocationWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>;
   _min?: Prisma.NestedEnumStockLocationFilter<$PrismaModel>;
   _max?: Prisma.NestedEnumStockLocationFilter<$PrismaModel>;
+};
+
+export type EnumStockDispositionNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StockDisposition | Prisma.EnumStockDispositionFieldRefInput<$PrismaModel> | null;
+  in?:
+    | $Enums.StockDisposition[]
+    | Prisma.ListEnumStockDispositionFieldRefInput<$PrismaModel>
+    | null;
+  notIn?:
+    | $Enums.StockDisposition[]
+    | Prisma.ListEnumStockDispositionFieldRefInput<$PrismaModel>
+    | null;
+  not?:
+    | Prisma.NestedEnumStockDispositionNullableWithAggregatesFilter<$PrismaModel>
+    | $Enums.StockDisposition
+    | null;
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumStockDispositionNullableFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumStockDispositionNullableFilter<$PrismaModel>;
 };
 
 export type EnumOcrStatusFilter<$PrismaModel = never> = {
@@ -528,6 +563,22 @@ export type NestedEnumStockLocationFilter<$PrismaModel = never> = {
   not?: Prisma.NestedEnumStockLocationFilter<$PrismaModel> | $Enums.StockLocation;
 };
 
+export type NestedEnumStockDispositionNullableFilter<$PrismaModel = never> = {
+  equals?: $Enums.StockDisposition | Prisma.EnumStockDispositionFieldRefInput<$PrismaModel> | null;
+  in?:
+    | $Enums.StockDisposition[]
+    | Prisma.ListEnumStockDispositionFieldRefInput<$PrismaModel>
+    | null;
+  notIn?:
+    | $Enums.StockDisposition[]
+    | Prisma.ListEnumStockDispositionFieldRefInput<$PrismaModel>
+    | null;
+  not?:
+    | Prisma.NestedEnumStockDispositionNullableFilter<$PrismaModel>
+    | $Enums.StockDisposition
+    | null;
+};
+
 export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
   equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
   in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
@@ -552,6 +603,25 @@ export type NestedEnumStockLocationWithAggregatesFilter<$PrismaModel = never> = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>;
   _min?: Prisma.NestedEnumStockLocationFilter<$PrismaModel>;
   _max?: Prisma.NestedEnumStockLocationFilter<$PrismaModel>;
+};
+
+export type NestedEnumStockDispositionNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StockDisposition | Prisma.EnumStockDispositionFieldRefInput<$PrismaModel> | null;
+  in?:
+    | $Enums.StockDisposition[]
+    | Prisma.ListEnumStockDispositionFieldRefInput<$PrismaModel>
+    | null;
+  notIn?:
+    | $Enums.StockDisposition[]
+    | Prisma.ListEnumStockDispositionFieldRefInput<$PrismaModel>
+    | null;
+  not?:
+    | Prisma.NestedEnumStockDispositionNullableWithAggregatesFilter<$PrismaModel>
+    | $Enums.StockDisposition
+    | null;
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumStockDispositionNullableFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumStockDispositionNullableFilter<$PrismaModel>;
 };
 
 export type NestedEnumOcrStatusFilter<$PrismaModel = never> = {
