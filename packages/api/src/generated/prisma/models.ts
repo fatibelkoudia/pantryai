@@ -15,4 +15,7 @@ export type * from './models/OcrJob';
 export type * from './models/Recipe';
 export type * from './models/RecipeIngredient';
 export type * from './models/ShoppingItem';
+export type * from './models/UserXp';
+export type * from './models/Challenge';
+export type * from './models/UserChallenge';
 export type * from './commonInputTypes';

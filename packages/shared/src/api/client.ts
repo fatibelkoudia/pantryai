@@ -1,6 +1,7 @@
 import type { ApiMeta, ApiResponse } from '../types/api.js';
 import type { AuthResponse, LoginDto, RegisterDto } from '../types/auth.js';
 import type { RegisterDeviceDto } from '../types/device.js';
+import type { ChallengesResponse } from '../types/gamification.js';
 import type { RandomTipResponse, TipCategory, TipsResponse } from '../types/learning.js';
 import type { OcrJob } from '../types/ocr.js';
 import type { CreateProductDto, Product, ProductQuery } from '../types/product.js';
@@ -235,6 +236,12 @@ export class PantryApiClient {
   /** The caller's Waste Level over the trailing window: score 0-100 + mascot mood. */
   getWasteLevel(): Promise<WasteLevelResponse> {
     return this.request<WasteLevelResponse>('/waste/level');
+  }
+
+  // Gamification (XP + challenges)
+  /** Get the user's XP total and every challenge with their progress on it. */
+  getChallenges(): Promise<ChallengesResponse> {
+    return this.request<ChallengesResponse>('/challenges');
   }
 
   // Recipes

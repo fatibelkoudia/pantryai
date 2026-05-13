@@ -2,10 +2,12 @@ import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule } from '@nestjs/config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AuthModule } from './auth/auth.module.js';
 import { validateEnv } from './config/env.validation.js';
 import { DevicesModule } from './devices/devices.module.js';
+import { GamificationModule } from './gamification/gamification.module.js';
 import { LearningModule } from './learning/learning.module.js';
 import { NotificationsModule } from './notifications/notifications.module.js';
 import { OcrModule } from './ocr/ocr.module.js';
@@ -20,6 +22,7 @@ import { WasteModule } from './waste/waste.module.js';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, cache: true, validate: validateEnv }),
+    EventEmitterModule.forRoot(),
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
     BullModule.forRoot({
       connection: {
@@ -39,6 +42,7 @@ import { WasteModule } from './waste/waste.module.js';
     OcrModule,
     DevicesModule,
     NotificationsModule,
+    GamificationModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

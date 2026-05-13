@@ -56,6 +56,9 @@ export const ModelName = {
   Recipe: 'Recipe',
   RecipeIngredient: 'RecipeIngredient',
   ShoppingItem: 'ShoppingItem',
+  UserXp: 'UserXp',
+  Challenge: 'Challenge',
+  UserChallenge: 'UserChallenge',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -187,6 +190,41 @@ export const ShoppingItemScalarFieldEnum = {
 export type ShoppingItemScalarFieldEnum =
   (typeof ShoppingItemScalarFieldEnum)[keyof typeof ShoppingItemScalarFieldEnum];
 
+export const UserXpScalarFieldEnum = {
+  userId: 'userId',
+  total: 'total',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type UserXpScalarFieldEnum =
+  (typeof UserXpScalarFieldEnum)[keyof typeof UserXpScalarFieldEnum];
+
+export const ChallengeScalarFieldEnum = {
+  id: 'id',
+  key: 'key',
+  title: 'title',
+  description: 'description',
+  xp: 'xp',
+  rule: 'rule',
+  createdAt: 'createdAt',
+} as const;
+
+export type ChallengeScalarFieldEnum =
+  (typeof ChallengeScalarFieldEnum)[keyof typeof ChallengeScalarFieldEnum];
+
+export const UserChallengeScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  challengeId: 'challengeId',
+  progress: 'progress',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type UserChallengeScalarFieldEnum =
+  (typeof UserChallengeScalarFieldEnum)[keyof typeof UserChallengeScalarFieldEnum];
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc',
@@ -201,6 +239,12 @@ export const NullableJsonNullValueInput = {
 
 export type NullableJsonNullValueInput =
   (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput];
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull,
+} as const;
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput];
 
 export const QueryMode = {
   default: 'default',

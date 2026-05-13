@@ -42,12 +42,14 @@ const mockPrismaService = {
   },
 };
 
+const mockEvents = { emit: vi.fn() };
+
 describe('StockService', () => {
   let service: StockService;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    service = new StockService(mockPrismaService as never);
+    service = new StockService(mockPrismaService as never, mockEvents as never);
   });
 
   describe('findAll', () => {

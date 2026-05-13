@@ -178,6 +178,37 @@ source; final illustrated art can replace the strings later without touching the
 What to fix in the dossier: write down the Waste Level formula and the disposition
 field, and note that the mascot uses placeholder SVG art for now.
 
+## 13. Gamification: how XP and challenges actually work
+
+The dossier names the Trashy challenges (Clean Out Your Fridge, No Waste Weekend,
+Use It All, Smart Shopper) and the idea of XP, but it never says how a challenge is
+measured or completed. We had to pin that down, so:
+
+- Each challenge stores a `rule` as JSON on the `challenges` table, and a small pure
+  function works out progress from data we already keep. We did not add any new
+  tracking: "consume" counts come from the `disposition` column 4.3b put on removed
+  stock items, and the Smart Shopper count comes from checked shopping-list items.
+  The rules we shipped: eat 3 fridge items (+50), eat 3 items in a week with nothing
+  thrown away (+100), eat 10 items over time (+150), check off 5 shopping items (+75).
+- XP is awarded exactly once per challenge. When progress reaches the target we flip
+  `UserChallenge.completedAt` from null to a date with an `updateMany` that only
+  matches while it is still null, inside a transaction, and only add the XP when that
+  update touched one row. So re-running the check (or two removals racing) can never
+  double-count.
+- There is no `prisma db seed` in this repo, so the four challenge definitions are
+  seeded on boot with an idempotent upsert keyed on `key`, the same lazy-seed pattern
+  the recipes module already uses.
+- Completion is detected off a `stock.removed` event (we added `@nestjs/event-emitter`)
+  that the stock service fires after recording a disposition, plus a recompute whenever
+  someone opens `GET /challenges`. This keeps the gamification code from reaching into
+  the stock service directly.
+- We added a `description` field to `Challenge` (beyond the bare schema) so each card
+  has a line of copy on both clients.
+
+What to fix in the dossier: write down the challenge rules and XP values, the
+`UserXp`/`Challenge`/`UserChallenge` tables, that challenges are seeded at runtime,
+and that completion is event-driven over the 4.3b disposition signal.
+
 ## Notes
 
 - Points 3, 4, 5 and 8 are just version bumps (Next.js, Expo, PostgreSQL,
