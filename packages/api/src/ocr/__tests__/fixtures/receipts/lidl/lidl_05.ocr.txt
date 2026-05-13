@@ -1,0 +1,104 @@
+2040 route departementale 7
+PROA270VILLENEUVE LOUBET
+Ticket de vente
+
+|  Article | P.U.EUR | Qtd | EUR  |
+| --- | --- | --- | --- |
+|  X-Tra total 4+1 | 17,25 | 1 | 17,25 B  |
+|  Nom X-Tra |  |  | -3,86  |
+|  Tomate ronde 1kg | 1,89 | 1 | 1,89 A T  |
+|  Reduction Ltd Pluo |  |  | -0,28  |
+|  Banane | 0,99 | 2 | 1,98 A T  |
+|  Reduction Ltd Pluo |  |  | -0,20  |
+|  Yoplait Skyr Nature | 2,33 | 1 | 2,93 A T  |
+|  Carte Noire café | 10,38 | 1 | 10,38 A T  |
+|  Huile d'olive vierge | 6,85 | 1 | 6,85 A T  |
+|  Recharge liquide Aka | 3,59 | 1 | 3,59 B  |
+|  Fromage blanc vonil | 2,35 | 1 | 2,35 A T  |
+|  Yap Vanille | 1,80 | 2 | 3,60 A T  |
+|  Adoucissant | 2,95 | 1 | 2,95 B  |
+|  Yasurt d'olive coco | 1,45 | 1 | 1,45 A T  |
+|  Boisson canneberge | 1,92 | 2 | 3,84 A T  |
+|  Yasurt à boire ba-fr | 1,45 | 1 | 1,45 A T  |
+|  Pilons de poulet | 3,79 | 1 | 3,79 A T  |
+|  Escalopes de dinde 7 | 7,48 | 1 | 7,48 A T  |
+|  Viande hachée 5% 1kg | 14,49 | 1 | 14,49 A T  |
+|  Algoillettes poulet | 3,59 | 2 | 11,18 A T  |
+|  Bois doux 3x140 g | 1,85 | 3 | 5,55 A T  |
+|  EileBitre crème NORW | 3,19 | 1 | 3,19 A T  |
+|  Pousses de haricot | 1,99 | 1 | 1,99 A T  |
+|  Tomate cerise 250 g | 0,99 | 3 | 2,97 A T  |
+|  Margue | 1,49 | 1 | 1,49 A T  |
+|  Avocat 3 fruits | 1,99 | 1 | 1,99 A T  |
+|  Fromage fondu | 1,21 | 1 | 1,21 A T  |
+|  Cheddur râpé | 2,39 | 1 | 2,39 A T  |
+|  Ducron noixade | 2,65 | 1 | 2,65 A  |
+|  Lavette | 1,39 | 1 | 1,39 B  |
+
+Nombre de lignes: 27
+
+|  A payer | 115,93  |
+| --- | --- |
+|   | 107,67 m²  |
+|  Total éligible TR (T) : | 93,96  |
+|  Carte | 115,93  |
+|  Total Promotion | 6,34  |
+|  TVA Tour MONT.TTC MONT.TVA TOTAL | 6,34  |
+|  A 5,5% 96,61 5,04 91,57 |   |
+|  B 20% 19,32 3,22 16,10 |   |
+
+Avec LLOZ Pluo
+vous avez économisé 0,48 EUR
+
+code-barres : 0888397545084802191025
+0975 450848102/07/01 19.10.25 10:46:34
+Taret: 34326262226433 Code APE: 4711D
+N2 : 98 85 343 262 622 1087272
+GAR12.08.09.99 00322 0012 343712
+Garantie légale de conformité 2 ans
+Facteur et photos détachées
+Disponibles sur LLOZ.fr
+100% Solicitez ou Remboursé
+vous 30 jours
+Modalités sur LLOZ.fr
+
+CARTE BANCAINE
+TARDIT AGRICOLE
+ZLE DE FRANCE
+A0000000421010
+CE
+le 19/10/25 a 10:45:57
+LIDS VILLENEUVE LOU
+VILLENEUVE LOUBET
+06270
+2023043
+34326262224792
+18206
+***8350
+BBD9APD2461A791A
+002 001 390287
+C @
+No AUTO : 503246
+MONTANT= 115,93 EUR
+00921
+TICKET CLIENT
+A CORDEMON
+MERCI AU RENIER
+19072837
+
+Si vous n'êtes pas satisfait d'un produit acheté dans l'un de nos supermarchés, vous pouvez le retourner avec l'emballage d'origine et votre ticket de caisse dans un délai de 30 jours suivant l'achat*. Voir conditions sur lLOZ.fr
+* les produits achetés en 0 gaspillage ne sont pas concernés
+
+MERCI DE VOTRE VISITE !
+
+tickets.ticket_detail.ticketdetail_rede
+ptiomTitle
+
+15%
+Tomate ronde 1kg
+
+Lieu de votre d'achat:
+VILLENEUVE LOUBET - Départemental 7
+RD 6007 2040
+06270 VILLENEUVE LOUBET
+Votre supermarché

@@ -1,0 +1,146 @@
+{
+  "retailer": "LIDL",
+  "items": [
+    {
+      "name": "X-Tra Total 4+1",
+      "price": 17.25,
+      "confidence": 0.85
+    },
+    {
+      "name": "Tomate Ronde 1kg",
+      "price": 1.89,
+      "confidence": 0.85
+    },
+    {
+      "name": "Banane",
+      "price": 0.99,
+      "quantity": 2,
+      "confidence": 0.85
+    },
+    {
+      "name": "Yoplait Skyr Nature",
+      "price": 2.33,
+      "confidence": 0.85
+    },
+    {
+      "name": "Carte Noire CafÉ",
+      "price": 10.38,
+      "confidence": 0.85
+    },
+    {
+      "name": "Huile D'Olive Vierge",
+      "price": 6.85,
+      "confidence": 0.85
+    },
+    {
+      "name": "Recharge Liquide Aka",
+      "price": 3.59,
+      "confidence": 0.85
+    },
+    {
+      "name": "Fromage Blanc Vonil",
+      "price": 2.35,
+      "confidence": 0.85
+    },
+    {
+      "name": "Yap Vanille",
+      "price": 1.8,
+      "quantity": 2,
+      "confidence": 0.85
+    },
+    {
+      "name": "Adoucissant",
+      "price": 2.95,
+      "confidence": 0.85
+    },
+    {
+      "name": "Yasurt D'Olive Coco",
+      "price": 1.45,
+      "confidence": 0.85
+    },
+    {
+      "name": "Boisson Canneberge",
+      "price": 1.92,
+      "quantity": 2,
+      "confidence": 0.85
+    },
+    {
+      "name": "Yasurt à Boire Ba-Fr",
+      "price": 1.45,
+      "confidence": 0.85
+    },
+    {
+      "name": "Pilons De Poulet",
+      "price": 3.79,
+      "confidence": 0.85
+    },
+    {
+      "name": "Escalopes De Dinde 7",
+      "price": 7.48,
+      "confidence": 0.85
+    },
+    {
+      "name": "Viande HachÉE 5% 1kg",
+      "price": 14.49,
+      "confidence": 0.85
+    },
+    {
+      "name": "Algoillettes Poulet",
+      "price": 3.59,
+      "quantity": 2,
+      "confidence": 0.85
+    },
+    {
+      "name": "Bois Doux 3x140 G",
+      "price": 1.85,
+      "quantity": 3,
+      "confidence": 0.85
+    },
+    {
+      "name": "Eilebitre CrÈMe Norw",
+      "price": 3.19,
+      "confidence": 0.85
+    },
+    {
+      "name": "Pousses De Haricot",
+      "price": 1.99,
+      "confidence": 0.85
+    },
+    {
+      "name": "Tomate Cerise 250 G",
+      "price": 0.99,
+      "quantity": 3,
+      "confidence": 0.85
+    },
+    {
+      "name": "Margue",
+      "price": 1.49,
+      "confidence": 0.85
+    },
+    {
+      "name": "Avocat 3 Fruits",
+      "price": 1.99,
+      "confidence": 0.85
+    },
+    {
+      "name": "Fromage Fondu",
+      "price": 1.21,
+      "confidence": 0.85
+    },
+    {
+      "name": "Cheddur RÂPÉ",
+      "price": 2.39,
+      "confidence": 0.85
+    },
+    {
+      "name": "Ducron Noixade",
+      "price": 2.65,
+      "confidence": 0.85
+    },
+    {
+      "name": "Lavette",
+      "price": 1.39,
+      "confidence": 0.85
+    }
+  ]
+}

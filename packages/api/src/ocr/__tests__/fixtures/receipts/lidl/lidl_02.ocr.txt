@@ -1,0 +1,33 @@
+|   | **Total** | **Active (mean/10000 IU)** | **Exhaled (mean/1000 IU)**  |
+| --- | --- | --- | --- |
+|  Number of subjects | 100 | 100 | 100  |
+|  Male | 50 | 50 | 50  |
+|  Female | 50 | 50 | 50  |
+|  Age (years) | 50.0 (10.0) | 50.0 (10.0) | 50.0 (10.0)  |
+|  Body mass index (kg/m ^{ 2 } ) | 23.0 (4.0) | 23.0 (4.0) | 23.0 (4.0)  |
+|  Current smoking (yes) | 10 | 10 | 10  |
+|  Alcohol consumption (yes) | 0 | 0 | 0  |
+|  Smoking (yes) | 0 | 0 | 0  |
+|  Alcohol consumption (yes) | 0 | 0 | 0  |
+|  BMI (kg/m ^{ 2 } ) | 22.0 (3.0) | 22.0 (3.0) | 22.0 (3.0)  |
+|  Current smoking (yes) | 10 | 10 | 10  |
+|  Alcohol consumption (yes) | 0 | 0 | 0  |
+|  BMI (kg/m ^{ 2 } ) | 22.0 (3.0) | 22.0 (3.0) | 22.0 (3.0)  |
+|  Current smoking (yes) | 10 | 10 | 10  |
+|  Alcohol consumption (yes) | 0 | 0 | 0  |
+|  BMI (kg/m ^{ 2 } ) | 22.0 (3.0) | 22.0 (3.0) | 22.0 (3.0)  |
+|  Current smoking (yes) | 10 | 10 | 10  |
+|  Alcohol consumption (yes) | 0 | 0 | 0  |
+|  BMI (kg/m ^{ 2 } ) | 22.0 (3.0) | 22.0 (3.0) | 22.0 (3.0)  |
+|  Current smoking (yes) | 10 | 10 | 10  |
+|  Alcohol consumption (yes) | 0 | 0 | 0  |
+|  BMI (kg/m ^{ 2 } ) | 22.0 (3.0) | 22.0 (3.0) | 22.0 (3.0)  |
+|  Current smoking (yes) | 10 | 10 | 10  |
+|  Alcohol consumption (yes) | 0 | 0 | 0  |
+|  BMI (kg/m ^{ 2 } ) | 22.0 (3.0) | 22.0 (3.0) | 22.0 (3.0)  |
+|  Current smoking (yes) | 10 | 10 | 10  |
+|  Alcohol consumption (yes) | 0 | 0 | 0  |
+|  BMI (kg/m ^{ 2 } ) | 22.0 (3.0) | 22.0 (3.0) | 22.0 (3.0)  |
+|  Current smoking (yes) | 10 | 10 | 10  |
+|  Alcohol consumption (yes) | 0 | 0 | 0  |
+|  BMI (kg/m ^{ 2 } ) | 22.0 (3.0) | 22.0 (3.0) | 22.0 (3.0)  |

@@ -1,0 +1,106 @@
+{
+  "retailer": "LECLERC",
+  "items": [
+    {
+      "name": "4 Ta Jambon Sup",
+      "price": 2.24,
+      "confidence": 0.8
+    },
+    {
+      "name": "Taboule Oriental Bonduelle 500",
+      "price": 2.15,
+      "confidence": 0.8
+    },
+    {
+      "name": "Qnocchi A Poeler Lustucru",
+      "price": 1.79,
+      "confidence": 0.8
+    },
+    {
+      "name": "Ravioli Chevre Miel 25000 Turin",
+      "price": 2.99,
+      "confidence": 0.8
+    },
+    {
+      "name": "Ravioli Thatturia Cepes.2500",
+      "price": 3,
+      "confidence": 0.8
+    },
+    {
+      "name": "Kiri Creme 12p 704hq",
+      "price": 2.65,
+      "confidence": 0.8
+    },
+    {
+      "name": "Apericube Jambon X 15 700",
+      "price": 1.05,
+      "confidence": 0.8
+    },
+    {
+      "name": "Camdin Lait Solidaire 1/2 Ecrem",
+      "price": 0.9,
+      "confidence": 0.8
+    },
+    {
+      "name": "Unand Lait 1/2 Ecreme Bp 1l",
+      "price": 0.78,
+      "confidence": 0.8
+    },
+    {
+      "name": "Bananes",
+      "price": 0.91,
+      "confidence": 0.8
+    },
+    {
+      "name": "Champignins Blan",
+      "price": 1.2,
+      "confidence": 0.8
+    },
+    {
+      "name": "Tomates Coeur De Boeuf",
+      "price": 1.52,
+      "confidence": 0.8
+    },
+    {
+      "name": "Soupe 47l",
+      "price": 2.59,
+      "confidence": 0.8
+    },
+    {
+      "name": "Croissant Pua Seurre",
+      "price": 2.5,
+      "quantity": 6,
+      "confidence": 0.8
+    },
+    {
+      "name": "Batonnet Encens X25 Hq",
+      "price": 1.45,
+      "confidence": 0.8
+    },
+    {
+      "name": "Nesdoin Gournand 4000",
+      "price": 2.6,
+      "confidence": 0.8
+    },
+    {
+      "name": "Alioote Echaussen",
+      "price": 3.95,
+      "confidence": 0.8
+    },
+    {
+      "name": "Chablis Echaudin 99/00",
+      "price": 5.69,
+      "confidence": 0.8
+    },
+    {
+      "name": "Crem.Maino Duve,Notri.Int.75hl",
+      "price": 2.19,
+      "confidence": 0.8
+    },
+    {
+      "name": "Livre-Desserts Hhq.1pce",
+      "price": 1.2,
+      "confidence": 0.8
+    }
+  ]
+}

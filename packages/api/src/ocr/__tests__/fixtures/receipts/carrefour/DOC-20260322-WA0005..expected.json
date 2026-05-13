@@ -1,0 +1,105 @@
+{
+  "retailer": "CARREFOUR",
+  "items": [
+    {
+      "name": "512g Vache Qui Rit",
+      "price": 4.69,
+      "confidence": 0.9
+    },
+    {
+      "name": "6x180g Yab Framboi",
+      "price": 2.09,
+      "confidence": 0.9
+    },
+    {
+      "name": "125x4 Pistac Danet",
+      "price": 1.89,
+      "confidence": 0.9
+    },
+    {
+      "name": "4x125g Vani Danett",
+      "price": 1.59,
+      "confidence": 0.9
+    },
+    {
+      "name": "125x4 Cara Danette",
+      "price": 1.79,
+      "confidence": 0.9
+    },
+    {
+      "name": "1l Mouline Leg Var",
+      "price": 1.15,
+      "confidence": 0.9
+    },
+    {
+      "name": "1l Veloute Poireau",
+      "price": 1.25,
+      "confidence": 0.9
+    },
+    {
+      "name": "75cl Hle Olive Car",
+      "price": 7.9,
+      "confidence": 0.9
+    },
+    {
+      "name": "505g Sauce Algerie",
+      "price": 3.15,
+      "confidence": 0.9
+    },
+    {
+      "name": "500g Mais Pop Corn",
+      "price": 1.69,
+      "confidence": 0.9
+    },
+    {
+      "name": "900g Ams Complet M",
+      "price": 2.45,
+      "confidence": 0.9
+    },
+    {
+      "name": "400g Chips Extra",
+      "price": 3.49,
+      "confidence": 0.9
+    },
+    {
+      "name": "Oreo Class 2roulea",
+      "price": 2.35,
+      "confidence": 0.9
+    },
+    {
+      "name": "6x25cl Leffe Prest",
+      "price": 7.49,
+      "confidence": 0.9
+    },
+    {
+      "name": "1l Pet Sangria Rge",
+      "price": 2.05,
+      "confidence": 0.9
+    },
+    {
+      "name": "240g Pate A Tartin",
+      "price": 5.35,
+      "confidence": 0.9
+    },
+    {
+      "name": "Sce Soja Sucre Kik",
+      "price": 13.35,
+      "confidence": 0.9
+    },
+    {
+      "name": "Pet 1.25l Fuze Tea",
+      "price": 1.65,
+      "confidence": 0.9
+    },
+    {
+      "name": "6x25cl Leffe Prest",
+      "price": 7.49,
+      "confidence": 0.9
+    },
+    {
+      "name": "Bib 3l Rose Very F",
+      "price": 9.95,
+      "confidence": 0.9
+    }
+  ]
+}
