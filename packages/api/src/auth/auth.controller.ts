@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -11,7 +12,7 @@ import {
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { AuthService } from './auth.service.js';
-import { AuthResponseDto } from './dto/auth-response.dto.js';
+import { AuthResponseDto, AuthUserDto } from './dto/auth-response.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
@@ -54,6 +55,16 @@ export class AuthController {
   @ApiResponse({ status: 401, description: 'Invalid or expired refresh token' })
   refresh(@Body('refreshToken') refreshToken: string): Promise<{ accessToken: string }> {
     return this.authService.refresh(refreshToken);
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get the currently authenticated user' })
+  @ApiResponse({ status: 200, description: 'The authenticated user', type: AuthUserDto })
+  @ApiResponse({ status: 401, description: 'Missing or invalid access token' })
+  getMe(@Request() req: { user: JwtUser }): Promise<AuthUserDto> {
+    return this.authService.getMe(req.user.userId);
   }
 
   @Delete('me')

@@ -19,6 +19,7 @@ import type {
   StockQuery,
   UpdateStockItemDto,
 } from '../types/stock.js';
+import type { User } from '../types/user.js';
 import type { StockDisposition, WasteLevelResponse } from '../types/waste.js';
 
 export class ApiClientError extends Error {
@@ -169,6 +170,16 @@ export class PantryApiClient {
       method: 'POST',
       body: JSON.stringify({ refreshToken }),
     });
+  }
+
+  /** The signed-in user. Lets a client restore the user after a cold start from just a token. */
+  getMe(): Promise<User> {
+    return this.request<User>('/auth/me');
+  }
+
+  /** Permanently delete the caller's account and all their data (RGPD Article 17). */
+  deleteAccount(): Promise<void> {
+    return this.request<void>('/auth/me', { method: 'DELETE' });
   }
 
   // Products

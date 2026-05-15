@@ -67,6 +67,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (token) {
         apiClient.setAccessToken(token);
         lastRefreshRef.current = Date.now();
+        // The refresh cookie only gives us a token back, not the user, so go fetch it
+        // so the greeting and profile aren't blank after a page reload.
+        const me = await apiClient.getMe().catch(() => null);
+        if (!active) return;
+        if (me) setUser(me);
         setStatus('authed');
       } else {
         setStatus('anon');
@@ -114,7 +119,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       lastRefreshRef.current = Date.now();
       setUser(res.user);
       setStatus('authed');
-      router.push('/stocks');
+      router.push('/home');
     },
     [router],
   );
@@ -127,7 +132,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       lastRefreshRef.current = Date.now();
       setUser(res.user);
       setStatus('authed');
-      router.push('/stocks');
+      router.push('/home');
     },
     [router],
   );

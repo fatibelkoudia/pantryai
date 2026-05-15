@@ -187,6 +187,26 @@ describe('AuthService', () => {
     });
   });
 
+  describe('getMe', () => {
+    it('returns the user without the password hash', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue(mockUser);
+
+      const result = await service.getMe('user-uuid-1');
+
+      expect(result).toEqual({ id: 'user-uuid-1', email: 'tima@example.com', name: 'Tima' });
+      expect(result).not.toHaveProperty('passwordHash');
+    });
+
+    it('throws NotFoundException when the user is deleted', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue({
+        ...mockUser,
+        deletedAt: new Date(),
+      });
+
+      await expect(service.getMe('user-uuid-1')).rejects.toThrow(NotFoundException);
+    });
+  });
+
   describe('deleteAccount', () => {
     it('cascades deletion and anonymizes the user (RGPD Article 17)', async () => {
       mockPrismaService.user.findUnique.mockResolvedValue(mockUser);

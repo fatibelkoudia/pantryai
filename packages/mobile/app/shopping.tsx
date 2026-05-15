@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { apiClient } from '../../src/api/client';
-import { colors } from '../../src/theme';
+import { apiClient } from '../src/api/client';
+import { colors } from '../src/theme';
 
 const SOURCE_LABELS: Record<ShoppingItem['source'], string> = {
   LOW_STOCK: 'Low / expiring',

@@ -1,319 +1,178 @@
-import type { StockDisposition, StockItemWithProduct, StockLocation } from '@pantryai/shared';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { mascotMoodMeta } from '@pantryai/shared';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
-import { useMemo } from 'react';
 import {
   ActivityIndicator,
-  SectionList,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { apiClient } from '../../src/api/client';
-import { ConservationTipCard } from '../../src/components/ConservationTipCard';
+import { TrashyMood } from '../../src/components/TrashyMood';
+import { WasteGauge } from '../../src/components/WasteGauge';
 import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../../src/lib/expiry';
 import { useAuthStore } from '../../src/store/auth';
 import { colors, font } from '../../src/theme';
 
-const LOCATION_ORDER: StockLocation[] = ['FRIDGE', 'FREEZER', 'PANTRY'];
+// How many expiring items to preview on Home before sending the user to Inventory.
+const EXPIRING_PREVIEW = 4;
 
-const LOCATION_LABELS: Record<StockLocation, string> = {
-  FRIDGE: 'Fridge',
-  FREEZER: 'Freezer',
-  PANTRY: 'Pantry',
-};
-
-interface StockSection {
-  location: StockLocation;
-  title: string;
-  data: StockItemWithProduct[];
-}
-
-function ExpirationBadge({ expirationDate }: { expirationDate?: string }) {
-  const days = daysUntil(expirationDate);
-  const level = expiryLevel(days);
-  const palette = EXPIRY_COLORS[level];
-  return (
-    <View style={[styles.badge, { backgroundColor: palette.bg }]}>
-      <Text style={[styles.badgeText, { color: palette.fg }]}>{expiryLabel(days)}</Text>
-    </View>
-  );
-}
-
-export default function StockScreen() {
-  const logout = useAuthStore((s) => s.logout);
+export default function HomeScreen() {
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const user = useAuthStore((s) => s.user);
 
-  const { data, isLoading, isError, error, refetch, isRefetching } = useQuery({
-    queryKey: ['stocks'],
-    queryFn: () => apiClient.listStocks(),
+  const waste = useQuery({
+    queryKey: ['waste'],
+    queryFn: () => apiClient.getWasteLevel(),
+  });
+  const tip = useQuery({
+    queryKey: ['learning', 'tip', 'today'],
+    queryFn: () => apiClient.getRandomTip(),
+    staleTime: 24 * 60 * 60 * 1000,
+  });
+  const expiring = useQuery({
+    queryKey: ['stocks', 'expiring'],
+    queryFn: () => apiClient.listStocks({ expiringSoon: true }),
   });
 
-  const remove = useMutation({
-    mutationFn: ({ id, disposition }: { id: string; disposition: StockDisposition }) =>
-      apiClient.deleteStock(id, disposition),
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ['stocks'] });
-      // Resolving an item moves the Waste Level, so refresh Trashy's mood too.
-      void queryClient.invalidateQueries({ queryKey: ['waste'] });
-      // It can also complete a challenge (e.g. Use It All), so refresh XP/challenges.
-      void queryClient.invalidateQueries({ queryKey: ['challenges'] });
-    },
-  });
+  // user might still be loading, so fall back to a plain hello until we have a name
+  const greeting = user?.name ? `Hi, ${user.name}!` : 'Hi there!';
+  const expiringItems = expiring.data?.items ?? [];
 
-  const sections = useMemo<StockSection[]>(() => {
-    const items = data?.items ?? [];
-    return LOCATION_ORDER.map((location) => ({
-      location,
-      title: LOCATION_LABELS[location],
-      data: items.filter((item) => item.location === location),
-    })).filter((section) => section.data.length > 0);
-  }, [data]);
-
-  if (isLoading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={colors.leafGreen} />
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View style={styles.greetingBlock}>
+        <Text style={styles.greeting}>{greeting}</Text>
+        <Text style={styles.tagline}>Waste less. Cook more.</Text>
       </View>
-    );
-  }
 
-  if (isError) {
-    return (
-      <View style={styles.centered}>
-        <Text style={styles.errorTitle}>Could not load your stock</Text>
-        <Text style={styles.errorSub}>
-          {error instanceof Error ? error.message : 'Unknown error'}
-        </Text>
-        <TouchableOpacity style={styles.button} onPress={() => refetch()}>
-          <Text style={styles.buttonText}>Retry</Text>
+      {/* Trashy's mood + Waste Level */}
+      <View style={styles.card}>
+        {waste.isLoading ? (
+          <ActivityIndicator color={colors.leafGreen} />
+        ) : waste.data ? (
+          <View style={styles.moodCard}>
+            <TrashyMood mood={waste.data.mood} size={120} />
+            <WasteGauge score={waste.data.score} accent={mascotMoodMeta[waste.data.mood].accent} />
+            <Text style={styles.moodMessage}>{mascotMoodMeta[waste.data.mood].message}</Text>
+          </View>
+        ) : (
+          <Text style={styles.muted}>Could not check on Trashy right now.</Text>
+        )}
+      </View>
+
+      {/* Quick actions */}
+      <View style={styles.actionsRow}>
+        <TouchableOpacity style={styles.action} onPress={() => router.push('/scan')}>
+          <Text style={styles.actionText}>Scan</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.action} onPress={() => router.push('/manual-entry')}>
+          <Text style={styles.actionText}>Add</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.action} onPress={() => router.push('/shopping')}>
+          <Text style={styles.actionText}>Shopping</Text>
         </TouchableOpacity>
       </View>
-    );
-  }
 
-  const isEmpty = sections.length === 0;
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Your pantry</Text>
-        <View style={styles.headerActions}>
-          <TouchableOpacity onPress={() => router.push('/mood')} accessibilityRole="button">
-            <Text style={styles.addManually}>Trashy</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/rewards')} accessibilityRole="button">
-            <Text style={styles.addManually}>Rewards</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/expiring')} accessibilityRole="button">
-            <Text style={styles.addManually}>Expiring soon</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push('/manual-entry')} accessibilityRole="button">
-            <Text style={styles.addManually}>+ Add manually</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => logout()} accessibilityRole="button">
-            <Text style={styles.logout}>Log out</Text>
-          </TouchableOpacity>
+      {/* Today's Tip */}
+      {tip.data?.tip ? (
+        <View style={styles.tipCard}>
+          <Text style={styles.tipLabel}>TODAY&apos;S TIP</Text>
+          <Text style={styles.tipTitle}>{tip.data.tip.title}</Text>
+          <Text style={styles.tipBody}>{tip.data.tip.body}</Text>
+          <Text style={styles.tipSource}>Source: {tip.data.tip.source}</Text>
         </View>
+      ) : null}
+
+      {/* Expiring soon */}
+      <View style={styles.sectionHeaderRow}>
+        <Text style={styles.sectionTitle}>Expiring soon</Text>
+        <TouchableOpacity onPress={() => router.push('/(tabs)/inventory')}>
+          <Text style={styles.seeAll}>See all</Text>
+        </TouchableOpacity>
       </View>
 
-      {isEmpty ? (
-        <View style={styles.centered}>
-          <Text style={styles.emptyTitle}>Nothing in stock yet</Text>
-          <Text style={styles.emptySub}>Scan a barcode or a receipt to add your first items.</Text>
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/manual-entry')}>
-            <Text style={styles.buttonText}>Add manually</Text>
-          </TouchableOpacity>
+      {expiring.isLoading ? (
+        <ActivityIndicator color={colors.leafGreen} />
+      ) : expiringItems.length === 0 ? (
+        <View style={styles.emptyCard}>
+          <Text style={styles.muted}>Nothing expiring soon. Nice work keeping waste down!</Text>
         </View>
       ) : (
-        <SectionList
-          sections={sections}
-          keyExtractor={(item) => item.id}
-          onRefresh={refetch}
-          refreshing={isRefetching}
-          contentContainerStyle={styles.list}
-          stickySectionHeadersEnabled={false}
-          ListHeaderComponent={<ConservationTipCard items={data?.items ?? []} />}
-          renderSectionHeader={({ section }) => (
-            <Text style={styles.sectionHeader}>
-              {section.title} ({section.data.length})
-            </Text>
-          )}
-          renderItem={({ item }) => (
-            <View style={styles.itemCard}>
-              <View style={styles.itemRow}>
-                <View style={styles.itemInfo}>
-                  <Text style={styles.itemName}>{item.product.name}</Text>
-                  <Text style={styles.itemMeta}>
-                    {item.quantity} {item.unit}
-                    {item.product.brand ? ` · ${item.product.brand}` : ''}
-                  </Text>
-                </View>
-                <ExpirationBadge expirationDate={item.expirationDate} />
+        expiringItems.slice(0, EXPIRING_PREVIEW).map((item) => {
+          const days = daysUntil(item.expirationDate);
+          const palette = EXPIRY_COLORS[expiryLevel(days)];
+          return (
+            <View key={item.id} style={styles.expiringRow}>
+              <View style={styles.itemInfo}>
+                <Text style={styles.itemName}>{item.product.name}</Text>
+                <Text style={styles.itemMeta}>
+                  {item.quantity} {item.unit}
+                </Text>
               </View>
-              <View style={styles.itemActions}>
-                <TouchableOpacity
-                  accessibilityRole="button"
-                  disabled={remove.isPending}
-                  onPress={() => remove.mutate({ id: item.id, disposition: 'CONSUMED' })}
-                >
-                  <Text style={styles.usedAction}>Used it</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  accessibilityRole="button"
-                  disabled={remove.isPending}
-                  onPress={() => remove.mutate({ id: item.id, disposition: 'DISCARDED' })}
-                >
-                  <Text style={styles.tossedAction}>Threw it out</Text>
-                </TouchableOpacity>
+              <View style={[styles.badge, { backgroundColor: palette.bg }]}>
+                <Text style={[styles.badgeText, { color: palette.fg }]}>{expiryLabel(days)}</Text>
               </View>
             </View>
-          )}
-        />
+          );
+        })
       )}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.softMint,
+  container: { flex: 1, backgroundColor: colors.softMint },
+  content: { padding: 16, gap: 14 },
+  greetingBlock: { paddingTop: 8 },
+  greeting: { fontSize: 24, fontFamily: font.black, color: colors.charcoal },
+  tagline: { fontSize: 14, fontFamily: font.semibold, color: colors.leafGreen, marginTop: 2 },
+  card: { backgroundColor: colors.white, borderRadius: 16, padding: 20 },
+  moodCard: { alignItems: 'center', gap: 12 },
+  moodMessage: {
+    fontSize: 15,
+    fontFamily: font.semibold,
+    color: colors.charcoal,
+    textAlign: 'center',
   },
-  centered: {
+  muted: { fontSize: 14, color: colors.textMuted, textAlign: 'center' },
+  actionsRow: { flexDirection: 'row', gap: 10 },
+  action: {
     flex: 1,
+    backgroundColor: colors.leafGreen,
+    borderRadius: 12,
+    paddingVertical: 12,
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 24,
-    gap: 10,
   },
-  header: {
+  actionText: { color: colors.onBrand, fontSize: 14, fontFamily: font.bold },
+  tipCard: { backgroundColor: colors.white, borderRadius: 16, padding: 16, gap: 4 },
+  tipLabel: { fontSize: 11, fontFamily: font.bold, color: colors.leafGreen, letterSpacing: 0.5 },
+  tipTitle: { fontSize: 15, fontFamily: font.bold, color: colors.charcoal },
+  tipBody: { fontSize: 14, color: colors.textMuted },
+  tipSource: { fontSize: 11, color: colors.textMuted, marginTop: 4 },
+  sectionHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 8,
+    marginTop: 4,
   },
-  title: {
-    fontSize: 22,
-    fontFamily: font.black,
-    color: colors.charcoal,
-  },
-  headerActions: {
+  sectionTitle: { fontSize: 17, fontFamily: font.bold, color: colors.charcoal },
+  seeAll: { fontSize: 13, fontFamily: font.semibold, color: colors.leafGreen },
+  emptyCard: { backgroundColor: colors.white, borderRadius: 16, padding: 16 },
+  expiringRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
-  },
-  addManually: {
-    fontSize: 14,
-    fontFamily: font.semibold,
-    color: colors.leafGreen,
-  },
-  logout: {
-    fontSize: 14,
-    fontFamily: font.semibold,
-    color: colors.leafGreen,
-  },
-  list: {
-    paddingHorizontal: 16,
-    paddingBottom: 24,
-    gap: 8,
-  },
-  sectionHeader: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#888',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginTop: 16,
-    marginBottom: 4,
-  },
-  itemCard: {
+    justifyContent: 'space-between',
     backgroundColor: colors.white,
-    borderRadius: 16,
+    borderRadius: 14,
     paddingVertical: 12,
     paddingHorizontal: 14,
-    gap: 10,
   },
-  itemRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  itemActions: {
-    flexDirection: 'row',
-    gap: 20,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    paddingTop: 8,
-  },
-  usedAction: {
-    fontSize: 13,
-    fontFamily: font.semibold,
-    color: colors.leafGreen,
-  },
-  tossedAction: {
-    fontSize: 13,
-    fontFamily: font.semibold,
-    color: colors.coralOrange,
-  },
-  itemInfo: {
-    flex: 1,
-    marginRight: 12,
-  },
-  itemName: {
-    fontSize: 15,
-    fontFamily: font.semibold,
-    color: colors.charcoal,
-  },
-  itemMeta: {
-    fontSize: 13,
-    color: '#666',
-    marginTop: 2,
-  },
-  badge: {
-    borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-  },
-  badgeText: {
-    fontSize: 12,
-    fontFamily: font.bold,
-  },
-  emptyTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#333',
-  },
-  emptySub: {
-    fontSize: 14,
-    color: '#777',
-    textAlign: 'center',
-  },
-  errorTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#c62828',
-    textAlign: 'center',
-  },
-  errorSub: {
-    fontSize: 14,
-    color: '#555',
-    textAlign: 'center',
-  },
-  button: {
-    backgroundColor: colors.leafGreen,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 12,
-    marginTop: 8,
-  },
-  buttonText: {
-    color: colors.onBrand,
-    fontSize: 15,
-    fontFamily: font.semibold,
-  },
+  itemInfo: { flex: 1, marginRight: 12 },
+  itemName: { fontSize: 15, fontFamily: font.semibold, color: colors.charcoal },
+  itemMeta: { fontSize: 13, color: colors.textMuted, marginTop: 2 },
+  badge: { borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 },
+  badgeText: { fontSize: 12, fontFamily: font.bold },
 });
