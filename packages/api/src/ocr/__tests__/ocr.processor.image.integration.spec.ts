@@ -50,6 +50,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { PrismaService } from '../../prisma/prisma.service.js';
+import { R2StorageService } from '../../storage/r2-storage.service.js';
 import { testPrisma } from '../../test-setup.integration.js';
 import { OcrProcessor } from '../ocr.processor.js';
 import { OcrService } from '../ocr.service.js';
@@ -105,8 +106,9 @@ function loadFixture(
 let processor: OcrProcessor;
 
 beforeEach(() => {
-  const ocrService = new OcrService(testPrisma as unknown as PrismaService, {} as never);
-  processor = new OcrProcessor(testPrisma as unknown as PrismaService, ocrService);
+  const storage = new R2StorageService();
+  const ocrService = new OcrService(testPrisma as unknown as PrismaService, storage, {} as never);
+  processor = new OcrProcessor(testPrisma as unknown as PrismaService, ocrService, storage);
   vi.clearAllMocks();
   mockS3Send.mockResolvedValue({});
 });

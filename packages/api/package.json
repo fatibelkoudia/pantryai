@@ -58,18 +58,22 @@
   "devDependencies": {
     "@nestjs/cli": "^11.0.0",
     "@nestjs/testing": "^11.0.0",
+    "@swc/core": "^1.15.41",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^22.0.0",
     "@types/passport": "^1.0.17",
     "@types/passport-jwt": "^4.0.1",
     "@types/pg": "^8.11.11",
+    "@types/supertest": "^7.2.0",
     "@typescript-eslint/eslint-plugin": "^8.57.2",
     "@typescript-eslint/parser": "^8.57.2",
     "eslint": "^9.39.4",
     "fastify": "5.8.4",
     "prisma": "^7.0.0",
+    "supertest": "^7.2.2",
     "tsx": "^4.21.0",
     "typescript": "^5.8.3",
+    "unplugin-swc": "^1.5.9",
     "vitest": "^3.0.0"
   }
 }

@@ -13,6 +13,7 @@ vi.mock('@aws-sdk/client-s3', () => ({
 
 import type { Queue } from 'bullmq';
 import type { PrismaService } from '../../prisma/prisma.service.js';
+import type { R2StorageService } from '../../storage/r2-storage.service.js';
 import { OcrService } from '../ocr.service.js';
 
 const TEST_USER_ID = 'user-1';
@@ -30,15 +31,24 @@ function makeQueue() {
   return { add: vi.fn().mockResolvedValue(undefined) } as unknown as Queue;
 }
 
+function makeStorage() {
+  return {
+    putObject: vi.fn().mockResolvedValue(undefined),
+    deleteObject: vi.fn().mockResolvedValue(undefined),
+  } as unknown as R2StorageService;
+}
+
 let prisma: PrismaService;
 let queue: Queue;
+let storage: R2StorageService;
 let service: OcrService;
 
 beforeEach(() => {
   vi.clearAllMocks();
   prisma = makePrisma();
   queue = makeQueue();
-  service = new OcrService(prisma, queue);
+  storage = makeStorage();
+  service = new OcrService(prisma, storage, queue);
 });
 
 describe('createJob() — image OCR', () => {

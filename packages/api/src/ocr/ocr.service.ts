@@ -1,4 +1,3 @@
-import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { InjectQueue } from '@nestjs/bullmq';
 import {
   BadRequestException,
@@ -8,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { Queue } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { R2StorageService } from '../storage/r2-storage.service.js';
 import type { ParsedReceiptItem } from './parsers/index.js';
 
 export interface OcrJobPayload {
@@ -44,23 +44,11 @@ export interface QrJobPayload {
 
 @Injectable()
 export class OcrService {
-  private readonly s3: S3Client;
-  private readonly bucket: string;
-
   constructor(
     private readonly prisma: PrismaService,
+    private readonly storage: R2StorageService,
     @InjectQueue('ocr') private readonly ocrQueue: Queue,
-  ) {
-    this.s3 = new S3Client({
-      region: 'auto',
-      ...(process.env['R2_ENDPOINT'] && { endpoint: process.env['R2_ENDPOINT'] }),
-      credentials: {
-        accessKeyId: process.env['R2_ACCESS_KEY_ID'] ?? '',
-        secretAccessKey: process.env['R2_SECRET_ACCESS_KEY'] ?? '',
-      },
-    });
-    this.bucket = process.env['R2_BUCKET_NAME'] ?? 'pantryai';
-  }
+  ) {}
 
   async createJob(
     userId: string,
@@ -75,14 +63,7 @@ export class OcrService {
     const extension = MIME_EXTENSIONS[mimeType] ?? 'jpg';
     const imageKey = `receipts/${userId}/${job.id}.${extension}`;
 
-    await this.s3.send(
-      new PutObjectCommand({
-        Bucket: this.bucket,
-        Key: imageKey,
-        Body: imageBuffer,
-        ContentType: mimeType,
-      }),
-    );
+    await this.storage.putObject(imageKey, imageBuffer, mimeType);
 
     await this.prisma.ocrJob.update({
       where: { id: job.id },
@@ -205,6 +186,6 @@ export class OcrService {
   }
 
   async deleteImageFromR2(imageKey: string): Promise<void> {
-    await this.s3.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: imageKey }));
+    await this.storage.deleteObject(imageKey);
   }
 }

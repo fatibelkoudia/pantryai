@@ -58,7 +58,7 @@ const mockLookup = vi.mocked(lookup);
 let helpers: PrivateHelpers;
 
 beforeEach(() => {
-  const processor = new OcrProcessor({} as never, {} as never);
+  const processor = new OcrProcessor({} as never, {} as never, {} as never);
   helpers = processor as unknown as PrivateHelpers;
   vi.clearAllMocks();
 });
@@ -309,7 +309,11 @@ describe('parseReceiptText()', () => {
   it('falls back to Mistral Chat when a detected parser yields no items', async () => {
     // The footer triggers Grand Frais detection, but the body has no parsable rows.
     const rawText = 'random header\nunparseable line\nVOTRE MAGASIN GRAND FRAIS';
-    const processor = new OcrProcessor({} as never, {} as never) as unknown as PrivateHelpers;
+    const processor = new OcrProcessor(
+      {} as never,
+      {} as never,
+      {} as never,
+    ) as unknown as PrivateHelpers;
     processor.mistral.chat.complete.mockResolvedValue({
       choices: [
         {

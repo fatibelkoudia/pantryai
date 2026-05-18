@@ -49,6 +49,15 @@ What to fix in the dossier: §9.5 and §9.9 should say "user isolation is enforc
 in the application layer (Prisma queries scoped by userId)" instead of RLS, or
 explain that RLS was dropped because we kept our own JWT auth.
 
+On top of the per-query `where: { userId }` filters, we also added an opt-in
+second layer in `PrismaService`: `prisma.forUser(userId)` returns a Prisma client
+extension that forces `userId` onto every read and write of a user-owned model
+(stock items, OCR jobs, shopping items, devices, XP, challenges). The RGPD export
+endpoint uses it, so even if a query forgot to scope, it still could not return
+another user's rows. System tasks that legitimately span users (the expiry
+notification sweep, the R2 sweeper) keep using the plain client. This is the
+defense-in-depth replacement for what RLS would have given us at the DB layer.
+
 ## 2. Supabase used as database only
 
 We made a clear decision: Supabase is our managed PostgreSQL database and
