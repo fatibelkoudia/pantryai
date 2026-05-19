@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "PantryAI",
+    "slug": "pantryai",
+    "version": "1.0.0",
+    "scheme": "pantryai",
+    "platforms": ["ios", "android"],
+    "android": {
+      "package": "com.pantryai.app"
+    },
+    "ios": {
+      "bundleIdentifier": "com.pantryai.app"
+    },
+    "plugins": ["expo-router", "expo-camera"]
+  }
+}
