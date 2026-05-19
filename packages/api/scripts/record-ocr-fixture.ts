@@ -4,10 +4,10 @@
  * Output: saves <image-path>.ocr.txt next to the image.
  * Requires MISTRAL_API_KEY.
  */
+import { Mistral } from '@mistralai/mistralai';
+import { config } from 'dotenv';
 import { readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
-import { config } from 'dotenv';
-import { Mistral } from '@mistralai/mistralai';
 
 config({ path: path.resolve(process.cwd(), '.env') });
 
