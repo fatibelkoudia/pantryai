@@ -8,6 +8,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "lint": "eslint src/ app/",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "clean": "rm -rf .expo dist"
   },

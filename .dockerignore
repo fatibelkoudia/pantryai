@@ -1,0 +1,30 @@
+# Keep the build context small and never ship secrets or build artifacts.
+**/node_modules
+**/dist
+**/.next
+**/.expo
+**/.turbo
+.turbo
+.git
+.github
+.agent
+.claude
+
+# Secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Tests / coverage / local junk
+**/coverage
+**/*.log
+**/.DS_Store
+
+# Note: we keep packages/web and packages/mobile package.json so pnpm can
+# satisfy --frozen-lockfile; their source/deps are never copied into the image.
+
+# Docs and planning material
+docs
+help
+*.md
+!packages/api/README.md

@@ -7,6 +7,7 @@
     "dev": "next dev --turbopack",
     "start": "next start",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "clean": "rm -rf .next dist"

@@ -1,0 +1,117 @@
+name: Deploy
+
+# A tagged release (v1.2.3) ships both apps: the web frontend to Vercel and the
+# API to the Hetzner host over SSH. The API job runs DB migrations first, then
+# deploys the new image with a health check and an automatic rollback if it
+# doesn't come up (risk R6).
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  web:
+    name: Deploy web (Vercel)
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install Vercel CLI
+        run: pnpm add -g vercel@latest
+
+      # Pull the project settings, build, and deploy the prebuilt output.
+      - name: Pull Vercel env
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+  api:
+    name: Deploy API (Hetzner)
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter @pantryai/api exec prisma generate
+
+      # Migrate the production DB (Supabase) before the new code goes live.
+      # Uses the direct connection, not the pooler (advisory locks).
+      - name: Apply migrations
+        env:
+          DATABASE_DIRECT_URL: ${{ secrets.DATABASE_DIRECT_URL }}
+        run: pnpm --filter @pantryai/api exec prisma migrate deploy
+
+      - name: Deploy to Hetzner over SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.HETZNER_HOST }}
+          username: ${{ secrets.HETZNER_USER }}
+          key: ${{ secrets.HETZNER_SSH_KEY }}
+          script: |
+            set -e
+            DEPLOY_TAG="${{ github.ref_name }}"
+            cd /opt/pantryai
+
+            # Remember the image currently serving so we can roll back to it.
+            PREV_IMAGE=$(docker inspect --format='{{.Image}}' pantryai_api 2>/dev/null || echo "")
+
+            # Bring the host repo to the released tag and build the new image.
+            git fetch --tags --prune
+            git checkout "$DEPLOY_TAG"
+            docker compose -f docker-compose.prod.yml build api
+            docker compose -f docker-compose.prod.yml up -d
+
+            # Health check: poll the API until it answers, then we're done.
+            ok=0
+            for i in $(seq 1 12); do
+              if docker exec pantryai_api wget -qO- http://localhost:3001/api/docs >/dev/null 2>&1; then
+                ok=1; break
+              fi
+              echo "waiting for API to come up ($i/12)..."
+              sleep 5
+            done
+
+            # Rollback: if it never came up, restore the previous image.
+            if [ "$ok" != "1" ]; then
+              echo "API health check failed, rolling back to $PREV_IMAGE"
+              if [ -n "$PREV_IMAGE" ]; then
+                docker tag "$PREV_IMAGE" pantryai-api:latest
+                docker compose -f docker-compose.prod.yml up -d --no-build
+              fi
+              exit 1
+            fi
+            echo "Deploy of $DEPLOY_TAG healthy."

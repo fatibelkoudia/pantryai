@@ -1,0 +1,86 @@
+# Production stack for the PantryAI API, meant to run on the Hetzner host.
+#
+# Postgres is NOT here on purpose: in production the database is Supabase, so we
+# only run the API, Redis (queue), Nginx (SSL termination), and optionally a
+# separate OCR worker.
+#
+# Bring it up with:   docker compose -f docker-compose.prod.yml up -d --build
+# Migrations run from the deploy pipeline before this (see docs/deployment.md).
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: pantryai_redis_prod
+    restart: unless-stopped
+    # Not published to the host: only the API/worker reach it over the compose network.
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: packages/api/Dockerfile
+    image: pantryai-api:latest
+    container_name: pantryai_api
+    restart: unless-stopped
+    env_file:
+      - packages/api/.env
+    environment:
+      # Inside the compose network Redis is reachable by service name.
+      REDIS_HOST: redis
+      REDIS_PORT: '6379'
+      PORT: '3001'
+    depends_on:
+      redis:
+        condition: service_healthy
+    expose:
+      - '3001'
+    healthcheck:
+      # No dedicated /health route yet, so we hit the always-on Swagger page.
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:3001/api/docs']
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # Optional dedicated OCR worker. The API already runs the OCR processor
+  # in-process (single-process MVP), so enabling this WITHOUT turning the
+  # in-process one off would double-process jobs. It's behind a profile until
+  # we split them cleanly (deviation D2). Enable with:
+  #   docker compose -f docker-compose.prod.yml --profile worker up -d
+  worker:
+    image: pantryai-api:latest
+    container_name: pantryai_worker
+    restart: unless-stopped
+    profiles: ['worker']
+    command: ['node', 'dist/worker']
+    env_file:
+      - packages/api/.env
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: '6379'
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:alpine
+    container_name: pantryai_nginx
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./deploy/nginx/pantryai.conf:/etc/nginx/conf.d/default.conf:ro
+      # SSL certs (e.g. from certbot) live on the host and are mounted in.
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    depends_on:
+      - api
+
+volumes:
+  redis_data:
