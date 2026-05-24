@@ -43,7 +43,7 @@ export class OcrProcessor extends WorkerHost {
       },
     });
     this.mistral = new Mistral({ apiKey: process.env['MISTRAL_API_KEY'] ?? '' });
-    this.bucket = process.env['R2_BUCKET_NAME'] ?? 'pantryai-receipts';
+    this.bucket = process.env['R2_BUCKET_NAME'] ?? 'pantryai';
   }
 
   async process(job: Job<OcrJobPayload | QrJobPayload>): Promise<void> {
