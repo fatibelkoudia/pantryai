@@ -1,6 +1,6 @@
 # Divergences from the conception
 
-Last updated: 2026-06-26
+Last updated: 2026-06-27
 
 This file tracks everything where the real code is different from what we wrote
 in the conception dossier (`help/pantry_ai_conception.pdf`) or in the features
@@ -20,7 +20,7 @@ instead and why. We should update the dossier later so it matches.
 | 6   | `ConservationTip` table | The conception ERD lists a `ConservationTip` database table for the Learning Path (Feature 15).                                       | No table. The tips are bundled as static JSON and served by a `learning` module.                                                                              | The tips are fixed reference content (ANSES/ADEME) with no per-user state, so a database table would add nothing. See below.                                                    |
 | 7   | Retailer parsers        | Conception §8 (and the features list) name 4 receipt parsers: Carrefour, Lidl, Leclerc, and a generic fallback.                       | 6 parsers: we added Auchan and Grand Frais on top of the 4.                                                                                                   | We had real Auchan and Grand Frais receipts on hand while testing, so we wrote parsers for them too. See below.                                                                 |
 | 8   | Node.js version         | Conception §9.9 says Node.js 20.                                                                                                      | We use Node.js 22.x LTS.                                                                                                                                      | Newer LTS line, same as the other version bumps.                                                                                                                                |
-| 9   | OCR worker process      | The conception deployment diagram draws the OCR worker as its own isolated container/process.                                         | The BullMQ worker (`OcrProcessor`) runs inside the API process. A worker-only entrypoint + Docker worker mode now exist, but in-process is still the default. | One process is simpler to deploy for the MVP. It is still a real queue, so we can split it out later. See below.                                                                |
+| 9   | OCR worker process      | The conception deployment diagram draws the OCR worker as its own isolated container/process.                                         | Reconciled: production runs a dedicated `worker` container next to the API, sharing Redis. The API only enqueues. A single process still works for local/dev. | We matched the deployment diagram for prod. The split is controlled by `RUN_OCR_WORKER`. See below.                                                                             |
 | 10  | PDF parsing library     | Conception §8 says native PDF receipts (Carrefour/Leclerc) are read with `pdf-parse` at "Niveau 1".                                   | We read the PDF text layer with `unpdf` instead, then fall back to Mistral OCR only for image-only PDFs.                                                      | `unpdf` is pure JS/ESM and fits our Rust-free, ESM-first setup better. Same two-tier idea, different library. See below.                                                        |
 | 11  | Brand typeface          | The brand doc (`help/UX.md`) names the typeface "Nunito Rounded".                                                                     | We ship plain **Nunito**.                                                                                                                                     | "Nunito Rounded" is not a real Google Fonts family. Nunito is the rounded-feel font Google actually serves, and it is what the design system was built on. See below.           |
 | 12  | Waste Level formula     | The dossier names a "Waste Level" / Trashy mood but never defines the formula (DEV_PLAN §5.3 flagged it as a blocker).                | We defined it: waste = discarded + expired; score = consumed / (all resolved) over a 30-day window.                                                           | The mascot mechanic needed a concrete number. We picked a simple, explainable ratio and recorded the disposition on the existing soft-delete instead of a new table. See below. |
@@ -107,33 +107,46 @@ no parser for still falls through to the generic parser.
 What to fix in the dossier: update §8 to list six parsers, or note that the
 parser list grows as we meet new receipt formats.
 
-## 9. OCR worker runs in the API process, not a separate container
+## 9. OCR worker as a separate container (reconciled to the diagram)
 
 The conception deployment diagram draws the OCR worker as its own isolated
-process/container, separate from the API. We did not split it out. The BullMQ
-processor (`OcrProcessor` in `packages/api/src/ocr/ocr.processor.ts`) is
-registered as a normal NestJS provider inside the API app
-(`ocr.module.ts`), so it runs in the same process that serves HTTP.
+process/container, separate from the API. We now match that in production.
 
-We still use a real BullMQ queue backed by Redis, so OCR is still asynchronous
-(the request returns a `jobId` and the work happens off the request). For the MVP
-one process is just easier to deploy and run. The tradeoff is that a heavy OCR job
-shares the API event loop, so under load it could slow down HTTP responses.
-Because the queue boundary is already there, moving the worker into its own
-container later is a deployment change, not a code rewrite.
+The BullMQ processor (`OcrProcessor` in `packages/api/src/ocr/ocr.processor.ts`)
+is still defined the same way, but whether a process actually runs it is decided
+by `RUN_OCR_WORKER` (see `packages/api/src/common/background-jobs.ts`).
+`ocr.module.ts` only registers the processor when that flag is on, and the two
+cron jobs (R2 sweep, expiration push) check the same flag. In
+`docker-compose.prod.yml` the `api` container sets `RUN_OCR_WORKER=false` (it only
+enqueues jobs and serves HTTP) and the dedicated `worker` container, running the
+same image with `node dist/worker`, sets it to `true`. So one process owns the
+queue and the cron jobs, and a job never gets processed twice.
 
-Since the CI/CD and Docker work (Phase 4.6) we have taken the first step toward
-the split. There is now a worker-only entrypoint (`packages/api/src/worker.ts`,
-which boots the Nest app with `createApplicationContext` and no HTTP server), a
-`start:worker` script, and a `worker` service in `docker-compose.prod.yml` that
-runs the same image with `node dist/worker`. We do not turn it on by default,
-though: the API still runs the processor in-process, so enabling the separate
-worker as well would make both pull from the same queue and process each job
-twice. Turning the in-process one off when a dedicated worker is deployed is the
-remaining piece, tracked as build item 4.8b in the dev plan.
+The flag defaults to on, so a single-process run (local dev, tests, or a minimal
+deploy) still does both the HTTP and the OCR work with no extra config, exactly as
+before.
 
-What to fix in the dossier: note that the MVP runs the worker in-process, and that
-the image already supports a worker-only mode for when we make the split.
+This closes the earlier gap where the processor ran in-process by default. The
+tradeoff it removes: a heavy OCR job no longer shares the API event loop, so it
+can't slow down HTTP responses under load.
+
+What to fix in the dossier: nothing on topology now, it matches. Just note that
+the worker is selected by an env flag rather than being a different build.
+
+## 9b. Monitoring stack (addition, not in the conception)
+
+The conception does not spell out a monitoring stack. For the deployment phase we
+added three things, all on free tiers:
+
+- a public `GET /health` route (`packages/api/src/health/`) that pings Postgres and
+  Redis, used by the Docker healthcheck and Uptime Robot,
+- Sentry error tracking (`packages/api/src/instrument.ts`), off unless
+  `SENTRY_DSN` is set, and scrubbing PII before sending (RGPD),
+- the BullMQ dashboard at `/admin/queues`, behind basic auth and only mounted when
+  credentials are set.
+
+These are additions for operability and do not change any feature behaviour. See
+`docs/monitoring.md`.
 
 ## 10. PDF receipts read with `unpdf`, not `pdf-parse`
 

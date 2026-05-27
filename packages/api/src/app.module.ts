@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { validateEnv } from './config/env.validation.js';
 import { DevicesModule } from './devices/devices.module.js';
 import { GamificationModule } from './gamification/gamification.module.js';
+import { HealthModule } from './health/health.module.js';
 import { LearningModule } from './learning/learning.module.js';
 import { NotificationsModule } from './notifications/notifications.module.js';
 import { OcrModule } from './ocr/ocr.module.js';
@@ -36,6 +37,7 @@ import { WasteModule } from './waste/waste.module.js';
     }),
     PrismaModule,
     RedisModule,
+    HealthModule,
     StorageModule,
     AuthModule,
     UsersModule,

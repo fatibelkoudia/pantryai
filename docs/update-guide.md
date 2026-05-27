@@ -96,6 +96,17 @@ version:
 - **Renew the SSL certificate.** Certbot renews on its own, but check it now and
   then. The Nginx container reads the certificate from the host, so a renewal
   takes effect after Nginx reloads.
+- **Watch the monitors.** `GET /health` should return `status: "ok"`. Uptime Robot
+  tracks availability, Sentry collects errors, and the queue dashboard at
+  `/admin/queues` shows the OCR jobs. See [monitoring.md](./monitoring.md).
+
+## The two API containers
+
+The same image runs as two containers in production: the `api` (HTTP) and the
+`worker` (OCR queue and cron jobs). They are told apart by `RUN_OCR_WORKER`, which
+compose sets to `false` on the API and `true` on the worker. After a deploy, check
+that both came up (`docker compose -f docker-compose.prod.yml ps`). If you ever run
+a single process instead, leave `RUN_OCR_WORKER` unset so it does both.
 
 ## When a deploy goes wrong
 

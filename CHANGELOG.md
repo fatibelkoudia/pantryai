@@ -22,6 +22,27 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Documentation: README, API reference, deployment guide, user guide, and update
   guide.
 - `typecheck` scripts across the packages and a matching Turborepo task.
+- Acceptance test book (`docs/cahier-de-recettes.md`): numbered scenarios covering
+  every Must and Should feature, the performance KPIs (OCR p95 ≤ 5s, add a product
+  ≤ 10s), and the RGPD checks, with a results matrix.
+- Bug-correction plan (`docs/plan-de-correction-des-bogues.md`) and a GitHub issue
+  form, with a severity scale and the rule that a bug closes only when its linked
+  cahier scenario re-passes.
+- `GET /health` readiness endpoint that pings Postgres and Redis, used by the
+  Docker healthcheck and Uptime Robot.
+- Error monitoring with Sentry, off unless `SENTRY_DSN` is set, scrubbing personal
+  data before sending.
+- BullMQ queue dashboard at `/admin/queues`, behind basic auth and only mounted
+  when credentials are set.
+- Monitoring guide (`docs/monitoring.md`) and a go-live runbook in the deployment
+  guide.
+
+### Changed
+
+- The OCR worker now runs as its own production container. The API container sets
+  `RUN_OCR_WORKER=false` and only enqueues jobs; the worker container consumes the
+  queue and runs the scheduled jobs. A single-process run still works by leaving
+  the flag unset. This reconciles deviation D2 to the deployment diagram.
 
 ### Fixed
 
