@@ -13,6 +13,7 @@
     "test:unit": "vitest run --project unit",
     "test:integration": "vitest run --project integration",
     "test:all": "vitest run",
+    "seed": "tsx scripts/seed.ts",
     "test:parsers": "tsx scripts/test-parsers.ts",
     "record-ocr": "tsx scripts/record-ocr-fixture.ts",
     "smoke-fixtures": "tsx scripts/smoke-fixtures.ts",

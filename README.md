@@ -72,6 +72,44 @@ Trashy design tokens.
 - pnpm 10 or newer (`corepack enable` will pin the right version)
 - Docker or Podman, to run Postgres and Redis locally
 
+### External services
+
+Three managed services, all on free tiers. The database is required to run anything;
+Mistral and R2 are only needed for the receipt scanning flow. Each one fills in some of the
+env vars listed further down.
+
+**Supabase (Postgres)**
+
+1. Create an account at https://supabase.com and a new project. Pick an EU region and set a
+   database password (keep it, you need it in the connection strings).
+2. Once it is provisioned, open Project Settings → Database → Connection string.
+3. Copy the transaction pooler string (port 6543, has `pgbouncer=true`) into
+   `DATABASE_TRANSACTION_POOLER_URL`, and the direct connection string (port 5432) into
+   `DATABASE_DIRECT_URL`. Replace the `[YOUR-PASSWORD]` placeholder in each with the
+   password from step 1.
+
+Free projects pause after 7 days idle; [docs/supabase-keepalive.md](docs/supabase-keepalive.md)
+covers keeping one awake.
+
+**Mistral (OCR)**
+
+1. Sign in at https://console.mistral.ai. The free default workspace is enough.
+2. Create an API key and put it in `MISTRAL_API_KEY`.
+
+Full walkthrough: [docs/mistral-setup.md](docs/mistral-setup.md).
+
+**Cloudflare R2 (receipt images)**
+
+1. In the Cloudflare dashboard, enable R2 and create a bucket named `pantryai`. Choose
+   Specify jurisdiction → European Union (EU). This cannot be changed later, so if you miss
+   it you have to delete the bucket and remake it.
+2. Create an R2 API token with Object Read & Write on that bucket.
+3. Fill `R2_BUCKET_NAME`, `R2_ACCESS_KEY_ID` and `R2_SECRET_ACCESS_KEY` from the token, and
+   `R2_ENDPOINT` from the account id. The EU endpoint has `.eu` in the host:
+   `https://<account-id>.eu.r2.cloudflarestorage.com`.
+
+Full walkthrough: [docs/r2-setup.md](docs/r2-setup.md).
+
 ### 1. Install dependencies
 
 ```bash
@@ -101,16 +139,40 @@ cp packages/web/.env.example packages/web/.env
 cp packages/mobile/.env.example packages/mobile/.env
 ```
 
-For the API you need at least:
+**`packages/api/.env`** is where most of it lives. Required (the API validates these on
+boot and refuses to start if one is missing):
 
-- `DATABASE_TRANSACTION_POOLER_URL` and `DATABASE_DIRECT_URL` for Postgres
-- `JWT_SECRET` and `JWT_REFRESH_SECRET` (generate them with `openssl rand -base64 48`)
-- `MISTRAL_API_KEY` for OCR
-- the `R2_*` values for receipt image storage
-- `REDIS_HOST` and `REDIS_PORT` (the defaults match the local containers)
+| Variable                          | What it is                                                         |
+| --------------------------------- | ------------------------------------------------------------------ |
+| `DATABASE_TRANSACTION_POOLER_URL` | Supabase transaction pooler (port 6543), used at runtime           |
+| `DATABASE_DIRECT_URL`             | Supabase direct connection (port 5432), used for migrations        |
+| `JWT_SECRET`                      | access-token signing secret, `openssl rand -base64 48`             |
+| `JWT_REFRESH_SECRET`              | refresh-token signing secret, a second `openssl rand -base64 48`   |
+| `MISTRAL_API_KEY`                 | Mistral key for OCR                                                |
+| `R2_ENDPOINT`                     | R2 EU endpoint, `https://<account-id>.eu.r2.cloudflarestorage.com` |
+| `R2_ACCESS_KEY_ID`                | R2 API token                                                       |
+| `R2_SECRET_ACCESS_KEY`            | R2 API token                                                       |
+| `R2_BUCKET_NAME`                  | the bucket you made (`pantryai`)                                   |
+| `REDIS_HOST`                      | `localhost` for the local container                                |
+| `REDIS_PORT`                      | `6379` for the local container                                     |
 
-The API checks all of these on boot and refuses to start if one is missing, so
-you find out straight away instead of at the first request.
+Optional (safe to leave empty):
+
+| Variable                                | What it does                                                                                           |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `PORT`                                  | API port, defaults to 3001                                                                             |
+| `CORS_ORIGINS`                          | comma-separated allowed origins, defaults to `http://localhost:3000`                                   |
+| `SENTRY_DSN`                            | sends errors to Sentry. Empty means nothing is sent                                                    |
+| `RUN_OCR_WORKER`                        | leave unset for one process that runs the OCR queue itself; the split prod setup sets it per container |
+| `BULLBOARD_USER` / `BULLBOARD_PASSWORD` | set both to mount the BullMQ dashboard at `/admin/queues` behind basic auth                            |
+
+**`packages/web/.env`** needs `NEXT_PUBLIC_API_URL` (defaults to `http://localhost:3001`).
+
+**`packages/mobile/.env`** needs `EXPO_PUBLIC_API_URL`. On a real phone `localhost` points at
+the phone, so set it to your machine's LAN IP, e.g. `http://192.168.1.42:3001`.
+
+For local dev without the OCR accounts you can put placeholder values in `MISTRAL_API_KEY`
+and the `R2_*` vars so the API boots; everything works except the receipt upload and OCR.
 
 ### 4. Run the database migrations
 
@@ -120,7 +182,17 @@ pnpm --filter @pantryai/api exec prisma migrate deploy
 
 If you are starting from a fresh local database, this creates every table.
 
-### 5. Start the apps
+### 5. (Optional) Seed a demo account
+
+```bash
+pnpm --filter @pantryai/api seed
+```
+
+This creates a demo user (`demo@pantryai.test` / `Demo1234!`) with a ready-made pantry so
+you can log in and look around without scanning anything first. It is safe to re-run and
+only ever touches the demo account.
+
+### 6. Start the apps
 
 ```bash
 pnpm dev
