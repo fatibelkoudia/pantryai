@@ -1,5 +1,5 @@
 /**
- * Unit tests for OcrProcessor product matching and MIME passthrough.
+ * Unit tests for OcrService product matching and OcrProcessor MIME passthrough.
  * Covers EAN-13/ean13 matching, dedupe by name, expirationDate, and MIME in data URI.
  * Uses mocks only.
  */
@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('@nestjs/bullmq', () => ({
   Processor: () => () => undefined,
+  InjectQueue: () => () => undefined,
   WorkerHost: class {
     async process(): Promise<void> {}
   },
@@ -29,11 +30,11 @@ vi.mock('tesseract.js', () => ({ default: { recognize: vi.fn() } }));
 
 import type { PrismaService } from '../../prisma/prisma.service.js';
 import { OcrProcessor } from '../ocr.processor.js';
+import { OcrService } from '../ocr.service.js';
 import type { ParsedReceiptItem } from '../parsers/index.js';
 
 // Helper type to call private members in tests
 interface PrivateProcessor {
-  upsertStockItems: (userId: string, items: ParsedReceiptItem[]) => Promise<void>;
   runMistralOcr: (buf: Buffer, mimeType?: string) => Promise<string>;
   mistral: { ocr: { process: ReturnType<typeof vi.fn> } };
 }
@@ -42,6 +43,10 @@ const USER_ID = 'user-1';
 
 function makePrisma() {
   const prisma = {
+    ocrJob: {
+      findUnique: vi.fn(),
+      update: vi.fn().mockResolvedValue({}),
+    },
     product: {
       findFirst: vi.fn(),
       create: vi.fn(),
@@ -54,13 +59,15 @@ function makePrisma() {
 }
 
 let prismaMock: ReturnType<typeof makePrisma>;
+let service: OcrService;
 let processor: OcrProcessor;
 let priv: PrivateProcessor;
 
 beforeEach(() => {
   vi.clearAllMocks();
   prismaMock = makePrisma();
-  processor = new OcrProcessor(prismaMock as unknown as PrismaService);
+  service = new OcrService(prismaMock as unknown as PrismaService, {} as never);
+  processor = new OcrProcessor(prismaMock as unknown as PrismaService, service);
   priv = processor as unknown as PrivateProcessor;
 });
 
@@ -68,14 +75,14 @@ function item(overrides: Partial<ParsedReceiptItem> & { name: string }): ParsedR
   return { confidence: 0.7, ...overrides };
 }
 
-describe('upsertStockItems() — product matching', () => {
+describe('commitParsedItems() — product matching', () => {
   it('creates distinct products for distinct names', async () => {
     prismaMock.product.findFirst.mockResolvedValue(null);
     prismaMock.product.create
       .mockResolvedValueOnce({ id: 'p1', name: 'Lait' })
       .mockResolvedValueOnce({ id: 'p2', name: 'Pain' });
 
-    await priv.upsertStockItems(USER_ID, [item({ name: 'Lait' }), item({ name: 'Pain' })]);
+    await service.commitParsedItems(USER_ID, [item({ name: 'Lait' }), item({ name: 'Pain' })]);
 
     expect(prismaMock.product.create).toHaveBeenCalledTimes(2);
     expect(prismaMock.stockItem.create).toHaveBeenCalledTimes(2);
@@ -87,7 +94,7 @@ describe('upsertStockItems() — product matching', () => {
       .mockResolvedValueOnce({ id: 'p1', name: 'Lait' }); // second item: reuse existing product
     prismaMock.product.create.mockResolvedValue({ id: 'p1', name: 'Lait' });
 
-    await priv.upsertStockItems(USER_ID, [item({ name: 'Lait' }), item({ name: '  LAIT  ' })]);
+    await service.commitParsedItems(USER_ID, [item({ name: 'Lait' }), item({ name: '  LAIT  ' })]);
 
     expect(prismaMock.product.create).toHaveBeenCalledTimes(1);
     // name is normalized (trim + collapse spaces)
@@ -99,7 +106,7 @@ describe('upsertStockItems() — product matching', () => {
     prismaMock.product.findFirst.mockResolvedValue(null);
     prismaMock.product.create.mockResolvedValue({ id: 'p1', name: 'Lait' });
 
-    await priv.upsertStockItems(USER_ID, [item({ name: 'Lait' })]);
+    await service.commitParsedItems(USER_ID, [item({ name: 'Lait' })]);
 
     expect(prismaMock.product.findFirst).toHaveBeenCalledWith({
       where: { name: { equals: 'Lait', mode: 'insensitive' }, ean13: null },
@@ -109,7 +116,7 @@ describe('upsertStockItems() — product matching', () => {
   it('matches by EAN-13 first and reuses it regardless of name', async () => {
     prismaMock.product.findFirst.mockResolvedValue({ id: 'pX', ean13: '3017620422003' });
 
-    await priv.upsertStockItems(USER_ID, [item({ name: 'whatever', ean13: '3017620422003' })]);
+    await service.commitParsedItems(USER_ID, [item({ name: 'whatever', ean13: '3017620422003' })]);
 
     expect(prismaMock.product.findFirst).toHaveBeenCalledWith({
       where: { ean13: '3017620422003' },
@@ -124,7 +131,9 @@ describe('upsertStockItems() — product matching', () => {
     prismaMock.product.findFirst.mockResolvedValue(null);
     prismaMock.product.create.mockResolvedValue({ id: 'p1', name: 'Yaourt' });
 
-    await priv.upsertStockItems(USER_ID, [item({ name: 'Yaourt', expirationDate: '2026-07-01' })]);
+    await service.commitParsedItems(USER_ID, [
+      item({ name: 'Yaourt', expirationDate: '2026-07-01' }),
+    ]);
 
     const data = prismaMock.stockItem.create.mock.calls[0]![0].data;
     expect(data.expirationDate).toBeInstanceOf(Date);
@@ -135,7 +144,7 @@ describe('upsertStockItems() — product matching', () => {
     prismaMock.product.findFirst.mockResolvedValue(null);
     prismaMock.product.create.mockResolvedValue({ id: 'p1', name: 'Sel' });
 
-    await priv.upsertStockItems(USER_ID, [item({ name: 'Sel' })]);
+    await service.commitParsedItems(USER_ID, [item({ name: 'Sel' })]);
 
     expect(prismaMock.stockItem.create.mock.calls[0]![0].data).not.toHaveProperty('expirationDate');
   });
@@ -158,5 +167,77 @@ describe('runMistralOcr() — MIME passthrough', () => {
 
     const arg = priv.mistral.ocr.process.mock.calls[0]![0];
     expect(arg.document.imageUrl).toMatch(/^data:image\/jpeg;base64,/);
+  });
+});
+
+describe('confirmJob() — selective add to stock', () => {
+  const PARSED = [
+    { name: 'Lait', quantity: 1, confidence: 0.9 },
+    { name: 'Pain', quantity: 2, confidence: 0.8 },
+    { name: 'Sel', confidence: 0.7 },
+  ];
+
+  function mockJob(overrides: Record<string, unknown> = {}) {
+    prismaMock.ocrJob.findUnique.mockResolvedValue({
+      id: 'job-1',
+      userId: USER_ID,
+      status: 'COMPLETED',
+      parsedItems: PARSED,
+      ...overrides,
+    });
+    prismaMock.product.findFirst.mockResolvedValue(null);
+    prismaMock.product.create.mockResolvedValue({ id: 'p1', name: 'X' });
+  }
+
+  it('adds only the selected indices and returns the count', async () => {
+    mockJob();
+
+    const result = await service.confirmJob('job-1', USER_ID, [0, 2]);
+
+    expect(result).toEqual({ added: 2 });
+    expect(prismaMock.stockItem.create).toHaveBeenCalledTimes(2);
+  });
+
+  it('marks the job CONFIRMED after committing', async () => {
+    mockJob();
+
+    await service.confirmJob('job-1', USER_ID, [0]);
+
+    expect(prismaMock.ocrJob.update).toHaveBeenCalledWith({
+      where: { id: 'job-1' },
+      data: { status: 'CONFIRMED' },
+    });
+  });
+
+  it('rejects a second confirm and does not add items again', async () => {
+    mockJob({ status: 'CONFIRMED' });
+
+    await expect(service.confirmJob('job-1', USER_ID, [0])).rejects.toThrow(
+      'Job already confirmed',
+    );
+    expect(prismaMock.stockItem.create).not.toHaveBeenCalled();
+  });
+
+  it('ignores duplicate and out-of-range indices', async () => {
+    mockJob();
+
+    const result = await service.confirmJob('job-1', USER_ID, [0, 0, 99, -1]);
+
+    expect(result).toEqual({ added: 1 });
+    expect(prismaMock.stockItem.create).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects when the job is not COMPLETED', async () => {
+    mockJob({ status: 'PROCESSING' });
+
+    await expect(service.confirmJob('job-1', USER_ID, [0])).rejects.toThrow();
+    expect(prismaMock.stockItem.create).not.toHaveBeenCalled();
+  });
+
+  it('rejects when no valid items are selected', async () => {
+    mockJob();
+
+    await expect(service.confirmJob('job-1', USER_ID, [99])).rejects.toThrow();
+    expect(prismaMock.stockItem.create).not.toHaveBeenCalled();
   });
 });

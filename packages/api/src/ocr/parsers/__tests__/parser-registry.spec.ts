@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CarrefourParser } from '../carrefour.parser.js';
+import { GrandFraisParser } from '../grand-frais.parser.js';
 import { LeclercParser } from '../leclerc.parser.js';
 import { LidlParser } from '../lidl.parser.js';
 import { ParserRegistry } from '../parser-registry.js';
@@ -25,6 +26,17 @@ describe('ParserRegistry', () => {
   it('detects LeclercParser from header containing LECLERC', () => {
     const rawText = 'LECLERC DRIVE\nFARINE DE BLE T55  0,89 A';
     expect(registry.detect(rawText)).toBeInstanceOf(LeclercParser);
+  });
+
+  it('detects GrandFraisParser when "GRAND FRAIS" only appears in the footer', () => {
+    const header = Array.from({ length: 20 }, (_, i) => `info line ${i}`).join('\n');
+    const rawText = `${header}\nA 1x *MENTHE BOUQUET 0,90 € 0,90 €\nVOTRE MAGASIN GRAND FRAIS VOUS ACCUEILLE`;
+    expect(registry.detect(rawText)).toBeInstanceOf(GrandFraisParser);
+  });
+
+  it('detects GrandFraisParser from the "Prix TVA" header hint', () => {
+    const rawText = 'Prix TVA\nMAIS EPI 5.00€ 14';
+    expect(registry.detect(rawText)).toBeInstanceOf(GrandFraisParser);
   });
 
   it('returns null for unknown retailer', () => {

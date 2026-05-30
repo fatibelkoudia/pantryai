@@ -5,89 +5,76 @@ import {
   toTitleCase,
 } from './receipt-parser.interface.js';
 
-// Product row like "MAIS EPI 5.00€ 14"
-// Name is uppercase text, price is before €, then VAT code at the end
-const PRODUCT_LINE = /^([A-Z][A-Z\d\s.'/\-]{2,}?)\s+([\d]+\.[\d]{2})€\s+\d{1,2}$/;
+// Unit-priced row (single line):
+//   "A 1x *CHAMPIGNON BLANC PC FR 1,99 € 1,99 €"
+//   <VAT letter> <qty>x [*]<name> <unit price> € <total> €
+const UNIT_LINE = /^[A-Z]\s+(\d+)\s*x\s+\*?(.+?)\s+\d+[,.]\d{2}\s*€\s+(\d+[,.]\d{2})\s*€$/;
 
-// Qty row for previous item: "4 x 1.25€"
-const QTY_LINE = /^(\d+)\s*x\s*([\d.]+)€$/;
+// Weight item name line; the price is on the following NET line:
+//   "A *MELON VERT"
+const WEIGHT_NAME_LINE = /^[A-Z]\s+\*(.+?)\s*$/;
 
-// Weight row for previous item: "1.345 kg x 1.99 €/kg"
-const WEIGHT_LINE = /^([\d.]+)\s*kg\s*x\s*([\d.]+)\s*€\/kg$/i;
+// Weight detail line completing the previous name:
+//   "NET 2,545 kg x 2,99 €/kg 7,61 €"
+const WEIGHT_DETAIL_LINE = /^NET\s+([\d,.]+)\s*kg\s*x\s*[\d,.]+\s*€\/kg\s+([\d,.]+)\s*€$/i;
 
-// Skip discount/summary lines
-const SKIP_LINE = /^(-\d|Tare\s|TOTAL\b|Carte\s|28\s+TOTAL|OP\s+|Prix\s+TVA|--|^-[A-Z])/i;
-
-interface PendingItem {
-  name: string;
-  price: number;
-  quantity?: number;
-  unit?: string;
-}
+// End of the product list: "39 LIGNES 42 ARTICLES", the TVA table, or totals.
+const STOP_LINE = /^(\d+\s+LIGNES\b|TVA\s+Taux|TOTAL\b|NET\s+TTC\b)/i;
 
 export class GrandFraisParser implements ReceiptParser {
   readonly retailerName = 'GRAND FRAIS';
 
   parse(rawText: string): ParsedReceiptItem[] {
     const items: ParsedReceiptItem[] = [];
-    let pending: PendingItem | null = null;
-    let pastTotal = false;
-
-    const flush = (): void => {
-      if (!pending) return;
-      items.push({
-        name: pending.name,
-        price: pending.price,
-        ...(pending.quantity !== undefined && { quantity: pending.quantity }),
-        ...(pending.unit !== undefined && { unit: pending.unit }),
-        confidence: 0.85,
-      });
-      pending = null;
-    };
+    // Name of a weight item waiting for its NET line to supply the price.
+    let pendingWeightName: string | null = null;
 
     for (const line of rawText.split('\n')) {
       const trimmed = line.trim();
       if (!trimmed) continue;
 
-      // Stop parsing after TOTAL section
-      if (/^\d{1,3}\s+TOTAL\b/i.test(trimmed) || /^TOTAL\b/i.test(trimmed)) {
-        flush();
-        pastTotal = true;
-      }
-      if (pastTotal) continue;
-      if (SKIP_LINE.test(trimmed)) {
-        flush();
+      if (STOP_LINE.test(trimmed)) break;
+
+      // Unit-priced product (qty x price on a single line).
+      const unitMatch = UNIT_LINE.exec(trimmed);
+      if (unitMatch && unitMatch[1] && unitMatch[2] && unitMatch[3]) {
+        pendingWeightName = null;
+        const qty = parseInt(unitMatch[1], 10);
+        items.push({
+          name: toTitleCase(unitMatch[2].trim().replace(/\s+/g, ' ')),
+          ...(qty > 0 && { quantity: qty }),
+          price: parsePrice(unitMatch[3]),
+          confidence: 0.9,
+        });
         continue;
       }
 
-      // Qty for previous item
-      const qtyMatch = QTY_LINE.exec(trimmed);
-      if (qtyMatch && pending && qtyMatch[1]) {
-        pending.quantity = parseInt(qtyMatch[1], 10);
+      // NET line completes a pending weight item.
+      const weightMatch = WEIGHT_DETAIL_LINE.exec(trimmed);
+      if (weightMatch && weightMatch[1] && weightMatch[2] && pendingWeightName) {
+        items.push({
+          name: pendingWeightName,
+          quantity: parsePrice(weightMatch[1]),
+          unit: 'kg',
+          price: parsePrice(weightMatch[2]),
+          confidence: 0.9,
+        });
+        pendingWeightName = null;
         continue;
       }
 
-      // Weight for previous item
-      const weightMatch = WEIGHT_LINE.exec(trimmed);
-      if (weightMatch && pending && weightMatch[1]) {
-        pending.quantity = parseFloat(weightMatch[1]);
-        pending.unit = 'kg';
+      // Weight item name (price arrives on the following NET line).
+      const nameMatch = WEIGHT_NAME_LINE.exec(trimmed);
+      if (nameMatch && nameMatch[1]) {
+        pendingWeightName = toTitleCase(nameMatch[1].trim().replace(/\s+/g, ' '));
         continue;
       }
 
-      // Product row
-      const productMatch = PRODUCT_LINE.exec(trimmed);
-      if (productMatch && productMatch[1] && productMatch[2]) {
-        flush();
-        pending = {
-          name: toTitleCase(productMatch[1].trim().replace(/\.\s*$/, '')),
-          price: parsePrice(productMatch[2]),
-        };
-        continue;
-      }
+      // Anything else (société headers, PT tare, offers, store info) is ignored
+      // and discards any half-formed weight item.
+      pendingWeightName = null;
     }
 
-    flush();
     return items;
   }
 }

@@ -13,8 +13,10 @@ export class ParserRegistry {
     if (/CARREFOUR/i.test(header)) return new CarrefourParser();
     if (/E\.LECLERC|LECLERC/i.test(header)) return new LeclercParser();
     if (/\bAuchan\b|auchan\.fr/i.test(header)) return new AuchanParser();
-    // Grand Frais is often hard to read in OCR, so also detect "Prix TVA"
-    if (/Grand[\s-]Frais|GRAND[\s-]FRAIS|^Prix\s+TVA/im.test(header)) {
+
+    // Grand Frais branding often sits in the footer ("VOTRE MAGASIN GRAND FRAIS"),
+    // so search the full text; "Prix TVA" in the header is an extra hint.
+    if (/GRAND[\s-]?FRAIS/i.test(rawText) || /^Prix\s+TVA/im.test(header)) {
       return new GrandFraisParser();
     }
 
