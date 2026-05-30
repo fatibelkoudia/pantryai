@@ -238,9 +238,11 @@ DATABASE_TEST_URL=postgresql://pantryai:pantryai@localhost:5433/pantryai_test \
 
 ## Documentation
 
+[docs/](docs/README.md) has everything, grouped by what you are doing: setting up the
+outside services, how the app is built and why, using the app, running it in
+production, and the certification deliverables. A few starting points:
+
 - [docs/api.md](docs/api.md) is the API reference.
 - [docs/user-guide.md](docs/user-guide.md) is the guide for people using the app.
-- [docs/cicd.md](docs/cicd.md) explains the CI and deploy pipelines.
 - [docs/deployment.md](docs/deployment.md) explains how it gets to production.
-- [docs/update-guide.md](docs/update-guide.md) covers upgrades and maintenance.
 - [CHANGELOG.md](CHANGELOG.md) is the version history.
