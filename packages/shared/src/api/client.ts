@@ -23,6 +23,11 @@ export class ApiClientError extends Error {
 export interface ScanReceiptOptions {
   onUploadProgress?: (percent: number) => void;
   signal?: AbortSignal;
+  /**
+   * When false, the receipt is parsed but items are NOT added to stock — the caller then
+   * confirms a selection via `confirmOcrJob`. Defaults to true (immediate add).
+   */
+  autoCommit?: boolean;
 }
 
 const DEFAULT_TIMEOUT_MS = 15_000;
@@ -184,7 +189,8 @@ export class PantryApiClient {
       const form = new FormData();
       form.append('file', file);
 
-      xhr.open('POST', `${this.baseUrl}/ocr/scan`);
+      const query = options.autoCommit === false ? '?autoCommit=false' : '';
+      xhr.open('POST', `${this.baseUrl}/ocr/scan${query}`);
       xhr.timeout = this.timeoutMs;
       if (this.accessToken) {
         xhr.setRequestHeader('Authorization', `Bearer ${this.accessToken}`);
@@ -231,6 +237,14 @@ export class PantryApiClient {
       xhr.onabort = () => reject(new ApiClientError('ABORTED', 'Upload aborted', 0));
 
       xhr.send(form);
+    });
+  }
+
+  /** Add the selected parsed items (by index into the job's parsedItems) to stock. */
+  confirmOcrJob(jobId: string, indices: number[]): Promise<{ added: number }> {
+    return this.request<{ added: number }>(`/ocr/jobs/${jobId}/confirm`, {
+      method: 'POST',
+      body: JSON.stringify({ indices }),
     });
   }
 

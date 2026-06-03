@@ -9,7 +9,7 @@ export default function ScanPage() {
       <header>
         <h1 className="text-2xl font-bold">Scan a receipt</h1>
         <p className="mt-1 text-sm text-slate-500">
-          Upload a receipt photo — we&apos;ll extract the items and add them to your stock.
+          Upload a receipt photo or PDF and we&apos;ll extract the items and add them to your stock.
         </p>
       </header>
 
