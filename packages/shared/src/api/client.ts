@@ -34,6 +34,7 @@ const DEFAULT_TIMEOUT_MS = 15_000;
 
 export class PantryApiClient {
   private accessToken: string | null = null;
+  private refreshHandler: (() => Promise<string | null>) | null = null;
 
   constructor(
     private readonly baseUrl: string,
@@ -44,11 +45,39 @@ export class PantryApiClient {
     this.accessToken = token;
   }
 
+  // lets you set a function that gives back a new access token when a request fails with 401
+  // the client calls it once, uses the new token and retries the request a single time
+  // return null if you can't refresh and the 401 just goes through (so the caller can log out)
+  // it's optional, the web app leaves it unset because it refreshes with a cookie instead
+  setRefreshHandler(handler: (() => Promise<string | null>) | null): void {
+    this.refreshHandler = handler;
+  }
+
   private authHeaders(): Record<string, string> {
     return this.accessToken ? { Authorization: `Bearer ${this.accessToken}` } : {};
   }
 
-  private async request<T>(path: string, init: RequestInit = {}): Promise<T> {
+  private async request<T>(path: string, init: RequestInit = {}, allowRefresh = true): Promise<T> {
+    try {
+      return await this.performRequest<T>(path, init);
+    } catch (error) {
+      if (
+        error instanceof ApiClientError &&
+        error.status === 401 &&
+        allowRefresh &&
+        this.refreshHandler
+      ) {
+        const newToken = await this.refreshHandler();
+        if (newToken) {
+          this.setAccessToken(newToken);
+          return this.request<T>(path, init, false);
+        }
+      }
+      throw error;
+    }
+  }
+
+  private async performRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...this.authHeaders(),

@@ -11,6 +11,6 @@
     "ios": {
       "bundleIdentifier": "com.pantryai.app"
     },
-    "plugins": ["expo-router", "expo-camera"]
+    "plugins": ["expo-router", "expo-camera", "expo-secure-store"]
   }
 }

@@ -14,7 +14,6 @@ import {
   View,
 } from 'react-native';
 import { apiClient } from '../src/api/client';
-import { useAuthStore } from '../src/store/auth';
 
 const LOCATIONS: StockLocation[] = ['FRIDGE', 'FREEZER', 'PANTRY'];
 
@@ -31,8 +30,6 @@ export default function AddStockScreen() {
     productName: string;
     brand: string;
   }>();
-
-  const accessToken = useAuthStore((s) => s.accessToken);
 
   const [quantity, setQuantity] = useState('');
   const [unit, setUnit] = useState('');
@@ -52,7 +49,6 @@ export default function AddStockScreen() {
       return;
     }
 
-    apiClient.setAccessToken(accessToken);
     setIsSubmitting(true);
 
     try {
