@@ -1,5 +1,6 @@
 import type { StockItemWithProduct, StockLocation } from '@pantryai/shared';
 import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import {
   ActivityIndicator,
@@ -40,6 +41,7 @@ function ExpirationBadge({ expirationDate }: { expirationDate?: string }) {
 
 export default function StockScreen() {
   const logout = useAuthStore((s) => s.logout);
+  const router = useRouter();
 
   const { data, isLoading, isError, error, refetch, isRefetching } = useQuery({
     queryKey: ['stocks'],
@@ -83,15 +85,23 @@ export default function StockScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Your pantry</Text>
-        <TouchableOpacity onPress={() => logout()} accessibilityRole="button">
-          <Text style={styles.logout}>Log out</Text>
-        </TouchableOpacity>
+        <View style={styles.headerActions}>
+          <TouchableOpacity onPress={() => router.push('/manual-entry')} accessibilityRole="button">
+            <Text style={styles.addManually}>+ Add manually</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => logout()} accessibilityRole="button">
+            <Text style={styles.logout}>Log out</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {isEmpty ? (
         <View style={styles.centered}>
           <Text style={styles.emptyTitle}>Nothing in stock yet</Text>
           <Text style={styles.emptySub}>Scan a barcode or a receipt to add your first items.</Text>
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/manual-entry')}>
+            <Text style={styles.buttonText}>Add manually</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <SectionList
@@ -148,6 +158,16 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: '700',
     color: '#111',
+  },
+  headerActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  addManually: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2e7d32',
   },
   logout: {
     fontSize: 14,

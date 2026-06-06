@@ -17,3 +17,9 @@ export interface CreateProductDto {
   category?: string;
   imageUrl?: string;
 }
+
+export interface ProductQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+}

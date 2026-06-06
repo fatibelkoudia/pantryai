@@ -1,7 +1,7 @@
 import type { ApiMeta, ApiResponse } from '../types/api.js';
 import type { AuthResponse, LoginDto, RegisterDto } from '../types/auth.js';
 import type { OcrJob } from '../types/ocr.js';
-import type { CreateProductDto, Product } from '../types/product.js';
+import type { CreateProductDto, Product, ProductQuery } from '../types/product.js';
 import type {
   CreateStockItemDto,
   StockItemWithProduct,
@@ -160,6 +160,17 @@ export class PantryApiClient {
   }
 
   // Products
+  listProducts(query: ProductQuery = {}): Promise<{ items: Product[]; meta: ApiMeta }> {
+    const params = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value !== undefined && value !== null && value !== '') {
+        params.set(key, String(value));
+      }
+    }
+    const qs = params.toString();
+    return this.request<{ items: Product[]; meta: ApiMeta }>(`/products${qs ? `?${qs}` : ''}`);
+  }
+
   getProductByEan13(ean13: string): Promise<Product> {
     return this.request<Product>(`/products/ean/${ean13}`);
   }

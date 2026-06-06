@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiClientError } from '@pantryai/shared';
 import type { CreateStockItemDto, Product, StockLocation } from '@pantryai/shared';
 import { apiClient } from '@/lib/api';
@@ -15,6 +15,23 @@ export default function NewStockPage() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Product-by-name search
+  const [search, setSearch] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  // wait a moment after typing before searching, so we don't fire a request per keystroke
+  useEffect(() => {
+    const timer = setTimeout(() => setSearchTerm(search.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [search]);
+
+  const { data: searchData, isFetching: searching } = useQuery({
+    queryKey: ['product-search', searchTerm],
+    queryFn: () => apiClient.listProducts({ search: searchTerm, limit: 10 }),
+    enabled: searchTerm.length >= 2,
+  });
+  const matches = searchData?.items ?? [];
 
   // Product-by-barcode
   const [ean, setEan] = useState('');
@@ -116,6 +133,43 @@ export default function NewStockPage() {
         ) : (
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-1">
+              <label htmlFor="search" className="text-sm font-medium">
+                Search existing products
+              </label>
+              <input
+                id="search"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="rounded-md border border-border px-3 py-2"
+                placeholder="Start typing a name…"
+              />
+              {searchTerm.length >= 2 ? (
+                <ul className="mt-1 flex flex-col gap-1">
+                  {searching ? (
+                    <li className="px-1 py-1 text-sm text-slate-500">Searching…</li>
+                  ) : matches.length > 0 ? (
+                    matches.map((p) => (
+                      <li key={p.id}>
+                        <button
+                          type="button"
+                          onClick={() => setProduct(p)}
+                          className="w-full rounded-md border border-border px-3 py-2 text-left text-sm hover:bg-green-50"
+                        >
+                          <strong>{p.name}</strong>
+                          {p.brand ? ` — ${p.brand}` : ''}
+                        </button>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="px-1 py-1 text-sm text-slate-500">
+                      No match. Look it up by barcode or create it below.
+                    </li>
+                  )}
+                </ul>
+              ) : null}
+            </div>
+
+            <div className="border-t border-border pt-4 flex flex-col gap-1">
               <label htmlFor="ean" className="text-sm font-medium">
                 Find by barcode (EAN-13)
               </label>

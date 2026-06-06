@@ -43,6 +43,7 @@ describe('ProductService', () => {
       expect(result.items).toHaveLength(1);
       expect(result.meta).toEqual({ page: 1, limit: 20, total: 1 });
       expect(mockPrismaService.product.findMany).toHaveBeenCalledWith({
+        where: {},
         skip: 0,
         take: 20,
         orderBy: { createdAt: 'desc' },
@@ -57,6 +58,30 @@ describe('ProductService', () => {
 
       expect(result.meta.page).toBe(1);
       expect(result.meta.limit).toBe(20);
+    });
+
+    it('filters by name (case-insensitive) when search is provided', async () => {
+      mockPrismaService.product.findMany.mockResolvedValue([mockProduct]);
+      mockPrismaService.product.count.mockResolvedValue(1);
+
+      await service.findAll({ search: 'yog' });
+
+      const expectedWhere = { name: { contains: 'yog', mode: 'insensitive' } };
+      expect(mockPrismaService.product.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: expectedWhere }),
+      );
+      expect(mockPrismaService.product.count).toHaveBeenCalledWith({ where: expectedWhere });
+    });
+
+    it('trims whitespace-only search to no filter', async () => {
+      mockPrismaService.product.findMany.mockResolvedValue([]);
+      mockPrismaService.product.count.mockResolvedValue(0);
+
+      await service.findAll({ search: '   ' });
+
+      expect(mockPrismaService.product.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: {} }),
+      );
     });
   });
 
