@@ -2,9 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { apiClient } from '../../src/api/client';
-import { useAuthStore } from '../../src/store/auth';
-import { colors, font } from '../../src/theme';
+import { apiClient } from '../src/api/client';
+import { useAuthStore } from '../src/store/auth';
+import { colors, font } from '../src/theme';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -48,8 +48,6 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>Profile</Text>
-
       <View style={styles.xpCard}>
         <Text style={styles.star}>⭐</Text>
         <View>
@@ -97,9 +95,8 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.softMint },
+  container: { flex: 1, backgroundColor: colors.warmCream },
   content: { padding: 16, gap: 12 },
-  title: { fontSize: 22, fontFamily: font.black, color: colors.charcoal, paddingTop: 8 },
   xpCard: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -91,7 +91,7 @@ export default function ExpiringScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.warmCream,
   },
   centered: {
     flex: 1,
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
     gap: 10,
-    backgroundColor: '#fff',
+    backgroundColor: colors.warmCream,
   },
   list: {
     paddingHorizontal: 16,

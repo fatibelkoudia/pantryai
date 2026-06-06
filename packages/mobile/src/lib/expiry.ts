@@ -1,6 +1,6 @@
 import { expiry } from '../theme';
 
-export type ExpiryLevel = 'ok' | 'soon' | 'expired' | 'none';
+export type ExpiryLevel = 'ok' | 'soon' | 'urgent' | 'expired' | 'none';
 
 // how many days until the date (negative means it already passed), null if there's no date
 export function daysUntil(dateIso: string | undefined, now: Date = new Date()): number | null {
@@ -20,6 +20,7 @@ export function daysUntil(dateIso: string | undefined, now: Date = new Date()): 
 export function expiryLevel(days: number | null): ExpiryLevel {
   if (days === null) return 'none';
   if (days < 0) return 'expired';
+  if (days <= 1) return 'urgent';
   if (days <= 7) return 'soon';
   return 'ok';
 }
@@ -38,6 +39,7 @@ export function expiryLabel(days: number | null): string {
 export const EXPIRY_COLORS: Record<ExpiryLevel, { bg: string; fg: string }> = {
   ok: expiry.ok,
   soon: expiry.soon,
+  urgent: expiry.urgent,
   expired: expiry.expired,
   none: expiry.none,
 };

@@ -6,10 +6,12 @@ import { font } from '../theme';
 interface TrashyMoodProps {
   mood: WasteMood;
   size?: number;
+  // Home shows its own "Status: Good" line, so it can turn the built-in label off.
+  showLabel?: boolean;
 }
 
 // The Trashy mascot for a given mood, rendered from the shared SVG string.
-export function TrashyMood({ mood, size = 120 }: TrashyMoodProps) {
+export function TrashyMood({ mood, size = 120, showLabel = true }: TrashyMoodProps) {
   const meta = mascotMoodMeta[mood];
   return (
     <View
@@ -18,7 +20,7 @@ export function TrashyMood({ mood, size = 120 }: TrashyMoodProps) {
       accessibilityLabel={`Trashy looks ${meta.label.toLowerCase()}`}
     >
       <SvgXml xml={MASCOT_SVG[mood]} width={size} height={size} />
-      <Text style={[styles.label, { color: meta.accent }]}>{meta.label}</Text>
+      {showLabel ? <Text style={[styles.label, { color: meta.accent }]}>{meta.label}</Text> : null}
     </View>
   );
 }

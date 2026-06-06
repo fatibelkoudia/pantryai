@@ -1,5 +1,4 @@
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { apiClient } from '../api/client';
 
@@ -7,13 +6,15 @@ import { apiClient } from '../api/client';
 // to the API so the daily expiration job can reach this device. This is all best-effort:
 // on a simulator, when permission is denied, or without an EAS project set up, getting
 // the token can fail, so we just log it and move on instead of crashing the app on boot.
+// expo-notifications is imported dynamically because it crashes at module load time in Expo Go SDK 53+.
 export async function registerForPushNotifications(): Promise<void> {
   if (!Device.isDevice) {
-    // Push tokens aren't available on simulators/emulators.
     return;
   }
 
   try {
+    const Notifications = await import('expo-notifications');
+
     const existing = await Notifications.getPermissionsAsync();
     let granted = existing.granted;
     if (!granted && existing.canAskAgain) {

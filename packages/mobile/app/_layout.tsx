@@ -93,7 +93,7 @@ export default function RootLayout() {
             options={{ title: 'Receipt Result', presentation: 'modal' }}
           />
           <Stack.Screen name="scan" options={{ title: 'Scan' }} />
-          <Stack.Screen name="shopping" options={{ title: 'Shopping list' }} />
+          <Stack.Screen name="profile" options={{ title: 'Profile' }} />
           <Stack.Screen name="expiring" options={{ title: 'Expiring soon' }} />
           <Stack.Screen name="mood" options={{ title: "Trashy's Mood" }} />
           <Stack.Screen name="rewards" options={{ title: 'Rewards' }} />
@@ -108,6 +108,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.softMint,
+    backgroundColor: colors.warmCream,
   },
 });

@@ -1,8 +1,10 @@
-import { mascotMoodMeta } from '@pantryai/shared';
+import { Ionicons } from '@expo/vector-icons';
+import { mascotMoodMeta, type StockLocation } from '@pantryai/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import {
   ActivityIndicator,
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,13 +13,19 @@ import {
 } from 'react-native';
 import { apiClient } from '../../src/api/client';
 import { TrashyMood } from '../../src/components/TrashyMood';
-import { WasteGauge } from '../../src/components/WasteGauge';
 import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../../src/lib/expiry';
+import { categoryIcon } from '../../src/lib/foodIcons';
 import { useAuthStore } from '../../src/store/auth';
 import { colors, font } from '../../src/theme';
 
-// How many expiring items to preview on Home before sending the user to Inventory.
-const EXPIRING_PREVIEW = 4;
+// How many "Use Soon" items to preview before sending the user to the full list.
+const EXPIRING_PREVIEW = 3;
+
+const LOCATION_LABELS: Record<StockLocation, string> = {
+  FRIDGE: 'Fridge',
+  FREEZER: 'Freezer',
+  PANTRY: 'Pantry',
+};
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -36,60 +44,97 @@ export default function HomeScreen() {
     queryKey: ['stocks', 'expiring'],
     queryFn: () => apiClient.listStocks({ expiringSoon: true }),
   });
+  // Same key as the Recipes tab so both screens share the cached suggestions.
+  const recipes = useQuery({
+    queryKey: ['recipes'],
+    queryFn: () => apiClient.suggestRecipes(),
+  });
 
   // user might still be loading, so fall back to a plain hello until we have a name
-  const greeting = user?.name ? `Hi, ${user.name}!` : 'Hi there!';
+  const firstName = user?.name?.trim().split(/\s+/)[0];
+  const initial = (firstName ?? user?.email ?? '?').charAt(0).toUpperCase();
   const expiringItems = expiring.data?.items ?? [];
+  const topSuggestion = recipes.data?.suggestions[0];
+  const mood = waste.data ? mascotMoodMeta[waste.data.mood] : null;
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <View style={styles.greetingBlock}>
-        <Text style={styles.greeting}>{greeting}</Text>
-        <Text style={styles.tagline}>Waste less. Cook more.</Text>
+      {/* Header: avatar -> profile, bell -> expiring alerts, plus a scan shortcut */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.avatar}
+          onPress={() => router.push('/profile')}
+          accessibilityRole="button"
+          accessibilityLabel="Open your profile"
+        >
+          <Text style={styles.avatarInitial}>{initial}</Text>
+        </TouchableOpacity>
+        <View style={styles.headerText}>
+          <Text style={styles.greeting}>{firstName ? `Hello, ${firstName} 👋` : 'Hello 👋'}</Text>
+          <Text style={styles.tagline}>Ready to waste less today?</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.headerBtn}
+          onPress={() => router.push('/scan')}
+          accessibilityRole="button"
+          accessibilityLabel="Scan a receipt"
+        >
+          <Ionicons name="scan-outline" size={20} color={colors.forestGreen} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.headerBtn}
+          onPress={() => router.push('/expiring')}
+          accessibilityRole="button"
+          accessibilityLabel="See expiring items"
+        >
+          <Ionicons name="notifications-outline" size={20} color={colors.forestGreen} />
+        </TouchableOpacity>
       </View>
 
       {/* Trashy's mood + Waste Level */}
       <View style={styles.card}>
         {waste.isLoading ? (
           <ActivityIndicator color={colors.leafGreen} />
-        ) : waste.data ? (
+        ) : waste.data && mood ? (
           <View style={styles.moodCard}>
-            <TrashyMood mood={waste.data.mood} size={120} />
-            <WasteGauge score={waste.data.score} accent={mascotMoodMeta[waste.data.mood].accent} />
-            <Text style={styles.moodMessage}>{mascotMoodMeta[waste.data.mood].message}</Text>
+            <TouchableOpacity
+              onPress={() => router.push('/mood')}
+              accessibilityRole="button"
+              accessibilityLabel="See Trashy's mood details"
+            >
+              <TrashyMood mood={waste.data.mood} size={130} showLabel={false} />
+            </TouchableOpacity>
+            <Text style={styles.statusTitle}>Status: {mood.label}</Text>
+            <Text style={styles.moodMessage}>{mood.message}</Text>
+            <View
+              style={styles.wasteTrack}
+              accessibilityRole="progressbar"
+              accessibilityValue={{ min: 0, max: 100, now: Math.round(waste.data.score) }}
+              accessibilityLabel="Waste Level"
+            >
+              <View
+                style={[
+                  styles.wasteFill,
+                  {
+                    width: `${Math.max(0, Math.min(100, Math.round(waste.data.score)))}%`,
+                    backgroundColor: mood.accent,
+                  },
+                ]}
+              />
+            </View>
+            <TouchableOpacity style={styles.cta} onPress={() => router.push('/(tabs)/recipes')}>
+              <Text style={styles.ctaText}>Help Trashy stay small</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <Text style={styles.muted}>Could not check on Trashy right now.</Text>
         )}
       </View>
 
-      {/* Quick actions */}
-      <View style={styles.actionsRow}>
-        <TouchableOpacity style={styles.action} onPress={() => router.push('/scan')}>
-          <Text style={styles.actionText}>Scan</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.action} onPress={() => router.push('/manual-entry')}>
-          <Text style={styles.actionText}>Add</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.action} onPress={() => router.push('/shopping')}>
-          <Text style={styles.actionText}>Shopping</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Today's Tip */}
-      {tip.data?.tip ? (
-        <View style={styles.tipCard}>
-          <Text style={styles.tipLabel}>TODAY&apos;S TIP</Text>
-          <Text style={styles.tipTitle}>{tip.data.tip.title}</Text>
-          <Text style={styles.tipBody}>{tip.data.tip.body}</Text>
-          <Text style={styles.tipSource}>Source: {tip.data.tip.source}</Text>
-        </View>
-      ) : null}
-
-      {/* Expiring soon */}
+      {/* Use Soon */}
       <View style={styles.sectionHeaderRow}>
-        <Text style={styles.sectionTitle}>Expiring soon</Text>
-        <TouchableOpacity onPress={() => router.push('/(tabs)/inventory')}>
+        <Text style={styles.sectionTitle}>Use Soon</Text>
+        <TouchableOpacity onPress={() => router.push('/expiring')}>
           <Text style={styles.seeAll}>See all</Text>
         </TouchableOpacity>
       </View>
@@ -106,10 +151,13 @@ export default function HomeScreen() {
           const palette = EXPIRY_COLORS[expiryLevel(days)];
           return (
             <View key={item.id} style={styles.expiringRow}>
+              <View style={[styles.itemIcon, { backgroundColor: palette.bg }]}>
+                <Ionicons name={categoryIcon(item.product.category)} size={20} color={palette.fg} />
+              </View>
               <View style={styles.itemInfo}>
                 <Text style={styles.itemName}>{item.product.name}</Text>
                 <Text style={styles.itemMeta}>
-                  {item.quantity} {item.unit}
+                  {LOCATION_LABELS[item.location]} · {item.quantity} {item.unit}
                 </Text>
               </View>
               <View style={[styles.badge, { backgroundColor: palette.bg }]}>
@@ -119,39 +167,124 @@ export default function HomeScreen() {
           );
         })
       )}
+
+      {/* Cook with what you have: best recipe match for the current stock */}
+      <Text style={[styles.sectionTitle, styles.sectionSpacing]}>Cook with what you have</Text>
+      {recipes.isLoading ? (
+        <ActivityIndicator color={colors.leafGreen} />
+      ) : topSuggestion ? (
+        <View style={styles.recipeCard}>
+          {topSuggestion.recipe.imageUrl ? (
+            <View>
+              <Image
+                source={{ uri: topSuggestion.recipe.imageUrl }}
+                style={styles.recipeImage}
+                resizeMode="cover"
+              />
+              <View style={styles.matchPill}>
+                <Text style={styles.matchText}>{Math.round(topSuggestion.score * 100)}% match</Text>
+              </View>
+            </View>
+          ) : null}
+          <View style={styles.recipeBody}>
+            <Text style={styles.recipeTitle}>{topSuggestion.recipe.name}</Text>
+            <View style={styles.haveRow}>
+              <View style={styles.haveCount}>
+                <Text style={styles.haveCountText}>{topSuggestion.matchedIngredients.length}</Text>
+              </View>
+              <Text style={styles.haveText}>
+                You already have {topSuggestion.matchedIngredients.length}/
+                {topSuggestion.recipe.ingredients.length} ingredients.
+              </Text>
+            </View>
+            <TouchableOpacity style={styles.cta} onPress={() => router.push('/(tabs)/recipes')}>
+              <Text style={styles.ctaText}>Cook this</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      ) : (
+        <View style={styles.emptyCard}>
+          <Text style={styles.muted}>
+            No recipe matches your stock yet (a suggestion needs 70% of its ingredients). Add more
+            items to unlock ideas.
+          </Text>
+          <TouchableOpacity
+            style={styles.cta}
+            onPress={() => router.push('/(tabs)/recipes')}
+            accessibilityRole="button"
+          >
+            <Text style={styles.ctaText}>Browse recipes</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+
+      {/* Today's Tip */}
+      {tip.data?.tip ? (
+        <View style={styles.tipCard}>
+          <View style={styles.tipIcon}>
+            <Ionicons name="bulb-outline" size={20} color={colors.forestGreen} />
+          </View>
+          <View style={styles.tipBody}>
+            <Text style={styles.tipLabel}>Today&apos;s Tip</Text>
+            <Text style={styles.tipTitle}>{tip.data.tip.title}</Text>
+            <Text style={styles.tipText}>{tip.data.tip.body}</Text>
+            <Text style={styles.tipSource}>Source: {tip.data.tip.source}</Text>
+          </View>
+        </View>
+      ) : null}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.softMint },
+  container: { flex: 1, backgroundColor: colors.warmCream },
   content: { padding: 16, gap: 14 },
-  greetingBlock: { paddingTop: 8 },
-  greeting: { fontSize: 24, fontFamily: font.black, color: colors.charcoal },
-  tagline: { fontSize: 14, fontFamily: font.semibold, color: colors.leafGreen, marginTop: 2 },
-  card: { backgroundColor: colors.white, borderRadius: 16, padding: 20 },
-  moodCard: { alignItems: 'center', gap: 12 },
-  moodMessage: {
-    fontSize: 15,
-    fontFamily: font.semibold,
-    color: colors.charcoal,
-    textAlign: 'center',
-  },
-  muted: { fontSize: 14, color: colors.textMuted, textAlign: 'center' },
-  actionsRow: { flexDirection: 'row', gap: 10 },
-  action: {
-    flex: 1,
+  header: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingTop: 8 },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 999,
     backgroundColor: colors.leafGreen,
-    borderRadius: 12,
-    paddingVertical: 12,
+    borderWidth: 2,
+    borderColor: colors.paleGreen,
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  actionText: { color: colors.onBrand, fontSize: 14, fontFamily: font.bold },
-  tipCard: { backgroundColor: colors.white, borderRadius: 16, padding: 16, gap: 4 },
-  tipLabel: { fontSize: 11, fontFamily: font.bold, color: colors.leafGreen, letterSpacing: 0.5 },
-  tipTitle: { fontSize: 15, fontFamily: font.bold, color: colors.charcoal },
-  tipBody: { fontSize: 14, color: colors.textMuted },
-  tipSource: { fontSize: 11, color: colors.textMuted, marginTop: 4 },
+  avatarInitial: { color: colors.onBrand, fontSize: 17, fontFamily: font.bold },
+  headerText: { flex: 1 },
+  greeting: { fontSize: 18, fontFamily: font.black, color: colors.forestGreen },
+  tagline: { fontSize: 13, color: colors.textMuted, marginTop: 1 },
+  headerBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 999,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  card: { backgroundColor: colors.white, borderRadius: 16, padding: 20 },
+  moodCard: { alignItems: 'center', gap: 6 },
+  statusTitle: { fontSize: 20, fontFamily: font.black, color: colors.charcoal },
+  moodMessage: { fontSize: 14, color: colors.textMuted, textAlign: 'center' },
+  wasteTrack: {
+    width: '100%',
+    height: 12,
+    borderRadius: 999,
+    backgroundColor: colors.warmGray,
+    overflow: 'hidden',
+    marginTop: 8,
+  },
+  wasteFill: { height: '100%', borderRadius: 999 },
+  cta: {
+    width: '100%',
+    backgroundColor: colors.forestGreen,
+    borderRadius: 14,
+    paddingVertical: 13,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  ctaText: { color: colors.onBrand, fontSize: 14, fontFamily: font.bold },
+  muted: { fontSize: 14, color: colors.textMuted, textAlign: 'center' },
   sectionHeaderRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -159,20 +292,73 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   sectionTitle: { fontSize: 17, fontFamily: font.bold, color: colors.charcoal },
-  seeAll: { fontSize: 13, fontFamily: font.semibold, color: colors.leafGreen },
-  emptyCard: { backgroundColor: colors.white, borderRadius: 16, padding: 16 },
+  sectionSpacing: { marginTop: 4 },
+  seeAll: { fontSize: 13, fontFamily: font.semibold, color: colors.forestGreen },
+  emptyCard: { backgroundColor: colors.white, borderRadius: 16, padding: 16, gap: 4 },
   expiringRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    gap: 12,
     backgroundColor: colors.white,
     borderRadius: 14,
     paddingVertical: 12,
     paddingHorizontal: 14,
   },
-  itemInfo: { flex: 1, marginRight: 12 },
+  itemIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  itemInfo: { flex: 1 },
   itemName: { fontSize: 15, fontFamily: font.semibold, color: colors.charcoal },
-  itemMeta: { fontSize: 13, color: colors.textMuted, marginTop: 2 },
+  itemMeta: { fontSize: 12, color: colors.textMuted, marginTop: 2 },
   badge: { borderRadius: 999, paddingHorizontal: 10, paddingVertical: 4 },
   badgeText: { fontSize: 12, fontFamily: font.bold },
+  recipeCard: { backgroundColor: colors.white, borderRadius: 16, overflow: 'hidden' },
+  recipeImage: { width: '100%', height: 160 },
+  matchPill: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: colors.white,
+    borderRadius: 999,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  matchText: { fontSize: 12, fontFamily: font.bold, color: colors.charcoal },
+  recipeBody: { padding: 16, gap: 8 },
+  recipeTitle: { fontSize: 17, fontFamily: font.bold, color: colors.charcoal },
+  haveRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  haveCount: {
+    width: 22,
+    height: 22,
+    borderRadius: 999,
+    backgroundColor: colors.leafGreen,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  haveCountText: { color: colors.onBrand, fontSize: 11, fontFamily: font.bold },
+  haveText: { flex: 1, fontSize: 13, color: colors.textMuted },
+  tipCard: {
+    flexDirection: 'row',
+    gap: 12,
+    backgroundColor: colors.heroMint,
+    borderRadius: 16,
+    padding: 16,
+  },
+  tipIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tipBody: { flex: 1, gap: 2 },
+  tipLabel: { fontSize: 12, fontFamily: font.bold, color: colors.forestGreen, letterSpacing: 0.5 },
+  tipTitle: { fontSize: 15, fontFamily: font.bold, color: colors.charcoal },
+  tipText: { fontSize: 14, color: colors.textMuted },
+  tipSource: { fontSize: 11, color: colors.textMuted, marginTop: 4 },
 });
