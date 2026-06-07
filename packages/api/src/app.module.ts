@@ -10,6 +10,7 @@ import { NotificationsModule } from './notifications/notifications.module.js';
 import { OcrModule } from './ocr/ocr.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { ProductModule } from './product/product.module.js';
+import { RedisModule } from './redis/redis.module.js';
 import { StockModule } from './stock/stock.module.js';
 
 @Module({
@@ -23,6 +24,7 @@ import { StockModule } from './stock/stock.module.js';
       },
     }),
     PrismaModule,
+    RedisModule,
     AuthModule,
     ProductModule,
     StockModule,
