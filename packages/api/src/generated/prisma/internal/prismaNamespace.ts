@@ -376,6 +376,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  UserDevice: 'UserDevice',
   Product: 'Product',
   StockItem: 'StockItem',
   OcrJob: 'OcrJob',
@@ -398,7 +399,7 @@ export type TypeMap<
     omit: GlobalOmitOptions;
   };
   meta: {
-    modelProps: 'user' | 'product' | 'stockItem' | 'ocrJob';
+    modelProps: 'user' | 'userDevice' | 'product' | 'stockItem' | 'ocrJob';
     txIsolationLevel: TransactionIsolationLevel;
   };
   model: {
@@ -473,6 +474,80 @@ export type TypeMap<
         count: {
           args: Prisma.UserCountArgs<ExtArgs>;
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number;
+        };
+      };
+    };
+    UserDevice: {
+      payload: Prisma.$UserDevicePayload<ExtArgs>;
+      fields: Prisma.UserDeviceFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.UserDeviceFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserDevicePayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.UserDeviceFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserDevicePayload>;
+        };
+        findFirst: {
+          args: Prisma.UserDeviceFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserDevicePayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.UserDeviceFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserDevicePayload>;
+        };
+        findMany: {
+          args: Prisma.UserDeviceFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserDevicePayload>[];
+        };
+        create: {
+          args: Prisma.UserDeviceCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserDevicePayload>;
+        };
+        createMany: {
+          args: Prisma.UserDeviceCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.UserDeviceCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserDevicePayload>[];
+        };
+        delete: {
+          args: Prisma.UserDeviceDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserDevicePayload>;
+        };
+        update: {
+          args: Prisma.UserDeviceUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserDevicePayload>;
+        };
+        deleteMany: {
+          args: Prisma.UserDeviceDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.UserDeviceUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.UserDeviceUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserDevicePayload>[];
+        };
+        upsert: {
+          args: Prisma.UserDeviceUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserDevicePayload>;
+        };
+        aggregate: {
+          args: Prisma.UserDeviceAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserDevice>;
+        };
+        groupBy: {
+          args: Prisma.UserDeviceGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.UserDeviceGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.UserDeviceCountArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.UserDeviceCountAggregateOutputType> | number;
         };
       };
     };
@@ -749,6 +824,17 @@ export const UserScalarFieldEnum = {
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
 
+export const UserDeviceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  expoPushToken: 'expoPushToken',
+  platform: 'platform',
+  createdAt: 'createdAt',
+} as const;
+
+export type UserDeviceScalarFieldEnum =
+  (typeof UserDeviceScalarFieldEnum)[keyof typeof UserDeviceScalarFieldEnum];
+
 export const ProductScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -771,6 +857,7 @@ export const StockItemScalarFieldEnum = {
   quantity: 'quantity',
   unit: 'unit',
   expirationDate: 'expirationDate',
+  expirationNotifiedAt: 'expirationNotifiedAt',
   location: 'location',
   addedAt: 'addedAt',
   createdAt: 'createdAt',
@@ -1022,6 +1109,7 @@ export type PrismaClientOptions = (
 };
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit;
+  userDevice?: Prisma.UserDeviceOmit;
   product?: Prisma.ProductOmit;
   stockItem?: Prisma.StockItemOmit;
   ocrJob?: Prisma.OcrJobOmit;

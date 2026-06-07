@@ -2,6 +2,7 @@
 
 export * from './types/api.js';
 export * from './types/auth.js';
+export * from './types/device.js';
 export * from './types/ocr.js';
 export * from './types/product.js';
 export * from './types/recipe.js';

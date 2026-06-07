@@ -17,9 +17,22 @@ model User {
   deletedAt    DateTime?
   stockItems   StockItem[]
   ocrJobs      OcrJob[]
+  devices      UserDevice[]
 
   @@index([email])
   @@map("users")
+}
+
+model UserDevice {
+  id            String   @id @default(uuid())
+  userId        String
+  expoPushToken String   @unique
+  platform      String
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("user_devices")
 }
 
 model Product {
@@ -52,6 +65,7 @@ model StockItem {
   quantity       Float
   unit           String
   expirationDate DateTime?
+  expirationNotifiedAt DateTime?
   location       StockLocation @default(PANTRY)
   addedAt        DateTime      @default(now())
   createdAt      DateTime      @default(now())

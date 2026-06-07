@@ -196,6 +196,7 @@ export type UserWhereInput = {
   deletedAt?: Prisma.DateTimeNullableFilter<'User'> | Date | string | null;
   stockItems?: Prisma.StockItemListRelationFilter;
   ocrJobs?: Prisma.OcrJobListRelationFilter;
+  devices?: Prisma.UserDeviceListRelationFilter;
 };
 
 export type UserOrderByWithRelationInput = {
@@ -208,6 +209,7 @@ export type UserOrderByWithRelationInput = {
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   stockItems?: Prisma.StockItemOrderByRelationAggregateInput;
   ocrJobs?: Prisma.OcrJobOrderByRelationAggregateInput;
+  devices?: Prisma.UserDeviceOrderByRelationAggregateInput;
 };
 
 export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -224,6 +226,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     deletedAt?: Prisma.DateTimeNullableFilter<'User'> | Date | string | null;
     stockItems?: Prisma.StockItemListRelationFilter;
     ocrJobs?: Prisma.OcrJobListRelationFilter;
+    devices?: Prisma.UserDeviceListRelationFilter;
   },
   'id' | 'email'
 >;
@@ -264,6 +267,7 @@ export type UserCreateInput = {
   deletedAt?: Date | string | null;
   stockItems?: Prisma.StockItemCreateNestedManyWithoutUserInput;
   ocrJobs?: Prisma.OcrJobCreateNestedManyWithoutUserInput;
+  devices?: Prisma.UserDeviceCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateInput = {
@@ -276,6 +280,7 @@ export type UserUncheckedCreateInput = {
   deletedAt?: Date | string | null;
   stockItems?: Prisma.StockItemUncheckedCreateNestedManyWithoutUserInput;
   ocrJobs?: Prisma.OcrJobUncheckedCreateNestedManyWithoutUserInput;
+  devices?: Prisma.UserDeviceUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserUpdateInput = {
@@ -288,6 +293,7 @@ export type UserUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   stockItems?: Prisma.StockItemUpdateManyWithoutUserNestedInput;
   ocrJobs?: Prisma.OcrJobUpdateManyWithoutUserNestedInput;
+  devices?: Prisma.UserDeviceUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateInput = {
@@ -300,6 +306,7 @@ export type UserUncheckedUpdateInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   stockItems?: Prisma.StockItemUncheckedUpdateManyWithoutUserNestedInput;
   ocrJobs?: Prisma.OcrJobUncheckedUpdateManyWithoutUserNestedInput;
+  devices?: Prisma.UserDeviceUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateManyInput = {
@@ -383,6 +390,32 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null;
 };
 
+export type UserCreateNestedOneWithoutDevicesInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutDevicesInput,
+    Prisma.UserUncheckedCreateWithoutDevicesInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDevicesInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutDevicesNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutDevicesInput,
+    Prisma.UserUncheckedCreateWithoutDevicesInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutDevicesInput;
+  upsert?: Prisma.UserUpsertWithoutDevicesInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutDevicesInput,
+      Prisma.UserUpdateWithoutDevicesInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutDevicesInput
+  >;
+};
+
 export type UserCreateNestedOneWithoutStockItemsInput = {
   create?: Prisma.XOR<
     Prisma.UserCreateWithoutStockItemsInput,
@@ -435,6 +468,82 @@ export type UserUpdateOneRequiredWithoutOcrJobsNestedInput = {
   >;
 };
 
+export type UserCreateWithoutDevicesInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  passwordHash: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
+  stockItems?: Prisma.StockItemCreateNestedManyWithoutUserInput;
+  ocrJobs?: Prisma.OcrJobCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutDevicesInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  passwordHash: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
+  stockItems?: Prisma.StockItemUncheckedCreateNestedManyWithoutUserInput;
+  ocrJobs?: Prisma.OcrJobUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutDevicesInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutDevicesInput,
+    Prisma.UserUncheckedCreateWithoutDevicesInput
+  >;
+};
+
+export type UserUpsertWithoutDevicesInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutDevicesInput,
+    Prisma.UserUncheckedUpdateWithoutDevicesInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutDevicesInput,
+    Prisma.UserUncheckedCreateWithoutDevicesInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutDevicesInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutDevicesInput,
+    Prisma.UserUncheckedUpdateWithoutDevicesInput
+  >;
+};
+
+export type UserUpdateWithoutDevicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  stockItems?: Prisma.StockItemUpdateManyWithoutUserNestedInput;
+  ocrJobs?: Prisma.OcrJobUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutDevicesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  stockItems?: Prisma.StockItemUncheckedUpdateManyWithoutUserNestedInput;
+  ocrJobs?: Prisma.OcrJobUncheckedUpdateManyWithoutUserNestedInput;
+};
+
 export type UserCreateWithoutStockItemsInput = {
   id?: string;
   email: string;
@@ -444,6 +553,7 @@ export type UserCreateWithoutStockItemsInput = {
   updatedAt?: Date | string;
   deletedAt?: Date | string | null;
   ocrJobs?: Prisma.OcrJobCreateNestedManyWithoutUserInput;
+  devices?: Prisma.UserDeviceCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutStockItemsInput = {
@@ -455,6 +565,7 @@ export type UserUncheckedCreateWithoutStockItemsInput = {
   updatedAt?: Date | string;
   deletedAt?: Date | string | null;
   ocrJobs?: Prisma.OcrJobUncheckedCreateNestedManyWithoutUserInput;
+  devices?: Prisma.UserDeviceUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutStockItemsInput = {
@@ -494,6 +605,7 @@ export type UserUpdateWithoutStockItemsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   ocrJobs?: Prisma.OcrJobUpdateManyWithoutUserNestedInput;
+  devices?: Prisma.UserDeviceUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutStockItemsInput = {
@@ -505,6 +617,7 @@ export type UserUncheckedUpdateWithoutStockItemsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   ocrJobs?: Prisma.OcrJobUncheckedUpdateManyWithoutUserNestedInput;
+  devices?: Prisma.UserDeviceUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutOcrJobsInput = {
@@ -516,6 +629,7 @@ export type UserCreateWithoutOcrJobsInput = {
   updatedAt?: Date | string;
   deletedAt?: Date | string | null;
   stockItems?: Prisma.StockItemCreateNestedManyWithoutUserInput;
+  devices?: Prisma.UserDeviceCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutOcrJobsInput = {
@@ -527,6 +641,7 @@ export type UserUncheckedCreateWithoutOcrJobsInput = {
   updatedAt?: Date | string;
   deletedAt?: Date | string | null;
   stockItems?: Prisma.StockItemUncheckedCreateNestedManyWithoutUserInput;
+  devices?: Prisma.UserDeviceUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutOcrJobsInput = {
@@ -566,6 +681,7 @@ export type UserUpdateWithoutOcrJobsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   stockItems?: Prisma.StockItemUpdateManyWithoutUserNestedInput;
+  devices?: Prisma.UserDeviceUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutOcrJobsInput = {
@@ -577,6 +693,7 @@ export type UserUncheckedUpdateWithoutOcrJobsInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   stockItems?: Prisma.StockItemUncheckedUpdateManyWithoutUserNestedInput;
+  devices?: Prisma.UserDeviceUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 /**
@@ -586,6 +703,7 @@ export type UserUncheckedUpdateWithoutOcrJobsInput = {
 export type UserCountOutputType = {
   stockItems: number;
   ocrJobs: number;
+  devices: number;
 };
 
 export type UserCountOutputTypeSelect<
@@ -593,6 +711,7 @@ export type UserCountOutputTypeSelect<
 > = {
   stockItems?: boolean | UserCountOutputTypeCountStockItemsArgs;
   ocrJobs?: boolean | UserCountOutputTypeCountOcrJobsArgs;
+  devices?: boolean | UserCountOutputTypeCountDevicesArgs;
 };
 
 /**
@@ -625,6 +744,15 @@ export type UserCountOutputTypeCountOcrJobsArgs<
   where?: Prisma.OcrJobWhereInput;
 };
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountDevicesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.UserDeviceWhereInput;
+};
+
 export type UserSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -638,6 +766,7 @@ export type UserSelect<
     deletedAt?: boolean;
     stockItems?: boolean | Prisma.User$stockItemsArgs<ExtArgs>;
     ocrJobs?: boolean | Prisma.User$ocrJobsArgs<ExtArgs>;
+    devices?: boolean | Prisma.User$devicesArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['user']
@@ -694,6 +823,7 @@ export type UserInclude<
 > = {
   stockItems?: boolean | Prisma.User$stockItemsArgs<ExtArgs>;
   ocrJobs?: boolean | Prisma.User$ocrJobsArgs<ExtArgs>;
+  devices?: boolean | Prisma.User$devicesArgs<ExtArgs>;
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type UserIncludeCreateManyAndReturn<
@@ -710,6 +840,7 @@ export type $UserPayload<
   objects: {
     stockItems: Prisma.$StockItemPayload<ExtArgs>[];
     ocrJobs: Prisma.$OcrJobPayload<ExtArgs>[];
+    devices: Prisma.$UserDevicePayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1252,6 +1383,17 @@ export interface Prisma__UserClient<
       >
     | Null
   >;
+  devices<T extends Prisma.User$devicesArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$devicesArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$UserDevicePayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1759,6 +1901,32 @@ export type User$ocrJobsArgs<
   take?: number;
   skip?: number;
   distinct?: Prisma.OcrJobScalarFieldEnum | Prisma.OcrJobScalarFieldEnum[];
+};
+
+/**
+ * User.devices
+ */
+export type User$devicesArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the UserDevice
+   */
+  select?: Prisma.UserDeviceSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the UserDevice
+   */
+  omit?: Prisma.UserDeviceOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserDeviceInclude<ExtArgs> | null;
+  where?: Prisma.UserDeviceWhereInput;
+  orderBy?: Prisma.UserDeviceOrderByWithRelationInput | Prisma.UserDeviceOrderByWithRelationInput[];
+  cursor?: Prisma.UserDeviceWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.UserDeviceScalarFieldEnum | Prisma.UserDeviceScalarFieldEnum[];
 };
 
 /**
