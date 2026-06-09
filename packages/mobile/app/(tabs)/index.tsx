@@ -16,7 +16,7 @@ import { TrashyMood } from '../../src/components/TrashyMood';
 import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../../src/lib/expiry';
 import { categoryIcon } from '../../src/lib/foodIcons';
 import { useAuthStore } from '../../src/store/auth';
-import { colors, font } from '../../src/theme';
+import { buttonLip, colors, font } from '../../src/theme';
 
 // How many "Use Soon" items to preview before sending the user to the full list.
 const EXPIRING_PREVIEW = 3;
@@ -276,6 +276,7 @@ const styles = StyleSheet.create({
   },
   wasteFill: { height: '100%', borderRadius: 999 },
   cta: {
+    ...buttonLip,
     width: '100%',
     backgroundColor: colors.forestGreen,
     borderRadius: 14,

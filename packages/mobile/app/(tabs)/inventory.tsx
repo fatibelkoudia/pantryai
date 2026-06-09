@@ -18,7 +18,7 @@ import { ConservationTipCard } from '../../src/components/ConservationTipCard';
 import { TrashyMood } from '../../src/components/TrashyMood';
 import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../../src/lib/expiry';
 import { categoryIcon } from '../../src/lib/foodIcons';
-import { colors, font } from '../../src/theme';
+import { buttonLip, colors, font } from '../../src/theme';
 
 const LOCATION_LABELS: Record<StockLocation, string> = {
   FRIDGE: 'Fridge',
@@ -637,6 +637,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primaryBtnUrgent: {
+    ...buttonLip,
     backgroundColor: colors.brickRed,
   },
   primaryBtnOutline: {
@@ -644,6 +645,7 @@ const styles = StyleSheet.create({
     borderColor: colors.forestGreen,
   },
   primaryBtnNeutral: {
+    ...buttonLip,
     backgroundColor: colors.surfaceGray,
   },
   primaryBtnText: {
@@ -706,6 +708,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
+    ...buttonLip,
     backgroundColor: colors.forestGreen,
     paddingHorizontal: 24,
     paddingVertical: 12,
@@ -718,6 +721,7 @@ const styles = StyleSheet.create({
     fontFamily: font.semibold,
   },
   fab: {
+    ...buttonLip,
     position: 'absolute',
     right: 16,
     bottom: 20,

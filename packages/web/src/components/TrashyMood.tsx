@@ -1,21 +1,36 @@
-import { MASCOT_SVG, mascotMoodMeta, type WasteMood } from '@pantryai/shared';
+import Image from 'next/image';
+import { mascotMoodMeta, type WasteMood } from '@pantryai/shared';
+import trashyAwful from '../../../shared/src/assets/mascot/trashy_awful.png';
+import trashyBad from '../../../shared/src/assets/mascot/trashy_bad.png';
+import trashyExcellent from '../../../shared/src/assets/mascot/trashy_excellent.png';
+import trashyGood from '../../../shared/src/assets/mascot/trashy_good.png';
+import trashyOkay from '../../../shared/src/assets/mascot/trashy_okey.png';
+
+// The mascot art is one PNG per mood, shipped in the shared package.
+const MASCOT_IMAGES = {
+  EXCELLENT: trashyExcellent,
+  GOOD: trashyGood,
+  OKAY: trashyOkay,
+  BAD: trashyBad,
+  AWFUL: trashyAwful,
+} satisfies Record<WasteMood, typeof trashyGood>;
 
 interface TrashyMoodProps {
   mood: WasteMood;
   size?: number;
 }
 
-// Renders the Trashy mascot for a given mood. The SVG markup is our own (from the
-// shared theme), so inlining it is safe.
+// Renders the Trashy mascot for a given mood.
 export function TrashyMood({ mood, size = 120 }: TrashyMoodProps) {
   const meta = mascotMoodMeta[mood];
   return (
     <div className="flex flex-col items-center gap-1">
-      <div
-        style={{ width: size, height: size }}
-        role="img"
-        aria-label={`Trashy looks ${meta.label.toLowerCase()}`}
-        dangerouslySetInnerHTML={{ __html: MASCOT_SVG[mood] }}
+      <Image
+        src={MASCOT_IMAGES[mood]}
+        alt={`Trashy looks ${meta.label.toLowerCase()}`}
+        width={size}
+        height={size}
+        style={{ objectFit: 'contain' }}
       />
       <span className="text-sm font-bold" style={{ color: meta.accent }}>
         {meta.label}

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { apiClient } from '../src/api/client';
 import { useAuthStore } from '../src/store/auth';
-import { colors, font } from '../src/theme';
+import { buttonLip, colors, font } from '../src/theme';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -139,6 +139,7 @@ const styles = StyleSheet.create({
   },
   logoutText: { fontSize: 15, fontFamily: font.semibold, color: colors.charcoal },
   deleteBtn: {
+    ...buttonLip,
     backgroundColor: colors.coralOrange,
     borderRadius: 12,
     paddingVertical: 14,

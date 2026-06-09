@@ -43,6 +43,14 @@ export const expiry = {
   none: { bg: '#EAE7E7', fg: '#5B6660' },
 } as const;
 
+// The "3D-lite" button lip from the design doc: a slightly darker bottom edge so
+// solid buttons look pressable instead of flat. Spread into RN button styles;
+// the web mirrors it with `box-shadow: 0 3px 0 rgb(0 0 0 / 0.15)`.
+export const buttonLip = {
+  borderBottomWidth: 3,
+  borderBottomColor: 'rgba(0, 0, 0, 0.15)',
+} as const;
+
 // Corner radii. Trashy is a soft, rounded, card-based look.
 export const radii = {
   sm: 8,

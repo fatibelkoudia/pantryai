@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { apiClient } from '../../src/api/client';
-import { colors, font } from '../../src/theme';
+import { buttonLip, colors, font } from '../../src/theme';
 
 function RecipeCard({ suggestion }: { suggestion: RecipeSuggestion }) {
   const { recipe, score, matchedIngredients, missingIngredients } = suggestion;
@@ -213,6 +213,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
+    ...buttonLip,
     backgroundColor: colors.leafGreen,
     paddingHorizontal: 24,
     paddingVertical: 12,

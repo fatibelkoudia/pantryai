@@ -15,7 +15,7 @@ import {
 import { apiClient } from '../../src/api/client';
 import { TrashyMood } from '../../src/components/TrashyMood';
 import type { IoniconName } from '../../src/lib/foodIcons';
-import { colors, font } from '../../src/theme';
+import { buttonLip, colors, font } from '../../src/theme';
 
 // Friendlier labels for the raw category slugs the API uses.
 const CATEGORY_LABELS: Record<TipCategory, string> = {
@@ -426,6 +426,7 @@ const styles = StyleSheet.create({
   muted: { fontSize: 14, color: colors.textMuted, textAlign: 'center', paddingTop: 24 },
   errorTitle: { fontSize: 16, fontFamily: font.bold, color: colors.charcoal, textAlign: 'center' },
   button: {
+    ...buttonLip,
     backgroundColor: colors.forestGreen,
     paddingHorizontal: 24,
     paddingVertical: 12,

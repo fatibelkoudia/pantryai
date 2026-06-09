@@ -14,16 +14,35 @@ import { apiClient } from '../src/api/client';
 import { TrashyMood } from '../src/components/TrashyMood';
 import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../src/lib/expiry';
 import { categoryIcon } from '../src/lib/foodIcons';
-import { colors, font } from '../src/theme';
+import { buttonLip, colors, font } from '../src/theme';
 
-// The five moods in order, each with its meter color (best to worst).
-const MOOD_STEPS: { mood: WasteMood; color: string }[] = [
-  { mood: 'EXCELLENT', color: colors.forestGreen },
-  { mood: 'GOOD', color: colors.leafGreen },
-  { mood: 'OKAY', color: colors.sunnyYellow },
-  { mood: 'BAD', color: colors.coralOrange },
-  { mood: 'AWFUL', color: colors.brickRed },
+// The five moods in order (best to worst): segment color for the meter and a
+// readable text color for the label under it.
+const MOOD_STEPS: { mood: WasteMood; color: string; text: string }[] = [
+  { mood: 'EXCELLENT', color: colors.forestGreen, text: colors.forestGreen },
+  { mood: 'GOOD', color: colors.leafGreen, text: colors.forestGreen },
+  { mood: 'OKAY', color: colors.sunnyYellow, text: colors.amberText },
+  { mood: 'BAD', color: colors.coralOrange, text: colors.brickRed },
+  { mood: 'AWFUL', color: colors.brickRed, text: colors.brickRed },
 ];
+
+// Hero card tint per mood, so the whole card reflects the waste level.
+const MOOD_TINTS: Record<WasteMood, string> = {
+  EXCELLENT: colors.heroMint,
+  GOOD: colors.heroMint,
+  OKAY: colors.paleYellow,
+  BAD: colors.redTint,
+  AWFUL: colors.redTint,
+};
+
+// One feeling line per mood for the hero headline.
+const MOOD_FEELING: Record<WasteMood, string> = {
+  EXCELLENT: 'Trashy is feeling fantastic!',
+  GOOD: 'Trashy is feeling light today!',
+  OKAY: 'Trashy is feeling so-so.',
+  BAD: 'Trashy is getting heavy…',
+  AWFUL: 'Trashy is overflowing!',
+};
 
 // How many expiring items to list in the "Keep Trashy small" card.
 const EXPIRING_PREVIEW = 3;
@@ -72,14 +91,13 @@ export default function MoodScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Mascot hero */}
-      <View style={styles.heroCard}>
+      {/* Mascot hero, tinted by the current waste level */}
+      <View style={[styles.heroCard, { backgroundColor: MOOD_TINTS[mood] }]}>
         <View style={styles.moodChip}>
           <Text style={styles.moodChipText}>{meta.label}</Text>
         </View>
         <TrashyMood mood={mood} size={160} showLabel={false} />
-        <Text style={styles.heroTitle}>Trashy is feeling {meta.label.toLowerCase()}!</Text>
-        <Text style={styles.heroBody}>{meta.message}</Text>
+        <Text style={styles.heroTitle}>{MOOD_FEELING[mood]}</Text>
         {counts.total > 0 ? (
           <Text style={styles.heroCounts}>
             Last 30 days: {counts.consumed} used · {counts.discarded} thrown out · {counts.expired}{' '}
@@ -98,30 +116,32 @@ export default function MoodScreen() {
           <Text style={styles.meterLabel}>Waste Level</Text>
           <Text style={styles.meterScore}>{Math.round(score)}/100</Text>
         </View>
-        <View style={styles.meterTrack}>
-          {MOOD_STEPS.map((step) => (
-            <View
-              key={step.mood}
-              style={[
-                styles.meterSegment,
-                { backgroundColor: step.color },
-                step.mood === mood ? styles.meterSegmentActive : styles.meterSegmentInactive,
-              ]}
-            />
-          ))}
-        </View>
-        <View style={styles.meterLabels}>
-          {MOOD_STEPS.map((step) => (
-            <Text
-              key={step.mood}
-              style={[
-                styles.meterStepText,
-                step.mood === mood && { color: step.color, fontFamily: font.bold },
-              ]}
-            >
-              {mascotMoodMeta[step.mood].label}
-            </Text>
-          ))}
+        <View style={styles.meterRow}>
+          {MOOD_STEPS.map((step) => {
+            const active = step.mood === mood;
+            return (
+              <View key={step.mood} style={styles.meterCol}>
+                <View style={active ? null : styles.meterFaded}>
+                  <TrashyMood mood={step.mood} size={40} showLabel={false} />
+                </View>
+                <View
+                  style={[
+                    styles.meterSegment,
+                    { backgroundColor: step.color },
+                    active ? styles.meterSegmentActive : styles.meterSegmentInactive,
+                  ]}
+                />
+                <Text
+                  style={[
+                    styles.meterStepText,
+                    active && { color: step.text, fontFamily: font.bold },
+                  ]}
+                >
+                  {mascotMoodMeta[step.mood].label}
+                </Text>
+              </View>
+            );
+          })}
         </View>
       </View>
 
@@ -143,10 +163,11 @@ export default function MoodScreen() {
         </View>
         <View style={styles.statCard}>
           <View style={[styles.statIcon, { backgroundColor: colors.redTint }]}>
-            <Ionicons name="alert-circle-outline" size={20} color={colors.redText} />
+            <Ionicons name="cloud-outline" size={20} color={colors.redText} />
           </View>
-          <Text style={styles.statValue}>{counts.expired}</Text>
-          <Text style={styles.statLabel}>expired</Text>
+          {/* real CO2 math lands in a follow-up commit, placeholder until then */}
+          <Text style={styles.statValue}>–</Text>
+          <Text style={styles.statLabel}>CO2 avoided</Text>
         </View>
       </View>
 
@@ -204,23 +225,6 @@ export default function MoodScreen() {
         </View>
       </View>
 
-      {/* Evolution strip: all five Trashy states, current one ringed */}
-      <View style={styles.card}>
-        <Text style={styles.meterLabel}>Your choices shape Trashy</Text>
-        <View style={styles.evolutionRow}>
-          {MOOD_STEPS.map((step) => (
-            <View
-              key={step.mood}
-              style={[styles.evolutionSlot, step.mood === mood && styles.evolutionSlotActive]}
-            >
-              <View style={step.mood !== mood ? styles.evolutionFaded : null}>
-                <TrashyMood mood={step.mood} size={44} showLabel={false} />
-              </View>
-            </View>
-          ))}
-        </View>
-      </View>
-
       {/* Earned badges (completed challenges) */}
       {earnedBadges.length > 0 ? (
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -254,14 +258,17 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   heroCard: {
-    backgroundColor: colors.heroMint,
+    // bg color comes from MOOD_TINTS; the darker bottom edge gives the card
+    // the same squishy depth as the buttons
     borderRadius: 24,
     padding: 24,
     alignItems: 'center',
     gap: 10,
+    borderBottomWidth: 4,
+    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
   },
   moodChip: {
-    backgroundColor: colors.paleGreen,
+    backgroundColor: colors.white,
     borderRadius: 999,
     paddingHorizontal: 14,
     paddingVertical: 4,
@@ -269,12 +276,11 @@ const styles = StyleSheet.create({
   moodChipText: {
     fontSize: 12,
     fontFamily: font.bold,
-    color: colors.forestGreen,
+    color: colors.charcoal,
     textTransform: 'uppercase',
     letterSpacing: 0.8,
   },
   heroTitle: { fontSize: 20, fontFamily: font.black, color: colors.charcoal, textAlign: 'center' },
-  heroBody: { fontSize: 14, color: colors.textMuted, textAlign: 'center' },
   heroCounts: { fontSize: 12, color: colors.textMuted, textAlign: 'center' },
   card: { backgroundColor: colors.white, borderRadius: 20, padding: 16, gap: 10 },
   meterHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
@@ -286,12 +292,13 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
   meterScore: { fontSize: 13, fontFamily: font.bold, color: colors.forestGreen },
-  meterTrack: { flexDirection: 'row', gap: 6, alignItems: 'center' },
-  meterSegment: { flex: 1, height: 10, borderRadius: 999 },
-  meterSegmentActive: { borderWidth: 2, borderColor: colors.charcoal, height: 14 },
+  meterRow: { flexDirection: 'row', gap: 6, alignItems: 'flex-end' },
+  meterCol: { flex: 1, alignItems: 'center', gap: 4 },
+  meterFaded: { opacity: 0.35 },
+  meterSegment: { width: '100%', height: 8, borderRadius: 999 },
+  meterSegmentActive: { height: 12 },
   meterSegmentInactive: { opacity: 0.3 },
-  meterLabels: { flexDirection: 'row', justifyContent: 'space-between' },
-  meterStepText: { flex: 1, fontSize: 9, color: colors.textMuted, textAlign: 'center' },
+  meterStepText: { fontSize: 9, color: colors.textMuted, textAlign: 'center' },
   statsRow: { flexDirection: 'row', gap: 10 },
   statCard: {
     flex: 1,
@@ -335,6 +342,7 @@ const styles = StyleSheet.create({
   badgeText: { fontSize: 11, fontFamily: font.bold },
   actionButtons: { flexDirection: 'row', gap: 10, marginTop: 4 },
   primaryBtn: {
+    ...buttonLip,
     flex: 1,
     backgroundColor: colors.forestGreen,
     borderRadius: 14,
@@ -343,6 +351,7 @@ const styles = StyleSheet.create({
   },
   primaryBtnText: { color: colors.onBrand, fontSize: 13, fontFamily: font.bold },
   secondaryBtn: {
+    ...buttonLip,
     flex: 1,
     backgroundColor: colors.surfaceGray,
     borderRadius: 14,
@@ -350,18 +359,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   secondaryBtnText: { color: colors.textMuted, fontSize: 13, fontFamily: font.bold },
-  evolutionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.creamSurface,
-    borderRadius: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 8,
-  },
-  evolutionSlot: { borderRadius: 999, padding: 3 },
-  evolutionSlotActive: { borderWidth: 2, borderColor: colors.leafGreen },
-  evolutionFaded: { opacity: 0.35 },
   badgeRail: { flexDirection: 'row', gap: 10 },
   badgeCard: {
     width: 116,
@@ -379,6 +376,7 @@ const styles = StyleSheet.create({
   },
   errorTitle: { fontSize: 16, fontFamily: font.bold, color: colors.charcoal, textAlign: 'center' },
   button: {
+    ...buttonLip,
     backgroundColor: colors.forestGreen,
     paddingHorizontal: 24,
     paddingVertical: 12,
