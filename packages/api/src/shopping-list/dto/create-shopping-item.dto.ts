@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString, Min, MinLength } from 'class-validator';
+import { IsIn, IsNumber, IsOptional, IsString, Min, MinLength } from 'class-validator';
 
 export class CreateShoppingItemDto {
   @ApiProperty({ example: 'Lait demi-écrémé' })
@@ -17,4 +17,14 @@ export class CreateShoppingItemDto {
   @IsString()
   @IsOptional()
   unit?: string;
+
+  @ApiPropertyOptional({
+    enum: ['MANUAL', 'RECIPE'],
+    description:
+      'Where the item comes from, so the list can label it. Defaults to MANUAL. ' +
+      'LOW_STOCK is reserved for the generator.',
+  })
+  @IsIn(['MANUAL', 'RECIPE'])
+  @IsOptional()
+  source?: 'MANUAL' | 'RECIPE';
 }

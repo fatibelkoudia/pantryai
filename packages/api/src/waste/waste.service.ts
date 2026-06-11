@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import type { WasteLevelResponse } from '@pantryai/shared';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { estimateCo2AvoidedKg } from './co2-estimate.js';
 import { moodFromScore, scoreFromCounts, WASTE_WINDOW_DAYS } from './waste-scoring.js';
 
 @Injectable()
@@ -19,7 +20,13 @@ export class WasteService {
         disposition: { not: null },
         deletedAt: { gte: from, lte: to },
       },
-      select: { disposition: true },
+      // we also need quantity/unit/product to estimate the CO2 saved
+      select: {
+        disposition: true,
+        quantity: true,
+        unit: true,
+        product: { select: { name: true, category: true } },
+      },
     });
 
     const counts = { consumed: 0, discarded: 0, expired: 0 };
@@ -32,11 +39,23 @@ export class WasteService {
     const total = counts.consumed + counts.discarded + counts.expired;
     const score = scoreFromCounts(counts);
 
+    // Only consumed items count: eating food instead of tossing it is what saves CO2.
+    const co2AvoidedKg = estimateCo2AvoidedKg(
+      rows
+        .filter((row) => row.disposition === 'CONSUMED')
+        .map((row) => ({
+          quantity: row.quantity,
+          unit: row.unit,
+          product: { name: row.product.name, category: row.product.category ?? undefined },
+        })),
+    );
+
     return {
       score,
       mood: moodFromScore(score),
       window: { days: WASTE_WINDOW_DAYS, from: from.toISOString(), to: to.toISOString() },
       counts: { ...counts, total },
+      co2AvoidedKg,
     };
   }
 }

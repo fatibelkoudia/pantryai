@@ -2,8 +2,12 @@ import { Ionicons } from '@expo/vector-icons';
 import { mascotMoodMeta, type WasteMood } from '@pantryai/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
+import { useEffect, useRef } from 'react';
 import {
+  AccessibilityInfo,
   ActivityIndicator,
+  Animated,
+  Easing,
   ScrollView,
   StyleSheet,
   Text,
@@ -47,6 +51,43 @@ const MOOD_FEELING: Record<WasteMood, string> = {
 // How many expiring items to list in the "Keep Trashy small" card.
 const EXPIRING_PREVIEW = 3;
 
+// The hero mascot slowly floats up and down. Small and slow on purpose, and
+// skipped entirely when the user prefers reduced motion.
+function BouncingTrashy({ mood }: { mood: WasteMood }) {
+  const shift = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    let loop: Animated.CompositeAnimation | undefined;
+    void AccessibilityInfo.isReduceMotionEnabled().then((reduced) => {
+      if (reduced) return;
+      loop = Animated.loop(
+        Animated.sequence([
+          Animated.timing(shift, {
+            toValue: -6,
+            duration: 1500,
+            easing: Easing.inOut(Easing.sin),
+            useNativeDriver: true,
+          }),
+          Animated.timing(shift, {
+            toValue: 0,
+            duration: 1500,
+            easing: Easing.inOut(Easing.sin),
+            useNativeDriver: true,
+          }),
+        ]),
+      );
+      loop.start();
+    });
+    return () => loop?.stop();
+  }, [shift]);
+
+  return (
+    <Animated.View style={{ transform: [{ translateY: shift }] }}>
+      <TrashyMood mood={mood} size={160} showLabel={false} />
+    </Animated.View>
+  );
+}
+
 // "Trashy's Mood" screen: the Waste Level over the last 30 days, plus what to do
 // about it. Reached by tapping the mascot on Home.
 export default function MoodScreen() {
@@ -84,7 +125,7 @@ export default function MoodScreen() {
     );
   }
 
-  const { score, mood, counts } = waste.data;
+  const { score, mood, counts, co2AvoidedKg } = waste.data;
   const meta = mascotMoodMeta[mood];
   const expiringItems = expiring.data?.items ?? [];
   const earnedBadges = (challenges.data?.challenges ?? []).filter((c) => c.completed);
@@ -96,7 +137,7 @@ export default function MoodScreen() {
         <View style={styles.moodChip}>
           <Text style={styles.moodChipText}>{meta.label}</Text>
         </View>
-        <TrashyMood mood={mood} size={160} showLabel={false} />
+        <BouncingTrashy mood={mood} />
         <Text style={styles.heroTitle}>{MOOD_FEELING[mood]}</Text>
         {counts.total > 0 ? (
           <Text style={styles.heroCounts}>
@@ -165,8 +206,7 @@ export default function MoodScreen() {
           <View style={[styles.statIcon, { backgroundColor: colors.redTint }]}>
             <Ionicons name="cloud-outline" size={20} color={colors.redText} />
           </View>
-          {/* real CO2 math lands in a follow-up commit, placeholder until then */}
-          <Text style={styles.statValue}>–</Text>
+          <Text style={styles.statValue}>{co2AvoidedKg} kg</Text>
           <Text style={styles.statLabel}>CO2 avoided</Text>
         </View>
       </View>

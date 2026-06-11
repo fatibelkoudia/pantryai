@@ -15,6 +15,8 @@ export interface CreateShoppingItemDto {
   name: string;
   quantity?: number;
   unit?: string;
+  /** Defaults to MANUAL. RECIPE marks missing ingredients added from suggestions. */
+  source?: 'MANUAL' | 'RECIPE';
 }
 
 export interface UpdateShoppingItemDto {
@@ -34,6 +36,11 @@ export interface GenerateShoppingListDto {
    * Stock items at or below this quantity count as "low stock". Defaults to 1.
    */
   lowStockThreshold?: number;
+  /**
+   * Set to false to only add low/expiring stock and skip recipe ingredients.
+   * Defaults to true.
+   */
+  includeRecipes?: boolean;
 }
 
 export interface ShoppingListResponse {
