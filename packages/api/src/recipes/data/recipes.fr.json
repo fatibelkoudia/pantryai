@@ -1,0 +1,720 @@
+[
+  {
+    "name": "Omelette nature",
+    "category": "Plat",
+    "instructions": "Battre les oeufs avec le sel et le poivre, cuire dans le beurre chaud et plier.",
+    "ingredients": [
+      { "name": "oeufs", "measure": "3" },
+      { "name": "beurre", "measure": "20 g" },
+      { "name": "sel", "measure": "1 pincee" },
+      { "name": "poivre", "measure": "1 pincee" }
+    ]
+  },
+  {
+    "name": "Omelette au fromage",
+    "category": "Plat",
+    "instructions": "Battre les oeufs, ajouter le fromage rape, cuire dans le beurre et plier.",
+    "ingredients": [
+      { "name": "oeufs", "measure": "3" },
+      { "name": "fromage rape", "measure": "50 g" },
+      { "name": "beurre", "measure": "20 g" },
+      { "name": "sel", "measure": "1 pincee" }
+    ]
+  },
+  {
+    "name": "Oeufs brouilles",
+    "category": "Plat",
+    "instructions": "Cuire les oeufs battus a feu doux avec le beurre et la creme en remuant.",
+    "ingredients": [
+      { "name": "oeufs", "measure": "4" },
+      { "name": "beurre", "measure": "20 g" },
+      { "name": "creme fraiche", "measure": "2 c. a soupe" },
+      { "name": "sel", "measure": "1 pincee" }
+    ]
+  },
+  {
+    "name": "Quiche lorraine",
+    "category": "Plat",
+    "instructions": "Garnir une pate brisee de lardons, verser le melange oeufs creme lait et cuire au four.",
+    "ingredients": [
+      { "name": "pate brisee", "measure": "1" },
+      { "name": "lardons", "measure": "200 g" },
+      { "name": "oeufs", "measure": "3" },
+      { "name": "creme fraiche", "measure": "20 cl" },
+      { "name": "lait", "measure": "10 cl" },
+      { "name": "fromage rape", "measure": "50 g" }
+    ]
+  },
+  {
+    "name": "Crepes",
+    "category": "Dessert",
+    "instructions": "Melanger farine oeufs lait, laisser reposer et cuire dans une poele beurree.",
+    "ingredients": [
+      { "name": "farine", "measure": "250 g" },
+      { "name": "oeufs", "measure": "3" },
+      { "name": "lait", "measure": "50 cl" },
+      { "name": "beurre", "measure": "30 g" },
+      { "name": "sucre", "measure": "30 g" }
+    ]
+  },
+  {
+    "name": "Pate a crepes salee",
+    "category": "Plat",
+    "instructions": "Melanger farine de sarrasin, oeuf et eau, cuire et garnir.",
+    "ingredients": [
+      { "name": "farine de sarrasin", "measure": "250 g" },
+      { "name": "oeuf", "measure": "1" },
+      { "name": "eau", "measure": "50 cl" },
+      { "name": "sel", "measure": "1 pincee" }
+    ]
+  },
+  {
+    "name": "Gateau au yaourt",
+    "category": "Dessert",
+    "instructions": "Melanger yaourt sucre oeufs farine et huile, cuire au four 35 min.",
+    "ingredients": [
+      { "name": "yaourt", "measure": "1 pot" },
+      { "name": "farine", "measure": "3 pots" },
+      { "name": "sucre", "measure": "2 pots" },
+      { "name": "oeufs", "measure": "3" },
+      { "name": "huile", "measure": "1 demi pot" },
+      { "name": "levure", "measure": "1 sachet" }
+    ]
+  },
+  {
+    "name": "Gateau au chocolat",
+    "category": "Dessert",
+    "instructions": "Fondre chocolat et beurre, ajouter sucre oeufs et farine, cuire au four.",
+    "ingredients": [
+      { "name": "chocolat", "measure": "200 g" },
+      { "name": "beurre", "measure": "100 g" },
+      { "name": "sucre", "measure": "150 g" },
+      { "name": "oeufs", "measure": "3" },
+      { "name": "farine", "measure": "70 g" }
+    ]
+  },
+  {
+    "name": "Mousse au chocolat",
+    "category": "Dessert",
+    "instructions": "Fondre le chocolat, incorporer les jaunes puis les blancs montes en neige.",
+    "ingredients": [
+      { "name": "chocolat", "measure": "200 g" },
+      { "name": "oeufs", "measure": "6" },
+      { "name": "sucre", "measure": "30 g" }
+    ]
+  },
+  {
+    "name": "Crepes au sucre",
+    "category": "Dessert",
+    "instructions": "Cuire des crepes et saupoudrer de sucre.",
+    "ingredients": [
+      { "name": "farine", "measure": "200 g" },
+      { "name": "oeufs", "measure": "2" },
+      { "name": "lait", "measure": "40 cl" },
+      { "name": "sucre", "measure": "40 g" }
+    ]
+  },
+  {
+    "name": "Pain perdu",
+    "category": "Dessert",
+    "instructions": "Tremper le pain rassis dans lait oeufs sucre et dorer a la poele.",
+    "ingredients": [
+      { "name": "pain", "measure": "6 tranches" },
+      { "name": "oeufs", "measure": "2" },
+      { "name": "lait", "measure": "30 cl" },
+      { "name": "sucre", "measure": "50 g" },
+      { "name": "beurre", "measure": "20 g" }
+    ]
+  },
+  {
+    "name": "Croque-monsieur",
+    "category": "Plat",
+    "instructions": "Garnir le pain de mie de jambon et fromage et dorer au four.",
+    "ingredients": [
+      { "name": "pain de mie", "measure": "4 tranches" },
+      { "name": "jambon", "measure": "2 tranches" },
+      { "name": "fromage rape", "measure": "80 g" },
+      { "name": "beurre", "measure": "20 g" }
+    ]
+  },
+  {
+    "name": "Croque-madame",
+    "category": "Plat",
+    "instructions": "Preparer un croque-monsieur et ajouter un oeuf au plat dessus.",
+    "ingredients": [
+      { "name": "pain de mie", "measure": "4 tranches" },
+      { "name": "jambon", "measure": "2 tranches" },
+      { "name": "fromage rape", "measure": "80 g" },
+      { "name": "oeuf", "measure": "1" },
+      { "name": "beurre", "measure": "20 g" }
+    ]
+  },
+  {
+    "name": "Salade de tomates",
+    "category": "Entree",
+    "instructions": "Trancher les tomates, assaisonner d huile vinaigre et oignon.",
+    "ingredients": [
+      { "name": "tomates", "measure": "4" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "huile", "measure": "2 c. a soupe" },
+      { "name": "vinaigre", "measure": "1 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Salade verte vinaigrette",
+    "category": "Entree",
+    "instructions": "Laver la salade et assaisonner de vinaigrette moutarde huile vinaigre.",
+    "ingredients": [
+      { "name": "salade", "measure": "1" },
+      { "name": "moutarde", "measure": "1 c. a cafe" },
+      { "name": "huile", "measure": "3 c. a soupe" },
+      { "name": "vinaigre", "measure": "1 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Soupe a l oignon",
+    "category": "Entree",
+    "instructions": "Faire revenir les oignons, mouiller au bouillon et gratiner au fromage.",
+    "ingredients": [
+      { "name": "oignons", "measure": "4" },
+      { "name": "beurre", "measure": "30 g" },
+      { "name": "bouillon", "measure": "1 l" },
+      { "name": "pain", "measure": "4 tranches" },
+      { "name": "fromage rape", "measure": "80 g" }
+    ]
+  },
+  {
+    "name": "Soupe de legumes",
+    "category": "Entree",
+    "instructions": "Cuire les legumes dans l eau et mixer.",
+    "ingredients": [
+      { "name": "pommes de terre", "measure": "3" },
+      { "name": "carottes", "measure": "3" },
+      { "name": "poireau", "measure": "1" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "eau", "measure": "1 l" }
+    ]
+  },
+  {
+    "name": "Puree de pommes de terre",
+    "category": "Accompagnement",
+    "instructions": "Cuire les pommes de terre, ecraser avec beurre et lait.",
+    "ingredients": [
+      { "name": "pommes de terre", "measure": "800 g" },
+      { "name": "beurre", "measure": "50 g" },
+      { "name": "lait", "measure": "20 cl" },
+      { "name": "sel", "measure": "1 pincee" }
+    ]
+  },
+  {
+    "name": "Gratin dauphinois",
+    "category": "Accompagnement",
+    "instructions": "Disposer les pommes de terre, verser creme et lait, cuire au four.",
+    "ingredients": [
+      { "name": "pommes de terre", "measure": "1 kg" },
+      { "name": "creme fraiche", "measure": "25 cl" },
+      { "name": "lait", "measure": "25 cl" },
+      { "name": "ail", "measure": "1 gousse" },
+      { "name": "fromage rape", "measure": "80 g" }
+    ]
+  },
+  {
+    "name": "Frites maison",
+    "category": "Accompagnement",
+    "instructions": "Couper les pommes de terre en batonnets et frire dans l huile.",
+    "ingredients": [
+      { "name": "pommes de terre", "measure": "800 g" },
+      { "name": "huile", "measure": "1 l" },
+      { "name": "sel", "measure": "1 pincee" }
+    ]
+  },
+  {
+    "name": "Riz pilaf",
+    "category": "Accompagnement",
+    "instructions": "Faire revenir l oignon, ajouter le riz puis le bouillon et cuire.",
+    "ingredients": [
+      { "name": "riz", "measure": "250 g" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "beurre", "measure": "20 g" },
+      { "name": "bouillon", "measure": "50 cl" }
+    ]
+  },
+  {
+    "name": "Riz au lait",
+    "category": "Dessert",
+    "instructions": "Cuire le riz dans le lait sucre jusqu a absorption.",
+    "ingredients": [
+      { "name": "riz", "measure": "150 g" },
+      { "name": "lait", "measure": "1 l" },
+      { "name": "sucre", "measure": "100 g" },
+      { "name": "vanille", "measure": "1 gousse" }
+    ]
+  },
+  {
+    "name": "Pates a la carbonara",
+    "category": "Plat",
+    "instructions": "Cuire les pates, melanger lardons oeufs et fromage hors du feu.",
+    "ingredients": [
+      { "name": "pates", "measure": "400 g" },
+      { "name": "lardons", "measure": "150 g" },
+      { "name": "oeufs", "measure": "3" },
+      { "name": "fromage rape", "measure": "80 g" },
+      { "name": "poivre", "measure": "1 pincee" }
+    ]
+  },
+  {
+    "name": "Pates a la tomate",
+    "category": "Plat",
+    "instructions": "Cuire les pates et napper de sauce tomate a l ail et oignon.",
+    "ingredients": [
+      { "name": "pates", "measure": "400 g" },
+      { "name": "tomates", "measure": "500 g" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "ail", "measure": "2 gousses" },
+      { "name": "huile d olive", "measure": "2 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Pates au beurre",
+    "category": "Plat",
+    "instructions": "Cuire les pates et melanger avec le beurre et le fromage.",
+    "ingredients": [
+      { "name": "pates", "measure": "400 g" },
+      { "name": "beurre", "measure": "40 g" },
+      { "name": "fromage rape", "measure": "60 g" }
+    ]
+  },
+  {
+    "name": "Gratin de pates",
+    "category": "Plat",
+    "instructions": "Melanger pates jambon et bechamel, gratiner au four.",
+    "ingredients": [
+      { "name": "pates", "measure": "400 g" },
+      { "name": "jambon", "measure": "150 g" },
+      { "name": "lait", "measure": "50 cl" },
+      { "name": "beurre", "measure": "40 g" },
+      { "name": "farine", "measure": "40 g" },
+      { "name": "fromage rape", "measure": "80 g" }
+    ]
+  },
+  {
+    "name": "Sauce bechamel",
+    "category": "Sauce",
+    "instructions": "Faire un roux beurre farine et delayer avec le lait.",
+    "ingredients": [
+      { "name": "beurre", "measure": "40 g" },
+      { "name": "farine", "measure": "40 g" },
+      { "name": "lait", "measure": "50 cl" },
+      { "name": "muscade", "measure": "1 pincee" }
+    ]
+  },
+  {
+    "name": "Poulet roti",
+    "category": "Plat",
+    "instructions": "Badigeonner le poulet de beurre, saler et rotir au four.",
+    "ingredients": [
+      { "name": "poulet", "measure": "1" },
+      { "name": "beurre", "measure": "50 g" },
+      { "name": "sel", "measure": "1 pincee" },
+      { "name": "thym", "measure": "1 branche" }
+    ]
+  },
+  {
+    "name": "Poulet basquaise",
+    "category": "Plat",
+    "instructions": "Faire revenir le poulet avec poivrons tomates et oignon, mijoter.",
+    "ingredients": [
+      { "name": "poulet", "measure": "4 morceaux" },
+      { "name": "poivrons", "measure": "2" },
+      { "name": "tomates", "measure": "4" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "ail", "measure": "2 gousses" },
+      { "name": "huile d olive", "measure": "2 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Blanquette de veau",
+    "category": "Plat",
+    "instructions": "Cuire le veau avec carottes et oignon, lier d une sauce creme.",
+    "ingredients": [
+      { "name": "veau", "measure": "800 g" },
+      { "name": "carottes", "measure": "3" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "creme fraiche", "measure": "20 cl" },
+      { "name": "farine", "measure": "30 g" },
+      { "name": "champignons", "measure": "200 g" }
+    ]
+  },
+  {
+    "name": "Boeuf bourguignon",
+    "category": "Plat",
+    "instructions": "Faire revenir le boeuf, mouiller au vin rouge et mijoter longuement.",
+    "ingredients": [
+      { "name": "boeuf", "measure": "1 kg" },
+      { "name": "vin rouge", "measure": "50 cl" },
+      { "name": "carottes", "measure": "3" },
+      { "name": "oignon", "measure": "2" },
+      { "name": "lardons", "measure": "150 g" },
+      { "name": "champignons", "measure": "200 g" }
+    ]
+  },
+  {
+    "name": "Steak frites",
+    "category": "Plat",
+    "instructions": "Cuire le steak a la poele et servir avec des frites.",
+    "ingredients": [
+      { "name": "steak", "measure": "2" },
+      { "name": "pommes de terre", "measure": "600 g" },
+      { "name": "huile", "measure": "1 l" },
+      { "name": "sel", "measure": "1 pincee" }
+    ]
+  },
+  {
+    "name": "Hachis parmentier",
+    "category": "Plat",
+    "instructions": "Couvrir une viande hachee de puree et gratiner au four.",
+    "ingredients": [
+      { "name": "boeuf hache", "measure": "500 g" },
+      { "name": "pommes de terre", "measure": "800 g" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "beurre", "measure": "40 g" },
+      { "name": "lait", "measure": "20 cl" },
+      { "name": "fromage rape", "measure": "60 g" }
+    ]
+  },
+  {
+    "name": "Ratatouille",
+    "category": "Plat",
+    "instructions": "Mijoter courgettes aubergines poivrons et tomates a l huile d olive.",
+    "ingredients": [
+      { "name": "courgettes", "measure": "2" },
+      { "name": "aubergine", "measure": "1" },
+      { "name": "poivrons", "measure": "2" },
+      { "name": "tomates", "measure": "4" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "huile d olive", "measure": "3 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Tian de legumes",
+    "category": "Accompagnement",
+    "instructions": "Disposer en rosace courgettes tomates et aubergine, cuire au four.",
+    "ingredients": [
+      { "name": "courgettes", "measure": "2" },
+      { "name": "tomates", "measure": "3" },
+      { "name": "aubergine", "measure": "1" },
+      { "name": "ail", "measure": "2 gousses" },
+      { "name": "huile d olive", "measure": "3 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Soupe a la tomate",
+    "category": "Entree",
+    "instructions": "Cuire tomates et oignon, mixer et ajouter la creme.",
+    "ingredients": [
+      { "name": "tomates", "measure": "800 g" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "ail", "measure": "1 gousse" },
+      { "name": "creme fraiche", "measure": "10 cl" }
+    ]
+  },
+  {
+    "name": "Veloute de courgettes",
+    "category": "Entree",
+    "instructions": "Cuire les courgettes avec l oignon, mixer avec la creme.",
+    "ingredients": [
+      { "name": "courgettes", "measure": "4" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "creme fraiche", "measure": "10 cl" },
+      { "name": "bouillon", "measure": "50 cl" }
+    ]
+  },
+  {
+    "name": "Veloute de carottes",
+    "category": "Entree",
+    "instructions": "Cuire les carottes avec l oignon et mixer.",
+    "ingredients": [
+      { "name": "carottes", "measure": "600 g" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "creme fraiche", "measure": "10 cl" },
+      { "name": "bouillon", "measure": "50 cl" }
+    ]
+  },
+  {
+    "name": "Carottes rapees",
+    "category": "Entree",
+    "instructions": "Raper les carottes et assaisonner d huile citron.",
+    "ingredients": [
+      { "name": "carottes", "measure": "4" },
+      { "name": "citron", "measure": "1" },
+      { "name": "huile", "measure": "2 c. a soupe" },
+      { "name": "persil", "measure": "1 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Taboule",
+    "category": "Entree",
+    "instructions": "Hydrater la semoule et melanger avec tomates concombre et menthe.",
+    "ingredients": [
+      { "name": "semoule", "measure": "250 g" },
+      { "name": "tomates", "measure": "3" },
+      { "name": "concombre", "measure": "1" },
+      { "name": "citron", "measure": "1" },
+      { "name": "huile d olive", "measure": "3 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Couscous legumes",
+    "category": "Plat",
+    "instructions": "Mijoter les legumes en bouillon epice et servir sur semoule.",
+    "ingredients": [
+      { "name": "semoule", "measure": "400 g" },
+      { "name": "carottes", "measure": "3" },
+      { "name": "courgettes", "measure": "2" },
+      { "name": "pois chiches", "measure": "200 g" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "tomates", "measure": "2" }
+    ]
+  },
+  {
+    "name": "Lentilles mijotees",
+    "category": "Plat",
+    "instructions": "Cuire les lentilles avec carottes oignon et lardons.",
+    "ingredients": [
+      { "name": "lentilles", "measure": "300 g" },
+      { "name": "carottes", "measure": "2" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "lardons", "measure": "100 g" }
+    ]
+  },
+  {
+    "name": "Salade de lentilles",
+    "category": "Entree",
+    "instructions": "Cuire les lentilles, assaisonner de vinaigrette et echalote.",
+    "ingredients": [
+      { "name": "lentilles", "measure": "250 g" },
+      { "name": "echalote", "measure": "1" },
+      { "name": "moutarde", "measure": "1 c. a cafe" },
+      { "name": "huile", "measure": "3 c. a soupe" },
+      { "name": "vinaigre", "measure": "1 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Salade de pates",
+    "category": "Entree",
+    "instructions": "Melanger pates froides tomates et jambon avec vinaigrette.",
+    "ingredients": [
+      { "name": "pates", "measure": "300 g" },
+      { "name": "tomates", "measure": "2" },
+      { "name": "jambon", "measure": "100 g" },
+      { "name": "mais", "measure": "100 g" },
+      { "name": "huile", "measure": "3 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Salade de riz",
+    "category": "Entree",
+    "instructions": "Melanger riz froid thon mais et tomates.",
+    "ingredients": [
+      { "name": "riz", "measure": "250 g" },
+      { "name": "thon", "measure": "1 boite" },
+      { "name": "mais", "measure": "100 g" },
+      { "name": "tomates", "measure": "2" },
+      { "name": "huile", "measure": "2 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Quiche aux poireaux",
+    "category": "Plat",
+    "instructions": "Garnir la pate de poireaux fondus et verser l appareil oeufs creme.",
+    "ingredients": [
+      { "name": "pate brisee", "measure": "1" },
+      { "name": "poireaux", "measure": "3" },
+      { "name": "oeufs", "measure": "3" },
+      { "name": "creme fraiche", "measure": "20 cl" },
+      { "name": "fromage rape", "measure": "50 g" }
+    ]
+  },
+  {
+    "name": "Tarte aux pommes",
+    "category": "Dessert",
+    "instructions": "Disposer les pommes sur la pate, sucrer et cuire au four.",
+    "ingredients": [
+      { "name": "pate brisee", "measure": "1" },
+      { "name": "pommes", "measure": "4" },
+      { "name": "sucre", "measure": "60 g" },
+      { "name": "beurre", "measure": "20 g" }
+    ]
+  },
+  {
+    "name": "Compote de pommes",
+    "category": "Dessert",
+    "instructions": "Cuire les pommes avec un peu d eau et de sucre, ecraser.",
+    "ingredients": [
+      { "name": "pommes", "measure": "6" },
+      { "name": "sucre", "measure": "40 g" },
+      { "name": "eau", "measure": "5 cl" }
+    ]
+  },
+  {
+    "name": "Clafoutis aux cerises",
+    "category": "Dessert",
+    "instructions": "Verser un appareil oeufs lait farine sur les cerises et cuire au four.",
+    "ingredients": [
+      { "name": "cerises", "measure": "400 g" },
+      { "name": "oeufs", "measure": "3" },
+      { "name": "lait", "measure": "25 cl" },
+      { "name": "farine", "measure": "80 g" },
+      { "name": "sucre", "measure": "80 g" }
+    ]
+  },
+  {
+    "name": "Crumble aux pommes",
+    "category": "Dessert",
+    "instructions": "Couvrir les pommes d une pate sablee farine beurre sucre et cuire.",
+    "ingredients": [
+      { "name": "pommes", "measure": "5" },
+      { "name": "farine", "measure": "100 g" },
+      { "name": "beurre", "measure": "80 g" },
+      { "name": "sucre", "measure": "80 g" }
+    ]
+  },
+  {
+    "name": "Crepes Suzette",
+    "category": "Dessert",
+    "instructions": "Napper les crepes d un beurre d orange.",
+    "ingredients": [
+      { "name": "farine", "measure": "200 g" },
+      { "name": "oeufs", "measure": "2" },
+      { "name": "lait", "measure": "40 cl" },
+      { "name": "orange", "measure": "2" },
+      { "name": "beurre", "measure": "60 g" },
+      { "name": "sucre", "measure": "60 g" }
+    ]
+  },
+  {
+    "name": "Cake aux olives",
+    "category": "Apero",
+    "instructions": "Melanger farine oeufs huile et olives, cuire au four.",
+    "ingredients": [
+      { "name": "farine", "measure": "200 g" },
+      { "name": "oeufs", "measure": "3" },
+      { "name": "huile", "measure": "10 cl" },
+      { "name": "olives", "measure": "150 g" },
+      { "name": "jambon", "measure": "100 g" },
+      { "name": "levure", "measure": "1 sachet" }
+    ]
+  },
+  {
+    "name": "Madeleines",
+    "category": "Dessert",
+    "instructions": "Melanger oeufs sucre farine et beurre fondu, cuire dans des moules.",
+    "ingredients": [
+      { "name": "oeufs", "measure": "2" },
+      { "name": "sucre", "measure": "100 g" },
+      { "name": "farine", "measure": "120 g" },
+      { "name": "beurre", "measure": "100 g" },
+      { "name": "levure", "measure": "1 sachet" }
+    ]
+  },
+  {
+    "name": "Cookies",
+    "category": "Dessert",
+    "instructions": "Melanger beurre sucre oeuf farine et pepites, cuire au four.",
+    "ingredients": [
+      { "name": "beurre", "measure": "120 g" },
+      { "name": "sucre", "measure": "100 g" },
+      { "name": "oeuf", "measure": "1" },
+      { "name": "farine", "measure": "220 g" },
+      { "name": "chocolat", "measure": "150 g" }
+    ]
+  },
+  {
+    "name": "Sauce vinaigrette",
+    "category": "Sauce",
+    "instructions": "Emulsionner moutarde vinaigre et huile.",
+    "ingredients": [
+      { "name": "moutarde", "measure": "1 c. a cafe" },
+      { "name": "vinaigre", "measure": "1 c. a soupe" },
+      { "name": "huile", "measure": "3 c. a soupe" },
+      { "name": "sel", "measure": "1 pincee" }
+    ]
+  },
+  {
+    "name": "Sauce tomate",
+    "category": "Sauce",
+    "instructions": "Mijoter tomates oignon et ail a l huile d olive.",
+    "ingredients": [
+      { "name": "tomates", "measure": "500 g" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "ail", "measure": "2 gousses" },
+      { "name": "huile d olive", "measure": "2 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Poisson au four",
+    "category": "Plat",
+    "instructions": "Cuire le poisson au four avec citron et huile d olive.",
+    "ingredients": [
+      { "name": "poisson", "measure": "2 filets" },
+      { "name": "citron", "measure": "1" },
+      { "name": "huile d olive", "measure": "2 c. a soupe" },
+      { "name": "persil", "measure": "1 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Saumon a la creme",
+    "category": "Plat",
+    "instructions": "Cuire le saumon et napper d une sauce creme citron.",
+    "ingredients": [
+      { "name": "saumon", "measure": "2 paves" },
+      { "name": "creme fraiche", "measure": "20 cl" },
+      { "name": "citron", "measure": "1" },
+      { "name": "echalote", "measure": "1" }
+    ]
+  },
+  {
+    "name": "Gratin de courgettes",
+    "category": "Plat",
+    "instructions": "Cuire les courgettes, lier aux oeufs et fromage, gratiner au four.",
+    "ingredients": [
+      { "name": "courgettes", "measure": "4" },
+      { "name": "oeufs", "measure": "2" },
+      { "name": "creme fraiche", "measure": "15 cl" },
+      { "name": "fromage rape", "measure": "80 g" }
+    ]
+  },
+  {
+    "name": "Galette de pommes de terre",
+    "category": "Accompagnement",
+    "instructions": "Raper les pommes de terre, lier a l oeuf et dorer a la poele.",
+    "ingredients": [
+      { "name": "pommes de terre", "measure": "500 g" },
+      { "name": "oeuf", "measure": "1" },
+      { "name": "oignon", "measure": "1" },
+      { "name": "huile", "measure": "3 c. a soupe" }
+    ]
+  },
+  {
+    "name": "Oeufs au plat",
+    "category": "Plat",
+    "instructions": "Cuire les oeufs dans le beurre chaud sans casser le jaune.",
+    "ingredients": [
+      { "name": "oeufs", "measure": "2" },
+      { "name": "beurre", "measure": "15 g" },
+      { "name": "sel", "measure": "1 pincee" }
+    ]
+  },
+  {
+    "name": "Riz cantonais",
+    "category": "Plat",
+    "instructions": "Sauter le riz avec oeufs jambon petits pois et oignon.",
+    "ingredients": [
+      { "name": "riz", "measure": "300 g" },
+      { "name": "oeufs", "measure": "2" },
+      { "name": "jambon", "measure": "100 g" },
+      { "name": "petits pois", "measure": "100 g" },
+      { "name": "oignon", "measure": "1" }
+    ]
+  }
+]

@@ -3,6 +3,7 @@ import type { AuthResponse, LoginDto, RegisterDto } from '../types/auth.js';
 import type { RegisterDeviceDto } from '../types/device.js';
 import type { OcrJob } from '../types/ocr.js';
 import type { CreateProductDto, Product, ProductQuery } from '../types/product.js';
+import type { RecipeSuggestionsResponse } from '../types/recipe.js';
 import type {
   CreateStockItemDto,
   StockItemWithProduct,
@@ -217,6 +218,12 @@ export class PantryApiClient {
 
   deleteStock(id: string): Promise<void> {
     return this.request<void>(`/stocks/${id}`, { method: 'DELETE' });
+  }
+
+  // Recipes
+  /** Suggest recipes scored against the caller's current stock (>= 70% match). */
+  suggestRecipes(): Promise<RecipeSuggestionsResponse> {
+    return this.request<RecipeSuggestionsResponse>('/recipes/suggest');
   }
 
   // Devices / push notifications

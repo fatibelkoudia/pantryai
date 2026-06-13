@@ -25,3 +25,10 @@ export const OcrStatus = {
 } as const;
 
 export type OcrStatus = (typeof OcrStatus)[keyof typeof OcrStatus];
+
+export const RecipeSource = {
+  LOCAL: 'LOCAL',
+  THEMEALDB: 'THEMEALDB',
+} as const;
+
+export type RecipeSource = (typeof RecipeSource)[keyof typeof RecipeSource];

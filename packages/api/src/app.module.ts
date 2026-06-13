@@ -10,6 +10,7 @@ import { NotificationsModule } from './notifications/notifications.module.js';
 import { OcrModule } from './ocr/ocr.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { ProductModule } from './product/product.module.js';
+import { RecipesModule } from './recipes/recipes.module.js';
 import { RedisModule } from './redis/redis.module.js';
 import { StockModule } from './stock/stock.module.js';
 
@@ -28,6 +29,7 @@ import { StockModule } from './stock/stock.module.js';
     AuthModule,
     ProductModule,
     StockModule,
+    RecipesModule,
     OcrModule,
     DevicesModule,
     NotificationsModule,

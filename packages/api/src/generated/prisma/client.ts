@@ -67,3 +67,13 @@ export type StockItem = Prisma.StockItemModel;
  *
  */
 export type OcrJob = Prisma.OcrJobModel;
+/**
+ * Model Recipe
+ *
+ */
+export type Recipe = Prisma.RecipeModel;
+/**
+ * Model RecipeIngredient
+ *
+ */
+export type RecipeIngredient = Prisma.RecipeIngredientModel;
