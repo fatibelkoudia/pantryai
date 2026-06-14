@@ -741,18 +741,6 @@ export type StockItemUncheckedUpdateManyWithoutProductNestedInput = {
   deleteMany?: Prisma.StockItemScalarWhereInput | Prisma.StockItemScalarWhereInput[];
 };
 
-export type FloatFieldUpdateOperationsInput = {
-  set?: number;
-  increment?: number;
-  decrement?: number;
-  multiply?: number;
-  divide?: number;
-};
-
-export type EnumStockLocationFieldUpdateOperationsInput = {
-  set?: $Enums.StockLocation;
-};
-
 export type NullableEnumStockDispositionFieldUpdateOperationsInput = {
   set?: $Enums.StockDisposition | null;
 };

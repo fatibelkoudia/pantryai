@@ -1,8 +1,13 @@
 import type { Recipe, RecipeSuggestion } from '@pantryai/shared';
 
 // Default threshold: a recipe is only suggested if the user already has at least
-// this fraction of its ingredients. The dossier asks for 70%.
+// this fraction of its ingredients. The dossier asks for 70%, and since the
+// profile page landed the user can move it in their settings.
 export const DEFAULT_SCORE_THRESHOLD = 0.7;
+
+// Default for the other settings knob: a recipe must use at least this many
+// items the user actually has. 1 keeps the old behaviour (any match is enough).
+export const DEFAULT_MIN_MATCHED_ITEMS = 1;
 
 // Little connector words inside an ingredient name ("huile d olive", "sauce de
 // soja"). They carry no meaning on their own so we drop them before matching.
@@ -82,12 +87,14 @@ export function scoreRecipe(recipe: Recipe, stockNames: string[]): RecipeScore {
   return { score, matched, missing };
 }
 
-// Score every recipe, keep the ones at or above the threshold, and sort best first
-// (ties broken alphabetically so the order is stable).
+// Score every recipe, keep the ones at or above the threshold that also use at
+// least `minMatched` items from the stock, and sort best first (ties broken
+// alphabetically so the order is stable).
 export function rankSuggestions(
   recipes: Recipe[],
   stockNames: string[],
   threshold: number = DEFAULT_SCORE_THRESHOLD,
+  minMatched: number = DEFAULT_MIN_MATCHED_ITEMS,
 ): RecipeSuggestion[] {
   return recipes
     .map((recipe) => {
@@ -99,6 +106,9 @@ export function rankSuggestions(
         missingIngredients: missing,
       };
     })
-    .filter((suggestion) => suggestion.score >= threshold)
+    .filter(
+      (suggestion) =>
+        suggestion.score >= threshold && suggestion.matchedIngredients.length >= minMatched,
+    )
     .sort((a, b) => b.score - a.score || a.recipe.name.localeCompare(b.recipe.name));
 }

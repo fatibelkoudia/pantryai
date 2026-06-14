@@ -367,14 +367,6 @@ export type UserXpUncheckedUpdateOneWithoutUserNestedInput = {
   >;
 };
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number;
-  increment?: number;
-  decrement?: number;
-  multiply?: number;
-  divide?: number;
-};
-
 export type UserXpCreateWithoutUserInput = {
   total?: number;
   updatedAt?: Date | string;

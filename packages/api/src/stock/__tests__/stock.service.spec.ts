@@ -1,5 +1,6 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { StockLocation } from '../dto/create-stock-item.dto.js';
 import { StockService } from '../stock.service.js';
 
 const mockProduct = {
@@ -40,6 +41,9 @@ const mockPrismaService = {
   product: {
     findUnique: vi.fn(),
   },
+  userSettings: {
+    findUnique: vi.fn(),
+  },
 };
 
 const mockEvents = { emit: vi.fn() };
@@ -49,6 +53,8 @@ describe('StockService', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // most tests are about users without a settings row (defaults apply)
+    mockPrismaService.userSettings.findUnique.mockResolvedValue(null);
     service = new StockService(mockPrismaService as never, mockEvents as never);
   });
 
@@ -157,6 +163,37 @@ describe('StockService', () => {
         expect.objectContaining({
           data: expect.objectContaining({ userId: 'user-uuid-1', productId: 'prod-uuid-1' }),
         }),
+      );
+    });
+
+    it('uses the default location from the user settings when the dto has none', async () => {
+      mockPrismaService.product.findUnique.mockResolvedValue(mockProduct);
+      mockPrismaService.stockItem.create.mockResolvedValue(mockStockItem);
+      mockPrismaService.userSettings.findUnique.mockResolvedValue({
+        defaultStockLocation: 'FREEZER',
+      });
+
+      await service.create('user-uuid-1', { productId: 'prod-uuid-1', quantity: 2, unit: 'kg' });
+
+      expect(mockPrismaService.stockItem.create).toHaveBeenCalledWith(
+        expect.objectContaining({ data: expect.objectContaining({ location: 'FREEZER' }) }),
+      );
+    });
+
+    it('does not look up settings when the dto already has a location', async () => {
+      mockPrismaService.product.findUnique.mockResolvedValue(mockProduct);
+      mockPrismaService.stockItem.create.mockResolvedValue(mockStockItem);
+
+      await service.create('user-uuid-1', {
+        productId: 'prod-uuid-1',
+        quantity: 2,
+        unit: 'kg',
+        location: StockLocation.FRIDGE,
+      });
+
+      expect(mockPrismaService.userSettings.findUnique).not.toHaveBeenCalled();
+      expect(mockPrismaService.stockItem.create).toHaveBeenCalledWith(
+        expect.objectContaining({ data: expect.objectContaining({ location: 'FRIDGE' }) }),
       );
     });
 

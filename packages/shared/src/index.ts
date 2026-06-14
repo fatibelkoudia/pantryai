@@ -8,6 +8,7 @@ export * from './types/learning.js';
 export * from './types/ocr.js';
 export * from './types/product.js';
 export * from './types/recipe.js';
+export * from './types/settings.js';
 export * from './types/shopping.js';
 export * from './types/stock.js';
 export * from './types/user.js';
@@ -17,3 +18,6 @@ export * from './api/client.js';
 
 export * from './theme/tokens.js';
 export * from './theme/mascot.js';
+export * from './theme/avatars.js';
+
+export * from './i18n/index.js';

@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { mascotMoodMeta, type StockLocation } from '@pantryai/shared';
+import { getAvatarPreset, mascotMoodMeta, type StockLocation } from '@pantryai/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import {
@@ -49,10 +49,18 @@ export default function HomeScreen() {
     queryKey: ['recipes'],
     queryFn: () => apiClient.suggestRecipes(),
   });
+  // the match rule is a user setting now, the empty-state text has to follow it
+  const settings = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => apiClient.getSettings(),
+  });
+  const matchPercent = Math.round((settings.data?.recipeMatchThreshold ?? 0.7) * 100);
 
   // user might still be loading, so fall back to a plain hello until we have a name
   const firstName = user?.name?.trim().split(/\s+/)[0];
   const initial = (firstName ?? user?.email ?? '?').charAt(0).toUpperCase();
+  // show the avatar they picked on the profile page, or their initial before they pick one
+  const avatar = user?.avatarId ? getAvatarPreset(user.avatarId) : null;
   const expiringItems = expiring.data?.items ?? [];
   const topSuggestion = recipes.data?.suggestions[0];
   const mood = waste.data ? mascotMoodMeta[waste.data.mood] : null;
@@ -62,12 +70,16 @@ export default function HomeScreen() {
       {/* Header: avatar -> profile, bell -> expiring alerts, plus a scan shortcut */}
       <View style={styles.header}>
         <TouchableOpacity
-          style={styles.avatar}
+          style={[styles.avatar, avatar ? { backgroundColor: avatar.bg } : null]}
           onPress={() => router.push('/profile')}
           accessibilityRole="button"
           accessibilityLabel="Open your profile"
         >
-          <Text style={styles.avatarInitial}>{initial}</Text>
+          {avatar ? (
+            <Text style={styles.avatarEmoji}>{avatar.emoji}</Text>
+          ) : (
+            <Text style={styles.avatarInitial}>{initial}</Text>
+          )}
         </TouchableOpacity>
         <View style={styles.headerText}>
           <Text style={styles.greeting}>{firstName ? `Hello, ${firstName} 👋` : 'Hello 👋'}</Text>
@@ -205,8 +217,8 @@ export default function HomeScreen() {
       ) : (
         <View style={styles.emptyCard}>
           <Text style={styles.muted}>
-            No recipe matches your stock yet (a suggestion needs 70% of its ingredients). Add more
-            items to unlock ideas.
+            No recipe matches your stock yet (a suggestion needs {matchPercent}% of its
+            ingredients). Add more items to unlock ideas.
           </Text>
           <TouchableOpacity
             style={styles.cta}
@@ -251,6 +263,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   avatarInitial: { color: colors.onBrand, fontSize: 17, fontFamily: font.bold },
+  avatarEmoji: { fontSize: 20 },
   headerText: { flex: 1 },
   greeting: { fontSize: 18, fontFamily: font.black, color: colors.forestGreen },
   tagline: { fontSize: 13, color: colors.textMuted, marginTop: 1 },

@@ -10,8 +10,11 @@ import { Stack, useRootNavigationState, useRouter, useSegments } from 'expo-rout
 import { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { registerForPushNotifications } from '../src/lib/push';
+import { LocaleSync } from '../src/components/LocaleSync';
 import { useAuthStore } from '../src/store/auth';
 import { colors } from '../src/theme';
+// side-effect import: sets up the i18next instance before anything renders
+import '../src/lib/i18n';
 
 const queryClient = new QueryClient();
 
@@ -77,6 +80,7 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthGate>
+        <LocaleSync />
         <Stack>
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />

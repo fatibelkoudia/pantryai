@@ -11,12 +11,20 @@ export default function RecipesPage() {
     queryFn: () => apiClient.suggestRecipes(),
   });
 
+  // the match rule is a user setting now, so the intro line has to follow it
+  const settings = useQuery({
+    queryKey: ['settings'],
+    queryFn: () => apiClient.getSettings(),
+  });
+  const matchPercent = Math.round((settings.data?.recipeMatchThreshold ?? 0.7) * 100);
+
   return (
     <section className="flex flex-col gap-6">
       <header className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">Recipe ideas</h1>
         <p className="text-sm text-slate-500">
-          Based on what is in your stock right now. These are recipes you can make at least 70% of.
+          Based on what is in your stock right now. These are recipes you can make at least{' '}
+          {matchPercent}% of.
         </p>
       </header>
 

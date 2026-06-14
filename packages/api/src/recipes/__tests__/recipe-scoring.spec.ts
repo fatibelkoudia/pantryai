@@ -90,6 +90,25 @@ describe('rankSuggestions', () => {
     expect(result).toHaveLength(3);
   });
 
+  it('drops recipes that use fewer stock items than minMatched', () => {
+    // "Solo" is a perfect 1/1 match but only uses one item from the stock.
+    const withSmall = [...recipes, recipe('Solo', ['farine'])];
+    const result = rankSuggestions(withSmall, stock, 0.7, 3);
+    expect(result.map((s) => s.recipe.name)).toEqual(['Tout', 'Presque']);
+  });
+
+  it('keeps the old behaviour with the default minMatched of 1', () => {
+    const withSmall = [...recipes, recipe('Solo', ['farine'])];
+    const result = rankSuggestions(withSmall, stock);
+    expect(result.map((s) => s.recipe.name)).toContain('Solo');
+  });
+
+  it('combines both knobs: threshold first, then the min matched count', () => {
+    // At 0.5 the "Moitie" recipe (2/4) gets in, but minMatched 3 kicks it out again.
+    const result = rankSuggestions(recipes, stock, 0.5, 3);
+    expect(result.map((s) => s.recipe.name)).toEqual(['Tout', 'Presque']);
+  });
+
   it('breaks score ties alphabetically by name', () => {
     const tied = [recipe('Zucchini', ['oeufs', 'beurre']), recipe('Avocat', ['oeufs', 'beurre'])];
     const result = rankSuggestions(tied, ['oeufs', 'beurre']);

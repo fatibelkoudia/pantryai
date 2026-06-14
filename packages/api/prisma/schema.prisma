@@ -11,6 +11,8 @@ model User {
   id           String      @id @default(uuid())
   email        String      @unique
   name         String?
+  // id of one of the built-in avatars (see shared/theme/avatars.ts), not an image
+  avatarId     String?
   passwordHash String
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
@@ -21,9 +23,31 @@ model User {
   shoppingItems ShoppingItem[]
   xp           UserXp?
   challenges   UserChallenge[]
+  settings     UserSettings?
 
   @@index([email])
   @@map("users")
+}
+
+// The knobs the user can change from the profile page. One row per user, and we
+// only create it the first time settings are read, so existing accounts simply
+// fall back to the defaults below.
+model UserSettings {
+  userId                String        @id
+  locale                String        @default("en")
+  // a recipe must use at least this many items from the stock to be suggested
+  recipeMinMatchedItems Int           @default(1)
+  // and the user must own at least this fraction of its ingredients (the 70% rule)
+  recipeMatchThreshold  Float         @default(0.7)
+  // days before the expiration date where an item starts counting as "expiring soon"
+  expiringSoonDays      Int           @default(3)
+  // quantity at or below this counts as low stock for the shopping list
+  lowStockThreshold     Int           @default(1)
+  defaultStockLocation  StockLocation @default(PANTRY)
+  updatedAt             DateTime      @updatedAt
+  user                  User          @relation(fields: [userId], references: [id])
+
+  @@map("user_settings")
 }
 
 model UserDevice {

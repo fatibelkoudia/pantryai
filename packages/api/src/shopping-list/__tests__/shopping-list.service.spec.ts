@@ -15,6 +15,7 @@ const mockPrisma = {
   },
   stockItem: { findMany: vi.fn() },
   recipe: { findMany: vi.fn() },
+  userSettings: { findUnique: vi.fn() },
 };
 
 const mockRecipeService = {
@@ -45,6 +46,36 @@ describe('ShoppingListService.generate', () => {
     // No existing items, then return what was created on the final findAll.
     mockPrisma.shoppingItem.findMany.mockResolvedValue([]);
     mockPrisma.shoppingItem.createMany.mockResolvedValue({ count: 0 });
+    // no saved settings by default, the constant default threshold applies
+    mockPrisma.userSettings.findUnique.mockResolvedValue(null);
+  });
+
+  it('uses the low stock threshold from the user settings when the request has none', async () => {
+    mockPrisma.userSettings.findUnique.mockResolvedValue({ lowStockThreshold: 5 });
+
+    await makeService().generate('user-1', {});
+
+    expect(mockPrisma.stockItem.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          OR: expect.arrayContaining([{ quantity: { lte: 5 } }]),
+        }),
+      }),
+    );
+  });
+
+  it('lets an explicit request threshold win over the saved setting', async () => {
+    mockPrisma.userSettings.findUnique.mockResolvedValue({ lowStockThreshold: 5 });
+
+    await makeService().generate('user-1', { lowStockThreshold: 2 });
+
+    expect(mockPrisma.stockItem.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          OR: expect.arrayContaining([{ quantity: { lte: 2 } }]),
+        }),
+      }),
+    );
   });
 
   it('merges low/expiring stock with recipe gaps', async () => {

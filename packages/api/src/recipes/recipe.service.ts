@@ -36,7 +36,8 @@ export class RecipeService {
 
   // Suggest recipes the user can mostly make from what's in their stock.
   // Local French recipes are always in the running, and TheMealDB adds more when
-  // it's reachable. Everything goes through the same scoring.
+  // it's reachable. Everything goes through the same scoring, with the user's
+  // own thresholds from their settings when they changed them.
   async suggest(userId: string): Promise<RecipeSuggestion[]> {
     const stockNames = await this.getStockNames(userId);
 
@@ -48,7 +49,16 @@ export class RecipeService {
     const online = await this.themealdb.searchByIngredients(stockNames);
     await this.cacheOnlineRecipes(online);
 
-    return rankSuggestions([...local, ...online], stockNames);
+    // No row yet just means the user never touched their settings, so we score
+    // with the usual defaults instead of creating one from here.
+    const settings = await this.prisma.userSettings.findUnique({ where: { userId } });
+
+    return rankSuggestions(
+      [...local, ...online],
+      stockNames,
+      settings?.recipeMatchThreshold,
+      settings?.recipeMinMatchedItems,
+    );
   }
 
   // Distinct product names currently in the user's stock (not soft-deleted).

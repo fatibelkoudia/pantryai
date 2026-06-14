@@ -32,6 +32,7 @@ const mockPrisma = {
     create: vi.fn(),
     upsert: vi.fn(),
   },
+  userSettings: { findUnique: vi.fn() },
 };
 
 const mockThemealdb = {
@@ -48,6 +49,8 @@ describe('RecipeService.suggest', () => {
     mockPrisma.recipe.count.mockResolvedValue(62); // already seeded
     mockPrisma.recipe.findMany.mockResolvedValue([localCrepesRow]);
     mockPrisma.stockItem.findMany.mockResolvedValue(stockItems);
+    // no settings row by default, the user never touched their settings
+    mockPrisma.userSettings.findUnique.mockResolvedValue(null);
     mockThemealdb.searchByIngredients.mockResolvedValue([]);
   });
 
@@ -79,6 +82,19 @@ describe('RecipeService.suggest', () => {
     expect(result).toHaveLength(1);
     expect(result[0]?.recipe.name).toBe('Crepes');
     expect(result[0]?.score).toBeCloseTo(1);
+  });
+
+  it('applies the thresholds from the user settings when a row exists', async () => {
+    // Crepes is a 3/3 match but the user asked for recipes using at least 4 of
+    // their items, so nothing should come back.
+    mockPrisma.userSettings.findUnique.mockResolvedValue({
+      recipeMatchThreshold: 0.7,
+      recipeMinMatchedItems: 4,
+    });
+
+    const result = await makeService().suggest('user-1');
+
+    expect(result).toHaveLength(0);
   });
 
   it('includes and caches recipes returned by TheMealDB', async () => {

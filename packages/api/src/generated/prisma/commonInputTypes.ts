@@ -133,6 +133,77 @@ export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>;
 };
 
+export type IntFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedIntFilter<$PrismaModel> | number;
+};
+
+export type FloatFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedFloatFilter<$PrismaModel> | number;
+};
+
+export type EnumStockLocationFilter<$PrismaModel = never> = {
+  equals?: $Enums.StockLocation | Prisma.EnumStockLocationFieldRefInput<$PrismaModel>;
+  in?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumStockLocationFilter<$PrismaModel> | $Enums.StockLocation;
+};
+
+export type IntWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>;
+  _sum?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedIntFilter<$PrismaModel>;
+  _max?: Prisma.NestedIntFilter<$PrismaModel>;
+};
+
+export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedFloatWithAggregatesFilter<$PrismaModel> | number;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>;
+  _sum?: Prisma.NestedFloatFilter<$PrismaModel>;
+  _min?: Prisma.NestedFloatFilter<$PrismaModel>;
+  _max?: Prisma.NestedFloatFilter<$PrismaModel>;
+};
+
+export type EnumStockLocationWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StockLocation | Prisma.EnumStockLocationFieldRefInput<$PrismaModel>;
+  in?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumStockLocationWithAggregatesFilter<$PrismaModel> | $Enums.StockLocation;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumStockLocationFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumStockLocationFilter<$PrismaModel>;
+};
+
 export type JsonNullableFilter<$PrismaModel = never> =
   | Prisma.PatchUndefined<
       Prisma.Either<
@@ -202,24 +273,6 @@ export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
   _max?: Prisma.NestedJsonNullableFilter<$PrismaModel>;
 };
 
-export type FloatFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
-  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
-  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedFloatFilter<$PrismaModel> | number;
-};
-
-export type EnumStockLocationFilter<$PrismaModel = never> = {
-  equals?: $Enums.StockLocation | Prisma.EnumStockLocationFieldRefInput<$PrismaModel>;
-  in?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
-  notIn?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedEnumStockLocationFilter<$PrismaModel> | $Enums.StockLocation;
-};
-
 export type EnumStockDispositionNullableFilter<$PrismaModel = never> = {
   equals?: $Enums.StockDisposition | Prisma.EnumStockDispositionFieldRefInput<$PrismaModel> | null;
   in?:
@@ -234,32 +287,6 @@ export type EnumStockDispositionNullableFilter<$PrismaModel = never> = {
     | Prisma.NestedEnumStockDispositionNullableFilter<$PrismaModel>
     | $Enums.StockDisposition
     | null;
-};
-
-export type FloatWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
-  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
-  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedFloatWithAggregatesFilter<$PrismaModel> | number;
-  _count?: Prisma.NestedIntFilter<$PrismaModel>;
-  _avg?: Prisma.NestedFloatFilter<$PrismaModel>;
-  _sum?: Prisma.NestedFloatFilter<$PrismaModel>;
-  _min?: Prisma.NestedFloatFilter<$PrismaModel>;
-  _max?: Prisma.NestedFloatFilter<$PrismaModel>;
-};
-
-export type EnumStockLocationWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.StockLocation | Prisma.EnumStockLocationFieldRefInput<$PrismaModel>;
-  in?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
-  notIn?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedEnumStockLocationWithAggregatesFilter<$PrismaModel> | $Enums.StockLocation;
-  _count?: Prisma.NestedIntFilter<$PrismaModel>;
-  _min?: Prisma.NestedEnumStockLocationFilter<$PrismaModel>;
-  _max?: Prisma.NestedEnumStockLocationFilter<$PrismaModel>;
 };
 
 export type EnumStockDispositionNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -376,33 +403,6 @@ export type EnumShoppingItemSourceWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>;
   _min?: Prisma.NestedEnumShoppingItemSourceFilter<$PrismaModel>;
   _max?: Prisma.NestedEnumShoppingItemSourceFilter<$PrismaModel>;
-};
-
-export type IntFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
-  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedIntFilter<$PrismaModel> | number;
-};
-
-export type IntWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
-  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number;
-  _count?: Prisma.NestedIntFilter<$PrismaModel>;
-  _avg?: Prisma.NestedFloatFilter<$PrismaModel>;
-  _sum?: Prisma.NestedIntFilter<$PrismaModel>;
-  _min?: Prisma.NestedIntFilter<$PrismaModel>;
-  _max?: Prisma.NestedIntFilter<$PrismaModel>;
 };
 
 export type JsonFilter<$PrismaModel = never> =
@@ -608,6 +608,66 @@ export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeNullableFilter<$PrismaModel>;
 };
 
+export type NestedFloatFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedFloatFilter<$PrismaModel> | number;
+};
+
+export type NestedEnumStockLocationFilter<$PrismaModel = never> = {
+  equals?: $Enums.StockLocation | Prisma.EnumStockLocationFieldRefInput<$PrismaModel>;
+  in?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumStockLocationFilter<$PrismaModel> | $Enums.StockLocation;
+};
+
+export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
+  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
+  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>;
+  _sum?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedIntFilter<$PrismaModel>;
+  _max?: Prisma.NestedIntFilter<$PrismaModel>;
+};
+
+export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedFloatWithAggregatesFilter<$PrismaModel> | number;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _avg?: Prisma.NestedFloatFilter<$PrismaModel>;
+  _sum?: Prisma.NestedFloatFilter<$PrismaModel>;
+  _min?: Prisma.NestedFloatFilter<$PrismaModel>;
+  _max?: Prisma.NestedFloatFilter<$PrismaModel>;
+};
+
+export type NestedEnumStockLocationWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.StockLocation | Prisma.EnumStockLocationFieldRefInput<$PrismaModel>;
+  in?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
+  notIn?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumStockLocationWithAggregatesFilter<$PrismaModel> | $Enums.StockLocation;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumStockLocationFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumStockLocationFilter<$PrismaModel>;
+};
+
 export type NestedJsonNullableFilter<$PrismaModel = never> =
   | Prisma.PatchUndefined<
       Prisma.Either<
@@ -641,24 +701,6 @@ export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
     | Prisma.JsonNullValueFilter;
 };
 
-export type NestedFloatFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
-  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
-  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedFloatFilter<$PrismaModel> | number;
-};
-
-export type NestedEnumStockLocationFilter<$PrismaModel = never> = {
-  equals?: $Enums.StockLocation | Prisma.EnumStockLocationFieldRefInput<$PrismaModel>;
-  in?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
-  notIn?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedEnumStockLocationFilter<$PrismaModel> | $Enums.StockLocation;
-};
-
 export type NestedEnumStockDispositionNullableFilter<$PrismaModel = never> = {
   equals?: $Enums.StockDisposition | Prisma.EnumStockDispositionFieldRefInput<$PrismaModel> | null;
   in?:
@@ -673,32 +715,6 @@ export type NestedEnumStockDispositionNullableFilter<$PrismaModel = never> = {
     | Prisma.NestedEnumStockDispositionNullableFilter<$PrismaModel>
     | $Enums.StockDisposition
     | null;
-};
-
-export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
-  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>;
-  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedFloatWithAggregatesFilter<$PrismaModel> | number;
-  _count?: Prisma.NestedIntFilter<$PrismaModel>;
-  _avg?: Prisma.NestedFloatFilter<$PrismaModel>;
-  _sum?: Prisma.NestedFloatFilter<$PrismaModel>;
-  _min?: Prisma.NestedFloatFilter<$PrismaModel>;
-  _max?: Prisma.NestedFloatFilter<$PrismaModel>;
-};
-
-export type NestedEnumStockLocationWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.StockLocation | Prisma.EnumStockLocationFieldRefInput<$PrismaModel>;
-  in?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
-  notIn?: $Enums.StockLocation[] | Prisma.ListEnumStockLocationFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedEnumStockLocationWithAggregatesFilter<$PrismaModel> | $Enums.StockLocation;
-  _count?: Prisma.NestedIntFilter<$PrismaModel>;
-  _min?: Prisma.NestedEnumStockLocationFilter<$PrismaModel>;
-  _max?: Prisma.NestedEnumStockLocationFilter<$PrismaModel>;
 };
 
 export type NestedEnumStockDispositionNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -815,22 +831,6 @@ export type NestedEnumShoppingItemSourceWithAggregatesFilter<$PrismaModel = neve
   _count?: Prisma.NestedIntFilter<$PrismaModel>;
   _min?: Prisma.NestedEnumShoppingItemSourceFilter<$PrismaModel>;
   _max?: Prisma.NestedEnumShoppingItemSourceFilter<$PrismaModel>;
-};
-
-export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
-  notIn?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>;
-  lt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  lte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  gt?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  gte?: number | Prisma.IntFieldRefInput<$PrismaModel>;
-  not?: Prisma.NestedIntWithAggregatesFilter<$PrismaModel> | number;
-  _count?: Prisma.NestedIntFilter<$PrismaModel>;
-  _avg?: Prisma.NestedFloatFilter<$PrismaModel>;
-  _sum?: Prisma.NestedIntFilter<$PrismaModel>;
-  _min?: Prisma.NestedIntFilter<$PrismaModel>;
-  _max?: Prisma.NestedIntFilter<$PrismaModel>;
 };
 
 export type NestedJsonFilter<$PrismaModel = never> =

@@ -19,8 +19,14 @@ import type {
   StockQuery,
   UpdateStockItemDto,
 } from '../types/stock.js';
-import type { User } from '../types/user.js';
-import type { StockDisposition, WasteLevelResponse } from '../types/waste.js';
+import type { UpdateUserSettingsDto, UserSettings } from '../types/settings.js';
+import type { ChangePasswordDto, UpdateProfileDto, User } from '../types/user.js';
+import type {
+  StockDisposition,
+  WasteHistoryResponse,
+  WasteItemsResponse,
+  WasteLevelResponse,
+} from '../types/waste.js';
 
 export class ApiClientError extends Error {
   constructor(
@@ -184,6 +190,35 @@ export class PantryApiClient {
     return this.request<void>('/auth/me', { method: 'DELETE' });
   }
 
+  // Profile & settings
+  /** Update name, email and/or avatar. Email changes apply right away (no confirmation mail). */
+  updateProfile(dto: UpdateProfileDto): Promise<User> {
+    return this.request<User>('/users/me', {
+      method: 'PATCH',
+      body: JSON.stringify(dto),
+    });
+  }
+
+  /** Change the password. Fails with 401 when the current password is wrong. */
+  changePassword(dto: ChangePasswordDto): Promise<void> {
+    return this.request<void>('/users/me/password', {
+      method: 'POST',
+      body: JSON.stringify(dto),
+    });
+  }
+
+  /** The caller's settings. The API creates the row with defaults on first read. */
+  getSettings(): Promise<UserSettings> {
+    return this.request<UserSettings>('/users/me/settings');
+  }
+
+  updateSettings(dto: UpdateUserSettingsDto): Promise<UserSettings> {
+    return this.request<UserSettings>('/users/me/settings', {
+      method: 'PATCH',
+      body: JSON.stringify(dto),
+    });
+  }
+
   // Products
   listProducts(query: ProductQuery = {}): Promise<{ items: Product[]; meta: ApiMeta }> {
     const params = new URLSearchParams();
@@ -249,6 +284,16 @@ export class PantryApiClient {
   /** The caller's Waste Level over the trailing window: score 0-100 + mascot mood. */
   getWasteLevel(): Promise<WasteLevelResponse> {
     return this.request<WasteLevelResponse>('/waste/level');
+  }
+
+  /** The resolved items behind the waste counts, for the stat card details. */
+  getWasteItems(): Promise<WasteItemsResponse> {
+    return this.request<WasteItemsResponse>('/waste/items');
+  }
+
+  /** All-time waste history, one entry per month. */
+  getWasteHistory(): Promise<WasteHistoryResponse> {
+    return this.request<WasteHistoryResponse>('/waste/history');
   }
 
   // Gamification (XP + challenges)

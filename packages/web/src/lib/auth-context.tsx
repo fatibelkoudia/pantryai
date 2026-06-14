@@ -15,6 +15,7 @@ interface AuthContextValue {
   login: (dto: LoginDto) => Promise<void>;
   register: (dto: RegisterDto) => Promise<void>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -124,6 +125,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [router],
   );
 
+  // Re-fetch the signed-in user, e.g. right after the profile page saved a change,
+  // so the navbar and greetings show the new name/avatar without a reload.
+  const refreshUser = useCallback(async () => {
+    const me = await apiClient.getMe().catch(() => null);
+    if (me) setUser(me);
+  }, []);
+
   const register = useCallback(
     async (dto: RegisterDto) => {
       const res = await apiClient.register(dto);
@@ -138,7 +146,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <AuthContext.Provider value={{ status, user, login, register, logout }}>
+    <AuthContext.Provider value={{ status, user, login, register, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   );

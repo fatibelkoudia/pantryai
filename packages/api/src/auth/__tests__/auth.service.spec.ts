@@ -8,6 +8,7 @@ const mockUser = {
   id: 'user-uuid-1',
   email: 'tima@example.com',
   name: 'Tima',
+  avatarId: null,
   passwordHash: '$2b$12$hashedpassword',
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -25,6 +26,9 @@ const mockPrismaService = {
   },
   ocrJob: {
     findMany: vi.fn(),
+    deleteMany: vi.fn(),
+  },
+  userSettings: {
     deleteMany: vi.fn(),
   },
   $transaction: vi.fn(),
@@ -88,6 +92,7 @@ describe('AuthService', () => {
         id: mockUser.id,
         email: mockUser.email,
         name: mockUser.name,
+        avatarId: null,
       });
     });
 
@@ -193,7 +198,12 @@ describe('AuthService', () => {
 
       const result = await service.getMe('user-uuid-1');
 
-      expect(result).toEqual({ id: 'user-uuid-1', email: 'tima@example.com', name: 'Tima' });
+      expect(result).toEqual({
+        id: 'user-uuid-1',
+        email: 'tima@example.com',
+        name: 'Tima',
+        avatarId: null,
+      });
       expect(result).not.toHaveProperty('passwordHash');
     });
 

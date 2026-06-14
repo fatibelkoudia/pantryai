@@ -55,7 +55,7 @@ export class AuthService {
 
     return {
       ...tokens,
-      user: { id: user.id, email: user.email, name: user.name },
+      user: { id: user.id, email: user.email, name: user.name, avatarId: user.avatarId },
     };
   }
 
@@ -76,7 +76,7 @@ export class AuthService {
 
     return {
       ...tokens,
-      user: { id: user.id, email: user.email, name: user.name },
+      user: { id: user.id, email: user.email, name: user.name, avatarId: user.avatarId },
     };
   }
 
@@ -87,7 +87,7 @@ export class AuthService {
     if (!user || user.deletedAt) {
       throw new NotFoundException('User not found');
     }
-    return { id: user.id, email: user.email, name: user.name };
+    return { id: user.id, email: user.email, name: user.name, avatarId: user.avatarId };
   }
 
   async refresh(refreshToken: string): Promise<{ accessToken: string }> {
@@ -149,12 +149,14 @@ export class AuthService {
     await this.prisma.$transaction([
       this.prisma.stockItem.deleteMany({ where: { userId } }),
       this.prisma.ocrJob.deleteMany({ where: { userId } }),
+      this.prisma.userSettings.deleteMany({ where: { userId } }),
       this.prisma.user.update({
         where: { id: userId },
         data: {
           deletedAt: new Date(),
           email: `deleted-${userId}@anonymized.invalid`,
           name: null,
+          avatarId: null,
           passwordHash: '!deleted', // '!' prefix is never a valid bcrypt hash — login impossible
         },
       }),

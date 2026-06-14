@@ -376,6 +376,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  UserSettings: 'UserSettings',
   UserDevice: 'UserDevice',
   Product: 'Product',
   StockItem: 'StockItem',
@@ -407,6 +408,7 @@ export type TypeMap<
   meta: {
     modelProps:
       | 'user'
+      | 'userSettings'
       | 'userDevice'
       | 'product'
       | 'stockItem'
@@ -491,6 +493,82 @@ export type TypeMap<
         count: {
           args: Prisma.UserCountArgs<ExtArgs>;
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number;
+        };
+      };
+    };
+    UserSettings: {
+      payload: Prisma.$UserSettingsPayload<ExtArgs>;
+      fields: Prisma.UserSettingsFieldRefs;
+      operations: {
+        findUnique: {
+          args: Prisma.UserSettingsFindUniqueArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload> | null;
+        };
+        findUniqueOrThrow: {
+          args: Prisma.UserSettingsFindUniqueOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>;
+        };
+        findFirst: {
+          args: Prisma.UserSettingsFindFirstArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload> | null;
+        };
+        findFirstOrThrow: {
+          args: Prisma.UserSettingsFindFirstOrThrowArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>;
+        };
+        findMany: {
+          args: Prisma.UserSettingsFindManyArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>[];
+        };
+        create: {
+          args: Prisma.UserSettingsCreateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>;
+        };
+        createMany: {
+          args: Prisma.UserSettingsCreateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        createManyAndReturn: {
+          args: Prisma.UserSettingsCreateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>[];
+        };
+        delete: {
+          args: Prisma.UserSettingsDeleteArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>;
+        };
+        update: {
+          args: Prisma.UserSettingsUpdateArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>;
+        };
+        deleteMany: {
+          args: Prisma.UserSettingsDeleteManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateMany: {
+          args: Prisma.UserSettingsUpdateManyArgs<ExtArgs>;
+          result: BatchPayload;
+        };
+        updateManyAndReturn: {
+          args: Prisma.UserSettingsUpdateManyAndReturnArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>[];
+        };
+        upsert: {
+          args: Prisma.UserSettingsUpsertArgs<ExtArgs>;
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserSettingsPayload>;
+        };
+        aggregate: {
+          args: Prisma.UserSettingsAggregateArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserSettings>;
+        };
+        groupBy: {
+          args: Prisma.UserSettingsGroupByArgs<ExtArgs>;
+          result: runtime.Types.Utils.Optional<Prisma.UserSettingsGroupByOutputType>[];
+        };
+        count: {
+          args: Prisma.UserSettingsCountArgs<ExtArgs>;
+          result:
+            | runtime.Types.Utils.Optional<Prisma.UserSettingsCountAggregateOutputType>
+            | number;
         };
       };
     };
@@ -1283,6 +1361,7 @@ export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   name: 'name',
+  avatarId: 'avatarId',
   passwordHash: 'passwordHash',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -1290,6 +1369,20 @@ export const UserScalarFieldEnum = {
 } as const;
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
+
+export const UserSettingsScalarFieldEnum = {
+  userId: 'userId',
+  locale: 'locale',
+  recipeMinMatchedItems: 'recipeMinMatchedItems',
+  recipeMatchThreshold: 'recipeMatchThreshold',
+  expiringSoonDays: 'expiringSoonDays',
+  lowStockThreshold: 'lowStockThreshold',
+  defaultStockLocation: 'defaultStockLocation',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type UserSettingsScalarFieldEnum =
+  (typeof UserSettingsScalarFieldEnum)[keyof typeof UserSettingsScalarFieldEnum];
 
 export const UserDeviceScalarFieldEnum = {
   id: 'id',
@@ -1495,14 +1588,14 @@ export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>;
 
 /**
- * Reference to a field of type 'Json'
+ * Reference to a field of type 'Int'
  */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>;
 
 /**
- * Reference to a field of type 'QueryMode'
+ * Reference to a field of type 'Int[]'
  */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>;
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
 
 /**
  * Reference to a field of type 'Float'
@@ -1529,6 +1622,16 @@ export type ListEnumStockLocationFieldRefInput<$PrismaModel> = FieldRefInputType
   $PrismaModel,
   'StockLocation[]'
 >;
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>;
 
 /**
  * Reference to a field of type 'StockDisposition'
@@ -1595,16 +1698,6 @@ export type ListEnumShoppingItemSourceFieldRefInput<$PrismaModel> = FieldRefInpu
   $PrismaModel,
   'ShoppingItemSource[]'
 >;
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>;
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
 
 /**
  * Batch Payload for updateMany & deleteMany & createMany
@@ -1710,6 +1803,7 @@ export type PrismaClientOptions = (
 };
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit;
+  userSettings?: Prisma.UserSettingsOmit;
   userDevice?: Prisma.UserDeviceOmit;
   product?: Prisma.ProductOmit;
   stockItem?: Prisma.StockItemOmit;

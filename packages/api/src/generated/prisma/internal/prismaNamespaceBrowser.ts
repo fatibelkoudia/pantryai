@@ -49,6 +49,7 @@ export const AnyNull = runtime.AnyNull;
 
 export const ModelName = {
   User: 'User',
+  UserSettings: 'UserSettings',
   UserDevice: 'UserDevice',
   Product: 'Product',
   StockItem: 'StockItem',
@@ -81,6 +82,7 @@ export const UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   name: 'name',
+  avatarId: 'avatarId',
   passwordHash: 'passwordHash',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -88,6 +90,20 @@ export const UserScalarFieldEnum = {
 } as const;
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
+
+export const UserSettingsScalarFieldEnum = {
+  userId: 'userId',
+  locale: 'locale',
+  recipeMinMatchedItems: 'recipeMinMatchedItems',
+  recipeMatchThreshold: 'recipeMatchThreshold',
+  expiringSoonDays: 'expiringSoonDays',
+  lowStockThreshold: 'lowStockThreshold',
+  defaultStockLocation: 'defaultStockLocation',
+  updatedAt: 'updatedAt',
+} as const;
+
+export type UserSettingsScalarFieldEnum =
+  (typeof UserSettingsScalarFieldEnum)[keyof typeof UserSettingsScalarFieldEnum];
 
 export const UserDeviceScalarFieldEnum = {
   id: 'id',
