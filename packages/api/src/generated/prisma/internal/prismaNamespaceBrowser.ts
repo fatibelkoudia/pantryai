@@ -55,6 +55,7 @@ export const ModelName = {
   OcrJob: 'OcrJob',
   Recipe: 'Recipe',
   RecipeIngredient: 'RecipeIngredient',
+  ShoppingItem: 'ShoppingItem',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -170,6 +171,20 @@ export const RecipeIngredientScalarFieldEnum = {
 
 export type RecipeIngredientScalarFieldEnum =
   (typeof RecipeIngredientScalarFieldEnum)[keyof typeof RecipeIngredientScalarFieldEnum];
+
+export const ShoppingItemScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  name: 'name',
+  quantity: 'quantity',
+  unit: 'unit',
+  checked: 'checked',
+  source: 'source',
+  createdAt: 'createdAt',
+} as const;
+
+export type ShoppingItemScalarFieldEnum =
+  (typeof ShoppingItemScalarFieldEnum)[keyof typeof ShoppingItemScalarFieldEnum];
 
 export const SortOrder = {
   asc: 'asc',

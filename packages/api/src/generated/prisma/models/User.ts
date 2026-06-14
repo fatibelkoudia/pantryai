@@ -197,6 +197,7 @@ export type UserWhereInput = {
   stockItems?: Prisma.StockItemListRelationFilter;
   ocrJobs?: Prisma.OcrJobListRelationFilter;
   devices?: Prisma.UserDeviceListRelationFilter;
+  shoppingItems?: Prisma.ShoppingItemListRelationFilter;
 };
 
 export type UserOrderByWithRelationInput = {
@@ -210,6 +211,7 @@ export type UserOrderByWithRelationInput = {
   stockItems?: Prisma.StockItemOrderByRelationAggregateInput;
   ocrJobs?: Prisma.OcrJobOrderByRelationAggregateInput;
   devices?: Prisma.UserDeviceOrderByRelationAggregateInput;
+  shoppingItems?: Prisma.ShoppingItemOrderByRelationAggregateInput;
 };
 
 export type UserWhereUniqueInput = Prisma.AtLeast<
@@ -227,6 +229,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     stockItems?: Prisma.StockItemListRelationFilter;
     ocrJobs?: Prisma.OcrJobListRelationFilter;
     devices?: Prisma.UserDeviceListRelationFilter;
+    shoppingItems?: Prisma.ShoppingItemListRelationFilter;
   },
   'id' | 'email'
 >;
@@ -268,6 +271,7 @@ export type UserCreateInput = {
   stockItems?: Prisma.StockItemCreateNestedManyWithoutUserInput;
   ocrJobs?: Prisma.OcrJobCreateNestedManyWithoutUserInput;
   devices?: Prisma.UserDeviceCreateNestedManyWithoutUserInput;
+  shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateInput = {
@@ -281,6 +285,7 @@ export type UserUncheckedCreateInput = {
   stockItems?: Prisma.StockItemUncheckedCreateNestedManyWithoutUserInput;
   ocrJobs?: Prisma.OcrJobUncheckedCreateNestedManyWithoutUserInput;
   devices?: Prisma.UserDeviceUncheckedCreateNestedManyWithoutUserInput;
+  shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserUpdateInput = {
@@ -294,6 +299,7 @@ export type UserUpdateInput = {
   stockItems?: Prisma.StockItemUpdateManyWithoutUserNestedInput;
   ocrJobs?: Prisma.OcrJobUpdateManyWithoutUserNestedInput;
   devices?: Prisma.UserDeviceUpdateManyWithoutUserNestedInput;
+  shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateInput = {
@@ -307,6 +313,7 @@ export type UserUncheckedUpdateInput = {
   stockItems?: Prisma.StockItemUncheckedUpdateManyWithoutUserNestedInput;
   ocrJobs?: Prisma.OcrJobUncheckedUpdateManyWithoutUserNestedInput;
   devices?: Prisma.UserDeviceUncheckedUpdateManyWithoutUserNestedInput;
+  shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateManyInput = {
@@ -468,6 +475,32 @@ export type UserUpdateOneRequiredWithoutOcrJobsNestedInput = {
   >;
 };
 
+export type UserCreateNestedOneWithoutShoppingItemsInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutShoppingItemsInput,
+    Prisma.UserUncheckedCreateWithoutShoppingItemsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutShoppingItemsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutShoppingItemsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutShoppingItemsInput,
+    Prisma.UserUncheckedCreateWithoutShoppingItemsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutShoppingItemsInput;
+  upsert?: Prisma.UserUpsertWithoutShoppingItemsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutShoppingItemsInput,
+      Prisma.UserUpdateWithoutShoppingItemsInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutShoppingItemsInput
+  >;
+};
+
 export type UserCreateWithoutDevicesInput = {
   id?: string;
   email: string;
@@ -478,6 +511,7 @@ export type UserCreateWithoutDevicesInput = {
   deletedAt?: Date | string | null;
   stockItems?: Prisma.StockItemCreateNestedManyWithoutUserInput;
   ocrJobs?: Prisma.OcrJobCreateNestedManyWithoutUserInput;
+  shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutDevicesInput = {
@@ -490,6 +524,7 @@ export type UserUncheckedCreateWithoutDevicesInput = {
   deletedAt?: Date | string | null;
   stockItems?: Prisma.StockItemUncheckedCreateNestedManyWithoutUserInput;
   ocrJobs?: Prisma.OcrJobUncheckedCreateNestedManyWithoutUserInput;
+  shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutDevicesInput = {
@@ -530,6 +565,7 @@ export type UserUpdateWithoutDevicesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   stockItems?: Prisma.StockItemUpdateManyWithoutUserNestedInput;
   ocrJobs?: Prisma.OcrJobUpdateManyWithoutUserNestedInput;
+  shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutDevicesInput = {
@@ -542,6 +578,7 @@ export type UserUncheckedUpdateWithoutDevicesInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   stockItems?: Prisma.StockItemUncheckedUpdateManyWithoutUserNestedInput;
   ocrJobs?: Prisma.OcrJobUncheckedUpdateManyWithoutUserNestedInput;
+  shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutStockItemsInput = {
@@ -554,6 +591,7 @@ export type UserCreateWithoutStockItemsInput = {
   deletedAt?: Date | string | null;
   ocrJobs?: Prisma.OcrJobCreateNestedManyWithoutUserInput;
   devices?: Prisma.UserDeviceCreateNestedManyWithoutUserInput;
+  shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutStockItemsInput = {
@@ -566,6 +604,7 @@ export type UserUncheckedCreateWithoutStockItemsInput = {
   deletedAt?: Date | string | null;
   ocrJobs?: Prisma.OcrJobUncheckedCreateNestedManyWithoutUserInput;
   devices?: Prisma.UserDeviceUncheckedCreateNestedManyWithoutUserInput;
+  shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutStockItemsInput = {
@@ -606,6 +645,7 @@ export type UserUpdateWithoutStockItemsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   ocrJobs?: Prisma.OcrJobUpdateManyWithoutUserNestedInput;
   devices?: Prisma.UserDeviceUpdateManyWithoutUserNestedInput;
+  shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutStockItemsInput = {
@@ -618,6 +658,7 @@ export type UserUncheckedUpdateWithoutStockItemsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   ocrJobs?: Prisma.OcrJobUncheckedUpdateManyWithoutUserNestedInput;
   devices?: Prisma.UserDeviceUncheckedUpdateManyWithoutUserNestedInput;
+  shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutOcrJobsInput = {
@@ -630,6 +671,7 @@ export type UserCreateWithoutOcrJobsInput = {
   deletedAt?: Date | string | null;
   stockItems?: Prisma.StockItemCreateNestedManyWithoutUserInput;
   devices?: Prisma.UserDeviceCreateNestedManyWithoutUserInput;
+  shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutOcrJobsInput = {
@@ -642,6 +684,7 @@ export type UserUncheckedCreateWithoutOcrJobsInput = {
   deletedAt?: Date | string | null;
   stockItems?: Prisma.StockItemUncheckedCreateNestedManyWithoutUserInput;
   devices?: Prisma.UserDeviceUncheckedCreateNestedManyWithoutUserInput;
+  shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutOcrJobsInput = {
@@ -682,6 +725,7 @@ export type UserUpdateWithoutOcrJobsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   stockItems?: Prisma.StockItemUpdateManyWithoutUserNestedInput;
   devices?: Prisma.UserDeviceUpdateManyWithoutUserNestedInput;
+  shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutOcrJobsInput = {
@@ -694,6 +738,87 @@ export type UserUncheckedUpdateWithoutOcrJobsInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   stockItems?: Prisma.StockItemUncheckedUpdateManyWithoutUserNestedInput;
   devices?: Prisma.UserDeviceUncheckedUpdateManyWithoutUserNestedInput;
+  shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutShoppingItemsInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  passwordHash: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
+  stockItems?: Prisma.StockItemCreateNestedManyWithoutUserInput;
+  ocrJobs?: Prisma.OcrJobCreateNestedManyWithoutUserInput;
+  devices?: Prisma.UserDeviceCreateNestedManyWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutShoppingItemsInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  passwordHash: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
+  stockItems?: Prisma.StockItemUncheckedCreateNestedManyWithoutUserInput;
+  ocrJobs?: Prisma.OcrJobUncheckedCreateNestedManyWithoutUserInput;
+  devices?: Prisma.UserDeviceUncheckedCreateNestedManyWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutShoppingItemsInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutShoppingItemsInput,
+    Prisma.UserUncheckedCreateWithoutShoppingItemsInput
+  >;
+};
+
+export type UserUpsertWithoutShoppingItemsInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutShoppingItemsInput,
+    Prisma.UserUncheckedUpdateWithoutShoppingItemsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutShoppingItemsInput,
+    Prisma.UserUncheckedCreateWithoutShoppingItemsInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutShoppingItemsInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutShoppingItemsInput,
+    Prisma.UserUncheckedUpdateWithoutShoppingItemsInput
+  >;
+};
+
+export type UserUpdateWithoutShoppingItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  stockItems?: Prisma.StockItemUpdateManyWithoutUserNestedInput;
+  ocrJobs?: Prisma.OcrJobUpdateManyWithoutUserNestedInput;
+  devices?: Prisma.UserDeviceUpdateManyWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutShoppingItemsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  stockItems?: Prisma.StockItemUncheckedUpdateManyWithoutUserNestedInput;
+  ocrJobs?: Prisma.OcrJobUncheckedUpdateManyWithoutUserNestedInput;
+  devices?: Prisma.UserDeviceUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 /**
@@ -704,6 +829,7 @@ export type UserCountOutputType = {
   stockItems: number;
   ocrJobs: number;
   devices: number;
+  shoppingItems: number;
 };
 
 export type UserCountOutputTypeSelect<
@@ -712,6 +838,7 @@ export type UserCountOutputTypeSelect<
   stockItems?: boolean | UserCountOutputTypeCountStockItemsArgs;
   ocrJobs?: boolean | UserCountOutputTypeCountOcrJobsArgs;
   devices?: boolean | UserCountOutputTypeCountDevicesArgs;
+  shoppingItems?: boolean | UserCountOutputTypeCountShoppingItemsArgs;
 };
 
 /**
@@ -753,6 +880,15 @@ export type UserCountOutputTypeCountDevicesArgs<
   where?: Prisma.UserDeviceWhereInput;
 };
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountShoppingItemsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.ShoppingItemWhereInput;
+};
+
 export type UserSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -767,6 +903,7 @@ export type UserSelect<
     stockItems?: boolean | Prisma.User$stockItemsArgs<ExtArgs>;
     ocrJobs?: boolean | Prisma.User$ocrJobsArgs<ExtArgs>;
     devices?: boolean | Prisma.User$devicesArgs<ExtArgs>;
+    shoppingItems?: boolean | Prisma.User$shoppingItemsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
   },
   ExtArgs['result']['user']
@@ -824,6 +961,7 @@ export type UserInclude<
   stockItems?: boolean | Prisma.User$stockItemsArgs<ExtArgs>;
   ocrJobs?: boolean | Prisma.User$ocrJobsArgs<ExtArgs>;
   devices?: boolean | Prisma.User$devicesArgs<ExtArgs>;
+  shoppingItems?: boolean | Prisma.User$shoppingItemsArgs<ExtArgs>;
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type UserIncludeCreateManyAndReturn<
@@ -841,6 +979,7 @@ export type $UserPayload<
     stockItems: Prisma.$StockItemPayload<ExtArgs>[];
     ocrJobs: Prisma.$OcrJobPayload<ExtArgs>[];
     devices: Prisma.$UserDevicePayload<ExtArgs>[];
+    shoppingItems: Prisma.$ShoppingItemPayload<ExtArgs>[];
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
     {
@@ -1394,6 +1533,17 @@ export interface Prisma__UserClient<
       >
     | Null
   >;
+  shoppingItems<T extends Prisma.User$shoppingItemsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$shoppingItemsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$ShoppingItemPayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1927,6 +2077,34 @@ export type User$devicesArgs<
   take?: number;
   skip?: number;
   distinct?: Prisma.UserDeviceScalarFieldEnum | Prisma.UserDeviceScalarFieldEnum[];
+};
+
+/**
+ * User.shoppingItems
+ */
+export type User$shoppingItemsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the ShoppingItem
+   */
+  select?: Prisma.ShoppingItemSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the ShoppingItem
+   */
+  omit?: Prisma.ShoppingItemOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ShoppingItemInclude<ExtArgs> | null;
+  where?: Prisma.ShoppingItemWhereInput;
+  orderBy?:
+    | Prisma.ShoppingItemOrderByWithRelationInput
+    | Prisma.ShoppingItemOrderByWithRelationInput[];
+  cursor?: Prisma.ShoppingItemWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.ShoppingItemScalarFieldEnum | Prisma.ShoppingItemScalarFieldEnum[];
 };
 
 /**

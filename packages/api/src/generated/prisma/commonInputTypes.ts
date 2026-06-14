@@ -280,6 +280,69 @@ export type EnumRecipeSourceWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumRecipeSourceFilter<$PrismaModel>;
 };
 
+export type FloatNullableFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel> | null;
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null;
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null;
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null;
+};
+
+export type BoolFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean;
+};
+
+export type EnumShoppingItemSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.ShoppingItemSource | Prisma.EnumShoppingItemSourceFieldRefInput<$PrismaModel>;
+  in?: $Enums.ShoppingItemSource[] | Prisma.ListEnumShoppingItemSourceFieldRefInput<$PrismaModel>;
+  notIn?:
+    | $Enums.ShoppingItemSource[]
+    | Prisma.ListEnumShoppingItemSourceFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumShoppingItemSourceFilter<$PrismaModel> | $Enums.ShoppingItemSource;
+};
+
+export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel> | null;
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null;
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null;
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null;
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>;
+  _avg?: Prisma.NestedFloatNullableFilter<$PrismaModel>;
+  _sum?: Prisma.NestedFloatNullableFilter<$PrismaModel>;
+  _min?: Prisma.NestedFloatNullableFilter<$PrismaModel>;
+  _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>;
+};
+
+export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedBoolFilter<$PrismaModel>;
+  _max?: Prisma.NestedBoolFilter<$PrismaModel>;
+};
+
+export type EnumShoppingItemSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ShoppingItemSource | Prisma.EnumShoppingItemSourceFieldRefInput<$PrismaModel>;
+  in?: $Enums.ShoppingItemSource[] | Prisma.ListEnumShoppingItemSourceFieldRefInput<$PrismaModel>;
+  notIn?:
+    | $Enums.ShoppingItemSource[]
+    | Prisma.ListEnumShoppingItemSourceFieldRefInput<$PrismaModel>;
+  not?:
+    | Prisma.NestedEnumShoppingItemSourceWithAggregatesFilter<$PrismaModel>
+    | $Enums.ShoppingItemSource;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumShoppingItemSourceFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumShoppingItemSourceFilter<$PrismaModel>;
+};
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>;
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>;
@@ -523,4 +586,67 @@ export type NestedEnumRecipeSourceWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>;
   _min?: Prisma.NestedEnumRecipeSourceFilter<$PrismaModel>;
   _max?: Prisma.NestedEnumRecipeSourceFilter<$PrismaModel>;
+};
+
+export type NestedFloatNullableFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel> | null;
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null;
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null;
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedFloatNullableFilter<$PrismaModel> | number | null;
+};
+
+export type NestedBoolFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedBoolFilter<$PrismaModel> | boolean;
+};
+
+export type NestedEnumShoppingItemSourceFilter<$PrismaModel = never> = {
+  equals?: $Enums.ShoppingItemSource | Prisma.EnumShoppingItemSourceFieldRefInput<$PrismaModel>;
+  in?: $Enums.ShoppingItemSource[] | Prisma.ListEnumShoppingItemSourceFieldRefInput<$PrismaModel>;
+  notIn?:
+    | $Enums.ShoppingItemSource[]
+    | Prisma.ListEnumShoppingItemSourceFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedEnumShoppingItemSourceFilter<$PrismaModel> | $Enums.ShoppingItemSource;
+};
+
+export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: number | Prisma.FloatFieldRefInput<$PrismaModel> | null;
+  in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null;
+  notIn?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel> | null;
+  lt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  lte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gt?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  gte?: number | Prisma.FloatFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null;
+  _count?: Prisma.NestedIntNullableFilter<$PrismaModel>;
+  _avg?: Prisma.NestedFloatNullableFilter<$PrismaModel>;
+  _sum?: Prisma.NestedFloatNullableFilter<$PrismaModel>;
+  _min?: Prisma.NestedFloatNullableFilter<$PrismaModel>;
+  _max?: Prisma.NestedFloatNullableFilter<$PrismaModel>;
+};
+
+export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: boolean | Prisma.BooleanFieldRefInput<$PrismaModel>;
+  not?: Prisma.NestedBoolWithAggregatesFilter<$PrismaModel> | boolean;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedBoolFilter<$PrismaModel>;
+  _max?: Prisma.NestedBoolFilter<$PrismaModel>;
+};
+
+export type NestedEnumShoppingItemSourceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ShoppingItemSource | Prisma.EnumShoppingItemSourceFieldRefInput<$PrismaModel>;
+  in?: $Enums.ShoppingItemSource[] | Prisma.ListEnumShoppingItemSourceFieldRefInput<$PrismaModel>;
+  notIn?:
+    | $Enums.ShoppingItemSource[]
+    | Prisma.ListEnumShoppingItemSourceFieldRefInput<$PrismaModel>;
+  not?:
+    | Prisma.NestedEnumShoppingItemSourceWithAggregatesFilter<$PrismaModel>
+    | $Enums.ShoppingItemSource;
+  _count?: Prisma.NestedIntFilter<$PrismaModel>;
+  _min?: Prisma.NestedEnumShoppingItemSourceFilter<$PrismaModel>;
+  _max?: Prisma.NestedEnumShoppingItemSourceFilter<$PrismaModel>;
 };

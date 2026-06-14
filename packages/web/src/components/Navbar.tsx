@@ -9,6 +9,7 @@ const LINKS = [
   { href: '/stocks/new', label: 'Add item' },
   { href: '/scan', label: 'Scan receipt' },
   { href: '/recipes', label: 'Recipes' },
+  { href: '/shopping-list', label: 'Shopping list' },
 ];
 
 export function Navbar() {

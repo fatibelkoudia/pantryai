@@ -51,3 +51,8 @@ export type Recipe = Prisma.RecipeModel;
  *
  */
 export type RecipeIngredient = Prisma.RecipeIngredientModel;
+/**
+ * Model ShoppingItem
+ *
+ */
+export type ShoppingItem = Prisma.ShoppingItemModel;

@@ -5,6 +5,13 @@ import type { OcrJob } from '../types/ocr.js';
 import type { CreateProductDto, Product, ProductQuery } from '../types/product.js';
 import type { RecipeSuggestionsResponse } from '../types/recipe.js';
 import type {
+  CreateShoppingItemDto,
+  GenerateShoppingListDto,
+  ShoppingItem,
+  ShoppingListResponse,
+  UpdateShoppingItemDto,
+} from '../types/shopping.js';
+import type {
   CreateStockItemDto,
   StockItemWithProduct,
   StockQuery,
@@ -224,6 +231,37 @@ export class PantryApiClient {
   /** Suggest recipes scored against the caller's current stock (>= 70% match). */
   suggestRecipes(): Promise<RecipeSuggestionsResponse> {
     return this.request<RecipeSuggestionsResponse>('/recipes/suggest');
+  }
+
+  // Shopping list
+  getShoppingList(): Promise<ShoppingListResponse> {
+    return this.request<ShoppingListResponse>('/shopping-list');
+  }
+
+  /** Build a deduped list from low/expiring stock + missing recipe ingredients. */
+  generateShoppingList(dto: GenerateShoppingListDto = {}): Promise<ShoppingListResponse> {
+    return this.request<ShoppingListResponse>('/shopping-list/generate', {
+      method: 'POST',
+      body: JSON.stringify(dto),
+    });
+  }
+
+  addShoppingItem(dto: CreateShoppingItemDto): Promise<ShoppingItem> {
+    return this.request<ShoppingItem>('/shopping-list', {
+      method: 'POST',
+      body: JSON.stringify(dto),
+    });
+  }
+
+  updateShoppingItem(id: string, dto: UpdateShoppingItemDto): Promise<ShoppingItem> {
+    return this.request<ShoppingItem>(`/shopping-list/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(dto),
+    });
+  }
+
+  deleteShoppingItem(id: string): Promise<void> {
+    return this.request<void>(`/shopping-list/${id}`, { method: 'DELETE' });
   }
 
   // Devices / push notifications
