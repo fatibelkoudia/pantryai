@@ -1,6 +1,7 @@
 import type { ApiMeta, ApiResponse } from '../types/api.js';
 import type { AuthResponse, LoginDto, RegisterDto } from '../types/auth.js';
 import type { RegisterDeviceDto } from '../types/device.js';
+import type { RandomTipResponse, TipCategory, TipsResponse } from '../types/learning.js';
 import type { OcrJob } from '../types/ocr.js';
 import type { CreateProductDto, Product, ProductQuery } from '../types/product.js';
 import type { RecipeSuggestionsResponse } from '../types/recipe.js';
@@ -231,6 +232,19 @@ export class PantryApiClient {
   /** Suggest recipes scored against the caller's current stock (>= 70% match). */
   suggestRecipes(): Promise<RecipeSuggestionsResponse> {
     return this.request<RecipeSuggestionsResponse>('/recipes/suggest');
+  }
+
+  // Learning / conservation tips
+  /** Conservation tips, optionally filtered to a single category. */
+  getTips(category?: TipCategory): Promise<TipsResponse> {
+    const qs = category ? `?category=${encodeURIComponent(category)}` : '';
+    return this.request<TipsResponse>(`/learning/tips${qs}`);
+  }
+
+  /** One random conservation tip, optionally within a category. `tip` is null if none match. */
+  getRandomTip(category?: TipCategory): Promise<RandomTipResponse> {
+    const qs = category ? `?category=${encodeURIComponent(category)}` : '';
+    return this.request<RandomTipResponse>(`/learning/tips/random${qs}`);
   }
 
   // Shopping list

@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import { apiClient } from '../../src/api/client';
+import { ConservationTipCard } from '../../src/components/ConservationTipCard';
 import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../../src/lib/expiry';
 import { useAuthStore } from '../../src/store/auth';
 
@@ -114,6 +115,7 @@ export default function StockScreen() {
           refreshing={isRefetching}
           contentContainerStyle={styles.list}
           stickySectionHeadersEnabled={false}
+          ListHeaderComponent={<ConservationTipCard items={data?.items ?? []} />}
           renderSectionHeader={({ section }) => (
             <Text style={styles.sectionHeader}>
               {section.title} ({section.data.length})

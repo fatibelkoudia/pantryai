@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiClientError } from '@pantryai/shared';
 import type { StockItemWithProduct, StockLocation, UpdateStockItemDto } from '@pantryai/shared';
+import { ConservationTipCard } from '@/components/ConservationTipCard';
 import { ExpirationBadge } from '@/components/ExpirationBadge';
 import { apiClient } from '@/lib/api';
 
@@ -52,6 +53,8 @@ export default function StockDetailPage() {
         </div>
         <ExpirationBadge expirationDate={stock.data.expirationDate} />
       </header>
+
+      <ConservationTipCard product={stock.data.product} />
 
       {/* `key` remounts the form (re-seeding its state) if a different item loads. */}
       <StockEditForm key={stock.data.id} item={stock.data} />
