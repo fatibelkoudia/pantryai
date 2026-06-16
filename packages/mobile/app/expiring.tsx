@@ -9,14 +9,15 @@ import {
 } from 'react-native';
 import { apiClient } from '../src/api/client';
 import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../src/lib/expiry';
+import { colors } from '../src/theme';
 
 function ExpirationBadge({ expirationDate }: { expirationDate?: string }) {
   const days = daysUntil(expirationDate);
   const level = expiryLevel(days);
-  const colors = EXPIRY_COLORS[level];
+  const palette = EXPIRY_COLORS[level];
   return (
-    <View style={[styles.badge, { backgroundColor: colors.bg }]}>
-      <Text style={[styles.badgeText, { color: colors.fg }]}>{expiryLabel(days)}</Text>
+    <View style={[styles.badge, { backgroundColor: palette.bg }]}>
+      <Text style={[styles.badgeText, { color: palette.fg }]}>{expiryLabel(days)}</Text>
     </View>
   );
 }
@@ -30,7 +31,7 @@ export default function ExpiringScreen() {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#2e7d32" />
+        <ActivityIndicator size="large" color={colors.leafGreen} />
       </View>
     );
   }
@@ -159,7 +160,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: colors.leafGreen,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,

@@ -1,32 +1,44 @@
 @import 'tailwindcss';
 
 /*
- * Neutral design tokens for the MVP. The "Trashy" brand palette + Nunito land in
- * task 4.3a (design system) — keep these neutral and contrast-safe (WCAG AA) for now.
+ * Trashy design tokens. These mirror packages/shared/src/theme/tokens.ts, which is the
+ * real source of truth. Tailwind's @theme is CSS so it can't import the TS file, which
+ * means if you change a hex here you have to change it there too. Palette from help/UX.md.
  */
 @theme {
-  --color-brand: #15803d; /* green-700 — AA on white */
+  /* brand */
+  --color-brand: #4caf50; /* Leaf Green, primary/success/buttons */
   --color-brand-fg: #ffffff;
-  --color-surface: #f8fafc; /* slate-50 */
-  --color-surface-card: #ffffff;
-  --color-border: #e2e8f0; /* slate-200 */
+  --color-mint: #ebf7ed; /* Soft Mint, app background */
+  --color-sunny: #ffd166; /* Sunny Yellow, rewards/gamification */
+  --color-coral: #ff7a59; /* Coral Orange, alerts */
+  --color-charcoal: #202020; /* text + Trashy body */
+
+  /* surfaces */
+  --color-surface: #ebf7ed; /* Soft Mint background */
+  --color-surface-card: #ffffff; /* cards */
+  --color-border: #d9e6dc; /* gentle green-tinted hairline */
 
   /* Expiration badge palette (text colours are AA on their tinted backgrounds) */
-  --color-expiry-ok: #166534; /* green-800 */
-  --color-expiry-ok-bg: #dcfce7; /* green-100 */
-  --color-expiry-soon: #854d0e; /* yellow-800 */
-  --color-expiry-soon-bg: #fef9c3; /* yellow-100 */
-  --color-expiry-expired: #991b1b; /* red-800 */
-  --color-expiry-expired-bg: #fee2e2; /* red-100 */
-  --color-expiry-none: #334155; /* slate-700 */
-  --color-expiry-none-bg: #f1f5f9; /* slate-100 */
+  --color-expiry-ok: #1f7a34;
+  --color-expiry-ok-bg: #e6f4ea;
+  --color-expiry-soon: #b23b17; /* leans on Coral Orange */
+  --color-expiry-soon-bg: #ffede6;
+  --color-expiry-expired: #b0201f;
+  --color-expiry-expired-bg: #fde7e7;
+  --color-expiry-none: #5b6660;
+  --color-expiry-none-bg: #f2f2f2;
 
-  --radius-card: 0.75rem;
+  /* Nunito, loaded via next/font in layout.tsx */
+  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1rem;
 }
 
 body {
   background-color: var(--color-surface);
-  color: #0f172a; /* slate-900 */
+  color: var(--color-charcoal);
+  font-family: var(--font-sans);
 }
 
 /* Visible keyboard focus everywhere (RGAA). */

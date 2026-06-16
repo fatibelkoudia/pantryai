@@ -16,6 +16,7 @@ import {
   View,
 } from 'react-native';
 import { apiClient } from '../src/api/client';
+import { colors } from '../src/theme';
 
 const MIN_SEARCH_LENGTH = 2;
 const DEBOUNCE_MS = 300;
@@ -113,7 +114,7 @@ export default function ManualEntryScreen() {
           <View style={styles.results}>
             <View style={styles.resultsHeader}>
               <Text style={styles.label}>Existing products</Text>
-              {isFetching && <ActivityIndicator size="small" color="#2e7d32" />}
+              {isFetching && <ActivityIndicator size="small" color={colors.leafGreen} />}
             </View>
 
             {matches.length > 0 ? (
@@ -205,7 +206,7 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
   submitButton: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: colors.leafGreen,
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',

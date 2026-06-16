@@ -5,12 +5,23 @@
     "version": "1.0.0",
     "scheme": "pantryai",
     "platforms": ["ios", "android"],
+    "icon": "./assets/icon.png",
     "android": {
-      "package": "com.pantryai.app"
+      "package": "com.pantryai.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#4CAF50"
+      }
     },
     "ios": {
       "bundleIdentifier": "com.pantryai.app"
     },
-    "plugins": ["expo-router", "expo-camera", "expo-secure-store", "expo-notifications"]
+    "plugins": [
+      "expo-router",
+      "expo-camera",
+      "expo-secure-store",
+      "expo-notifications",
+      "expo-font"
+    ]
   }
 }

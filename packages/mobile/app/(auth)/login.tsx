@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import { useAuthStore } from '../../src/store/auth';
+import { colors } from '../../src/theme';
 
 export default function LoginScreen() {
   const login = useAuthStore((s) => s.login);
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   button: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: colors.leafGreen,
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',
@@ -170,7 +171,7 @@ const styles = StyleSheet.create({
   },
   footerLink: {
     fontSize: 14,
-    color: '#2e7d32',
+    color: colors.leafGreen,
     fontWeight: '700',
   },
 });

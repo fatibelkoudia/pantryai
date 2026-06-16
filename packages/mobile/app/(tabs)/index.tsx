@@ -14,6 +14,7 @@ import { apiClient } from '../../src/api/client';
 import { ConservationTipCard } from '../../src/components/ConservationTipCard';
 import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../../src/lib/expiry';
 import { useAuthStore } from '../../src/store/auth';
+import { colors, font } from '../../src/theme';
 
 const LOCATION_ORDER: StockLocation[] = ['FRIDGE', 'FREEZER', 'PANTRY'];
 
@@ -32,10 +33,10 @@ interface StockSection {
 function ExpirationBadge({ expirationDate }: { expirationDate?: string }) {
   const days = daysUntil(expirationDate);
   const level = expiryLevel(days);
-  const colors = EXPIRY_COLORS[level];
+  const palette = EXPIRY_COLORS[level];
   return (
-    <View style={[styles.badge, { backgroundColor: colors.bg }]}>
-      <Text style={[styles.badgeText, { color: colors.fg }]}>{expiryLabel(days)}</Text>
+    <View style={[styles.badge, { backgroundColor: palette.bg }]}>
+      <Text style={[styles.badgeText, { color: palette.fg }]}>{expiryLabel(days)}</Text>
     </View>
   );
 }
@@ -61,7 +62,7 @@ export default function StockScreen() {
   if (isLoading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#2e7d32" />
+        <ActivityIndicator size="large" color={colors.leafGreen} />
       </View>
     );
   }
@@ -142,7 +143,7 @@ export default function StockScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.softMint,
   },
   centered: {
     flex: 1,
@@ -161,8 +162,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: '700',
-    color: '#111',
+    fontFamily: font.black,
+    color: colors.charcoal,
   },
   headerActions: {
     flexDirection: 'row',
@@ -171,13 +172,13 @@ const styles = StyleSheet.create({
   },
   addManually: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#2e7d32',
+    fontFamily: font.semibold,
+    color: colors.leafGreen,
   },
   logout: {
     fontSize: 14,
-    fontWeight: '600',
-    color: '#2e7d32',
+    fontFamily: font.semibold,
+    color: colors.leafGreen,
   },
   list: {
     paddingHorizontal: 16,
@@ -199,8 +200,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 12,
     paddingHorizontal: 14,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 10,
+    backgroundColor: colors.white,
+    borderRadius: 16,
   },
   itemInfo: {
     flex: 1,
@@ -208,8 +209,8 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 15,
-    fontWeight: '600',
-    color: '#1a1a1a',
+    fontFamily: font.semibold,
+    color: colors.charcoal,
   },
   itemMeta: {
     fontSize: 13,
@@ -223,7 +224,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: font.bold,
   },
   emptyTitle: {
     fontSize: 17,
@@ -247,15 +248,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: colors.leafGreen,
     paddingHorizontal: 24,
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 12,
     marginTop: 8,
   },
   buttonText: {
-    color: '#fff',
+    color: colors.onBrand,
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: font.semibold,
   },
 });

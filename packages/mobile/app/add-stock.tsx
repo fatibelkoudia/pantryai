@@ -14,6 +14,7 @@ import {
   View,
 } from 'react-native';
 import { apiClient } from '../src/api/client';
+import { colors } from '../src/theme';
 
 const LOCATIONS: StockLocation[] = ['FRIDGE', 'FREEZER', 'PANTRY'];
 
@@ -202,7 +203,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fafafa',
   },
   locationButtonActive: {
-    borderColor: '#2e7d32',
+    borderColor: colors.leafGreen,
     backgroundColor: '#e8f5e9',
   },
   locationText: {
@@ -211,11 +212,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   locationTextActive: {
-    color: '#2e7d32',
+    color: colors.leafGreen,
     fontWeight: '700',
   },
   submitButton: {
-    backgroundColor: '#2e7d32',
+    backgroundColor: colors.leafGreen,
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',

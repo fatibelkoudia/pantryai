@@ -1,3 +1,5 @@
+import { expiry } from '../theme';
+
 export type ExpiryLevel = 'ok' | 'soon' | 'expired' | 'none';
 
 // how many days until the date (negative means it already passed), null if there's no date
@@ -32,10 +34,10 @@ export function expiryLabel(days: number | null): string {
   return `${days}d left`;
 }
 
-// same badge colors as the web app (green / yellow / red / grey)
+// badge colors from the shared Trashy tokens (same roles as the web app)
 export const EXPIRY_COLORS: Record<ExpiryLevel, { bg: string; fg: string }> = {
-  ok: { bg: '#e8f5e9', fg: '#2e7d32' },
-  soon: { bg: '#fff8e1', fg: '#f9a825' },
-  expired: { bg: '#ffebee', fg: '#c62828' },
-  none: { bg: '#f0f0f0', fg: '#777' },
+  ok: expiry.ok,
+  soon: expiry.soon,
+  expired: expiry.expired,
+  none: expiry.none,
 };
