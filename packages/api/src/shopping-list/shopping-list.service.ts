@@ -105,7 +105,12 @@ export class ShoppingListService {
         ...(dto.name !== undefined && { name: dto.name }),
         ...(dto.quantity !== undefined && { quantity: dto.quantity }),
         ...(dto.unit !== undefined && { unit: dto.unit }),
-        ...(dto.checked !== undefined && { checked: dto.checked }),
+        // checkedAt remembers when the tick happened so the weekly Smart Shopper
+        // challenge can count only this week's ticks
+        ...(dto.checked !== undefined && {
+          checked: dto.checked,
+          checkedAt: dto.checked ? new Date() : null,
+        }),
       },
     });
   }

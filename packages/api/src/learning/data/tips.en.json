@@ -1,0 +1,452 @@
+[
+  {
+    "id": "fruits-fridge-vs-counter",
+    "category": "fruits",
+    "title": "Not all fruits belong in the fridge",
+    "body": "Bananas, citrus fruits, melons, and fruits that are still slightly firm keep better at room temperature. Once they are fully ripe, you can move them to the refrigerator to extend their freshness by a few days.",
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Where should bananas and melons be stored to stay fresh longer?",
+      "choices": [
+        "In the fridge right after purchase",
+        "At room temperature",
+        "In a sealed plastic bag"
+      ],
+      "answerIndex": 1,
+      "explanation": "Bananas and melons are best kept at room temperature to prevent them from ripening too quickly or becoming overly soft."
+    }
+  },
+  {
+    "id": "fruits-separate-ethylene",
+    "category": "fruits",
+    "title": "Store apples separately",
+    "body": "Apples, pears, and bananas release ethylene, a gas that speeds up the ripening of nearby fruits and vegetables. Store them apart to prevent everything from ripening too quickly.",
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Why should apples be kept away from other fruits and vegetables?",
+      "choices": [
+        "They attract insects.",
+        "They release ethylene, which speeds up ripening.",
+        "They need more space to breathe."
+      ],
+      "answerIndex": 1,
+      "explanation": "Apples, pears, and bananas produce ethylene, a gas that accelerates the ripening of other fruits and vegetables."
+    }
+  },
+  {
+    "id": "fruits-berries-wash-late",
+    "category": "fruits",
+    "title": "Wash berries just before eating them",
+    "body": "Strawberries, raspberries, and blueberries spoil quickly if they stay wet. Keep them cool in their container and wash them only right before eating.",
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Why should you wash berries just before eating them?",
+      "choices": [
+        "To prevent them from losing their color",
+        "To avoid spoilage caused by moisture",
+        "To keep them sweeter"
+      ],
+      "answerIndex": 1,
+      "explanation": "Berries spoil quickly if they stay wet, as water speeds up their deterioration."
+    }
+  },
+  {
+    "id": "fruits-freeze-overripe",
+    "category": "fruits",
+    "title": "Freeze Overripe Fruits",
+    "body": "Instead of throwing away overripe fruits, cut them and freeze them. They will be perfect later for a smoothie, compote, or pastry.",
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "What should you do with overripe fruits according to this tip?",
+      "choices": [
+        "Throw them away immediately",
+        "Freeze them for later use",
+        "Give them to an animal"
+      ],
+      "answerIndex": 1,
+      "explanation": "The tip suggests cutting and freezing overripe fruits to use them later in recipes like smoothies, compotes, or pastries."
+    }
+  },
+  {
+    "id": "fruits-bruised-cut",
+    "category": "fruits",
+    "title": "A bruised fruit isn’t a lost fruit",
+    "body": "A soft or damaged area can be cut away with a knife; the rest of the fruit remains good to eat. Inspect before tossing.",
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "What should you do with a fruit that has a small soft or damaged spot?",
+      "choices": [
+        "Throw it away immediately",
+        "Cut off the damaged part and eat the rest",
+        "Cook it to hide the defect"
+      ],
+      "answerIndex": 1,
+      "explanation": "The healthy part of the fruit remains edible after removing the soft or damaged area."
+    }
+  },
+  {
+    "id": "legumes-leafy-humidity",
+    "category": "legumes",
+    "title": "Keeping Salads and Herbs Fresh",
+    "body": "Wrap lettuce, spinach, and fresh herbs in a damp cloth before placing them in the vegetable drawer. They will stay crisp for several extra days.",
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "What should you do to keep salads and herbs fresh longer?",
+      "choices": [
+        "Store them in a sealed plastic bag",
+        "Wrap them in a damp cloth in the vegetable drawer",
+        "Leave them uncovered in the refrigerator"
+      ],
+      "answerIndex": 1,
+      "explanation": "Moisture helps preserve the freshness of the leaves. A damp cloth creates an ideal environment without excess water."
+    }
+  },
+  {
+    "id": "legumes-potatoes-dark",
+    "category": "legumes",
+    "title": "Storing Potatoes, Onions, and Garlic Properly",
+    "body": "Keep them in a dark, dry, and well-ventilated place, never in the refrigerator. The cold turns the starch in potatoes into sugar and changes their taste.",
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Why should you not store potatoes in the refrigerator?",
+      "choices": [
+        "The cold makes them rot faster",
+        "The cold turns their starch into sugar and alters their taste",
+        "The cold makes them toxic"
+      ],
+      "answerIndex": 1,
+      "explanation": "The cold converts the starch in potatoes into sugar, which changes their taste and texture."
+    }
+  },
+  {
+    "id": "legumes-separate-potato-onion",
+    "category": "legumes",
+    "title": "Storage Tip: Potatoes and Onions",
+    "body": "Do not store potatoes and onions together. Side by side, they sprout and rot faster. Store them in separate places to make them last longer.",
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Why shouldn't you store potatoes and onions together?",
+      "choices": [
+        "They lose their color",
+        "They sprout and rot faster",
+        "They become sweeter"
+      ],
+      "answerIndex": 1,
+      "explanation": "Potatoes and onions release gases that speed up their sprouting and rotting when stored next to each other."
+    }
+  },
+  {
+    "id": "legumes-tomatoes-room-temp",
+    "category": "legumes",
+    "title": "Tomatoes taste better outside the fridge",
+    "body": "Cold temperatures destroy their aroma and make them mealy. Keep them at room temperature, away from direct sunlight.",
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Why should tomatoes be stored at room temperature rather than in the fridge?",
+      "choices": [
+        "Cold improves their texture",
+        "Cold reduces their aroma and makes them mealy",
+        "Cold makes them sweeter"
+      ],
+      "answerIndex": 1,
+      "explanation": "Cold temperatures alter the structure of tomatoes, reducing their aroma and natural texture."
+    }
+  },
+  {
+    "id": "legumes-soup-leftovers",
+    "category": "legumes",
+    "title": "Tired vegetables? Make soup!",
+    "body": "A slightly soft vegetable is still perfectly good when cooked. Soups, stir-fries, or broths are perfect for using up what's lingering in the fridge.",
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "What should you do with tired (slightly soft) vegetables?",
+      "choices": [
+        "Throw them away immediately",
+        "Cook them into soup or stir-fry",
+        "Freeze them without cooking"
+      ],
+      "answerIndex": 1,
+      "explanation": "Tired vegetables are still good once cooked. Turning them into soup, stir-fry, or broth helps reduce food waste."
+    }
+  },
+  {
+    "id": "laitiers-coldest-shelf",
+    "category": "produits-laitiers",
+    "title": "Dairy products go in the coldest part",
+    "body": "Store milk, yogurts, and fresh cheeses in the coldest part of the refrigerator, between 0 and 4 degrees Celsius, not in the door where the temperature fluctuates.",
+    "source": "ANSES, recommandations de temperature du refrigerateur",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Where should dairy products be stored in the refrigerator?",
+      "choices": [
+        "In the door to keep them at room temperature",
+        "In the coldest part, between 0 and 4 degrees",
+        "On the top shelf for better visibility"
+      ],
+      "answerIndex": 1,
+      "explanation": "Dairy products should be kept between 0 and 4 degrees Celsius to prevent spoilage, as the refrigerator door has a fluctuating temperature."
+    }
+  },
+  {
+    "id": "laitiers-ddm-not-dlc",
+    "category": "produits-laitiers",
+    "title": "Understanding 'Best Before' Dates on Yogurt",
+    "body": "The phrase 'à consommer de préférence avant' on a yogurt refers to a 'best before' date, not a strict expiration date. After this date, a properly stored yogurt often remains safe to eat if it looks, smells, and tastes normal.",
+    "source": "ANSES, difference entre DLC et DDM",
+    "sourceUrl": "https://www.anses.fr/fr/content/date-limite-de-consommation-dlc-et-date-de-durabilite-minimale-ddm",
+    "quiz": {
+      "question": "What does the 'à consommer de préférence avant' date on a yogurt mean?",
+      "choices": [
+        "Date limite de consommation (DLC)",
+        "Date de durabilité minimale (DDM)",
+        "Date de péremption absolue"
+      ],
+      "answerIndex": 1,
+      "explanation": "This phrase indicates a 'best before' date (DDM), meaning the product may still be safe to consume after this date if it is well preserved and intact."
+    }
+  },
+  {
+    "id": "laitiers-hard-cheese-mold",
+    "category": "produits-laitiers",
+    "title": "Storing Hard Cheese with Mold",
+    "body": "If mold appears on a hard cheese, cut about 2 cm around the spot and the rest is safe to eat. For soft or grated cheese, it's better to discard the entire piece.",
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "What should you do if mold appears on a hard cheese?",
+      "choices": [
+        "Throw it away immediately",
+        "Cut about 2 cm around the moldy spot and eat the rest",
+        "Freeze it to stop the mold"
+      ],
+      "answerIndex": 1,
+      "explanation": "Mold on hard cheese doesn't penetrate deeply, so cutting 2 cm around the spot is enough. Soft or grated cheese should be discarded entirely as mold can spread throughout."
+    }
+  },
+  {
+    "id": "laitiers-freeze-cheese-butter",
+    "category": "produits-laitiers",
+    "title": "Freezing Butter and Grated Cheese",
+    "body": "If you have too much butter or grated cheese, freeze them. The grated cheese can be used directly in cooking without thawing.",
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "What can you do with leftover butter or grated cheese?",
+      "choices": [
+        "Throw them away immediately",
+        "Freeze them for later use",
+        "Give them to the neighbors"
+      ],
+      "answerIndex": 1,
+      "explanation": "Freezing butter and grated cheese helps preserve them longer without waste."
+    }
+  },
+  {
+    "id": "laitiers-milk-close-cold",
+    "category": "produits-laitiers",
+    "title": "Store milk properly after opening",
+    "body": "Once opened, fresh milk lasts a few days in the fridge. Always reseal the carton tightly and avoid leaving it at room temperature.",
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Why should you reseal the milk carton quickly after opening it?",
+      "choices": [
+        "To prevent the milk from warming up and spoiling faster",
+        "To save energy in the refrigerator",
+        "To keep the milk creamier"
+      ],
+      "answerIndex": 0,
+      "explanation": "Sealing the carton quickly reduces exposure to air and heat, extending the milk's freshness."
+    }
+  },
+  {
+    "id": "viande-coldest-bottom",
+    "category": "viande",
+    "title": "Storing Meat and Fish in the Fridge",
+    "body": "Raw meat and fish should be stored in the coldest part of the fridge, at the bottom, and on a plate to prevent juices from dripping onto other foods.",
+    "source": "ANSES, recommandations de temperature du refrigerateur",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Where should raw meat and fish be stored in the fridge?",
+      "choices": [
+        "In the fridge door",
+        "At the bottom of the fridge, on a plate",
+        "In the vegetable drawer"
+      ],
+      "answerIndex": 1,
+      "explanation": "Raw meat and fish should be placed in the coldest part of the fridge, at the bottom, to prevent bacterial growth."
+    }
+  },
+  {
+    "id": "viande-respect-dlc",
+    "category": "viande",
+    "title": "Meat, Fish, and Deli Meats: Respect the Use-By Date",
+    "body": "Meat, fish, and deli meats carry a 'use-by' date. After this date, the health risk increases—do not consume them, even if they appear fine.",
+    "source": "ANSES, difference entre DLC et DDM",
+    "sourceUrl": "https://www.anses.fr/fr/content/date-limite-de-consommation-dlc-et-date-de-durabilite-minimale-ddm",
+    "quiz": {
+      "question": "What should you do with meat after the use-by date?",
+      "choices": [
+        "Eat it if it seems fine",
+        "Do not eat it even if it seems fine",
+        "Freeze it to extend its shelf life"
+      ],
+      "answerIndex": 1,
+      "explanation": "The use-by date is a strict safety limit. Even if the meat looks intact, it should not be consumed after this date."
+    }
+  },
+  {
+    "id": "viande-fish-same-day",
+    "category": "viande",
+    "title": "Fresh Fish Should Be Cooked Quickly",
+    "body": "Fresh fish should be cooked within 1 to 2 days of purchase or frozen on the same day if it was very fresh. This prevents spoilage and ensures the best flavor and texture.",
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "How long can fresh fish be stored in the refrigerator?",
+      "choices": [
+        "1 to 2 days",
+        "3 to 4 days",
+        "5 to 7 days"
+      ],
+      "answerIndex": 0,
+      "explanation": "Fresh fish typically lasts only 1 to 2 days in the refrigerator to avoid spoilage and maintain quality."
+    }
+  },
+  {
+    "id": "viande-freeze-fresh",
+    "category": "viande",
+    "title": "Freeze Meat While It's Fresh",
+    "body": "To freeze meat, do it before the expiration date, not at the last minute. Then thaw it in the refrigerator, never at room temperature.",
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Why should you freeze meat quickly after purchase?",
+      "choices": [
+        "To prevent it from spoiling before the expiration date",
+        "To keep it always raw",
+        "To make it cook faster"
+      ],
+      "answerIndex": 0,
+      "explanation": "Freezing meat quickly after purchase helps preserve its freshness and prevents it from spoiling before the expiration date."
+    }
+  },
+  {
+    "id": "viande-cooked-leftovers",
+    "category": "viande",
+    "title": "Cooked Meat Leftovers",
+    "body": "Quickly cool a cooked meat dish, cover it, and keep it in the refrigerator for a maximum of two to three days. If you have any doubts about the smell, do not take the risk.",
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "How long can you keep cooked meat leftovers in the refrigerator?",
+      "choices": [
+        "Maximum 1 day",
+        "Maximum 3 days",
+        "Maximum 1 week"
+      ],
+      "answerIndex": 1,
+      "explanation": "Cooked meat leftovers should be stored in the refrigerator for a maximum of 2 to 3 days to avoid any risk of contamination."
+    }
+  },
+  {
+    "id": "cereales-airtight-dry",
+    "category": "cereales",
+    "title": "Dry and Safe Storage for Pasta, Rice, and Flour",
+    "body": "Store them in airtight containers in a dry cupboard. This protects them from moisture, insects, and prevents odors from mixing in.",
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Why should pasta, rice, and flour be stored in airtight containers?",
+      "choices": [
+        "To keep them cool",
+        "To protect them from moisture and insects",
+        "To make them taste better"
+      ],
+      "answerIndex": 1,
+      "explanation": "Airtight containers shield these foods from moisture, insects, and surrounding odors, extending their shelf life."
+    }
+  },
+  {
+    "id": "cereales-bread-paper-not-plastic",
+    "category": "cereales",
+    "title": "How to Store Bread Properly",
+    "body": "Storing bread in plastic softens the crust and encourages mold growth. Wrap it in a cloth or keep it in a bread box instead. Once stale, it’s perfect for French toast or croutons.",
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Why shouldn’t you store bread in a plastic bag?",
+      "choices": [
+        "To prevent it from becoming too soft",
+        "To stop the crust from softening and mold from forming",
+        "To keep it fresher for longer"
+      ],
+      "answerIndex": 1,
+      "explanation": "Plastic traps moisture, which softens the crust and promotes mold growth."
+    }
+  },
+  {
+    "id": "cereales-freeze-bread",
+    "category": "cereales",
+    "title": "Freeze bread in slices",
+    "body": "Slice the bread before freezing it so you can take out only what you need. A quick toast will restore its crispness.",
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "What should you do before freezing bread to make it easier to use?",
+      "choices": [
+        "Slice it into pieces",
+        "Soak it in water",
+        "Toast it immediately"
+      ],
+      "answerIndex": 0,
+      "explanation": "Slicing bread before freezing allows you to take out only the amount you need without thawing the whole loaf."
+    }
+  },
+  {
+    "id": "cereales-dry-goods-ddm",
+    "category": "cereales",
+    "title": "Dry goods like pasta and rice last a long time",
+    "body": "Dry products have a best-before date (DDM). When stored properly, they remain edible long after the indicated date—just check that they have no unusual odor or signs of insects.",
+    "source": "ANSES, difference entre DLC et DDM",
+    "sourceUrl": "https://www.anses.fr/fr/content/date-limite-de-consommation-dlc-et-date-de-durabilite-minimale-ddm",
+    "quiz": {
+      "question": "What should you check to know if pasta or rice is still good after the best-before date?",
+      "choices": [
+        "No unusual odor or signs of insects",
+        "The color of the product",
+        "The texture of the product"
+      ],
+      "answerIndex": 0,
+      "explanation": "Dry goods like pasta or rice should be checked for any unusual odor or presence of insects to ensure they are still safe to eat."
+    }
+  },
+  {
+    "id": "cereales-cooked-rice-cool-fast",
+    "category": "cereales",
+    "title": "Cool Cooked Rice Quickly",
+    "body": "Cooked rice left at room temperature can develop harmful bacteria. Refrigerate it quickly and consume it within 24 hours.",
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Why should you cool cooked rice quickly?",
+      "choices": [
+        "To prevent bacterial growth",
+        "To keep the rice soft",
+        "To save energy"
+      ],
+      "answerIndex": 0,
+      "explanation": "Cooked rice left at room temperature encourages the growth of bacteria like Bacillus cereus, which can cause food poisoning."
+    }
+  }
+]

@@ -1,5 +1,7 @@
-import type { ChallengeProgress } from '@pantryai/shared';
+import type { ChallengeProgress, Locale } from '@pantryai/shared';
+import { getLevel } from '@pantryai/shared';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   ScrollView,
@@ -11,18 +13,21 @@ import {
 import { apiClient } from '../src/api/client';
 import { buttonLip, colors, font } from '../src/theme';
 
-// "Rewards" screen. Shows the XP total, the Trashy challenges with their progress,
-// and Today's Tip at the bottom. Loading GET /challenges also hands out XP for
-// anything the user just finished.
+// "Rewards" screen. Shows the XP total with the level it maps to, the weekly
+// Trashy challenges with their progress, and Today's Tip at the bottom. Loading
+// GET /challenges also hands out XP for anything the user just finished.
 export default function RewardsScreen() {
+  const { t, i18n } = useTranslation();
+  const locale: Locale = i18n.language.startsWith('fr') ? 'fr' : 'en';
+
   const challenges = useQuery({
     queryKey: ['challenges'],
     queryFn: () => apiClient.getChallenges(),
   });
   const tip = useQuery({
-    queryKey: ['learning', 'tip', 'today'],
-    queryFn: () => apiClient.getRandomTip(),
-    staleTime: 24 * 60 * 60 * 1000,
+    queryKey: ['learning', 'tip', 'today', locale],
+    queryFn: () => apiClient.getDailyTip(locale),
+    staleTime: 60 * 60 * 1000,
   });
 
   if (challenges.isLoading) {
@@ -44,21 +49,31 @@ export default function RewardsScreen() {
     );
   }
 
-  const { xp, challenges: list } = challenges.data;
-  const completed = list.filter((c) => c.completed).length;
+  const { xp, challenges: list, streak } = challenges.data;
+  const level = getLevel(xp);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.xpCard}>
         <Text style={styles.star}>⭐</Text>
-        <View>
+        <View style={styles.xpText}>
           <Text style={styles.xp}>{xp} XP</Text>
           <Text style={styles.xpSub}>
-            {completed} / {list.length} challenges done
+            {t('learn.levelTitle', { level: level.level, title: t(level.titleKey) })}
+          </Text>
+          <Text style={styles.xpSub}>
+            {level.nextLevelXp === null
+              ? t('learn.topLevel')
+              : t('learn.xpToNext', { count: level.nextLevelXp - xp })}
           </Text>
         </View>
+        <Text style={styles.streak}>🔥 {streak}</Text>
       </View>
 
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>{t('learn.weeklyChallenges')}</Text>
+        <Text style={styles.sectionHint}>{t('learn.resetsMonday')}</Text>
+      </View>
       {list.map((challenge) => (
         <ChallengeRow key={challenge.key} challenge={challenge} />
       ))}
@@ -76,6 +91,7 @@ export default function RewardsScreen() {
 }
 
 function ChallengeRow({ challenge }: { challenge: ChallengeProgress }) {
+  const { t } = useTranslation();
   const pct =
     challenge.target > 0 ? Math.min(100, (challenge.progress / challenge.target) * 100) : 0;
 
@@ -83,8 +99,14 @@ function ChallengeRow({ challenge }: { challenge: ChallengeProgress }) {
     <View style={styles.card}>
       <View style={styles.cardHeader}>
         <View style={styles.cardHeaderText}>
-          <Text style={styles.cardTitle}>{challenge.title}</Text>
-          <Text style={styles.cardDesc}>{challenge.description}</Text>
+          <Text style={styles.cardTitle}>
+            {t(`challenges.${challenge.key}.title`, { defaultValue: challenge.title })}
+          </Text>
+          <Text style={styles.cardDesc}>
+            {t(`challenges.${challenge.key}.description`, {
+              defaultValue: challenge.description,
+            })}
+          </Text>
         </View>
         {challenge.completed ? (
           <View style={styles.badge}>
@@ -123,8 +145,13 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   star: { fontSize: 32 },
+  xpText: { flex: 1 },
   xp: { fontSize: 26, fontFamily: font.bold, color: colors.charcoal },
   xpSub: { fontSize: 13, color: colors.textMuted },
+  streak: { fontSize: 18, fontFamily: font.bold, color: colors.redText },
+  sectionHeader: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between' },
+  sectionTitle: { fontSize: 17, fontFamily: font.bold, color: colors.charcoal },
+  sectionHint: { fontSize: 11, color: colors.textMuted },
   card: { backgroundColor: colors.white, borderRadius: 16, padding: 16, gap: 8 },
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', gap: 12 },
   cardHeaderText: { flex: 1 },

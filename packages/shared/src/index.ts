@@ -16,6 +16,8 @@ export * from './types/waste.js';
 
 export * from './api/client.js';
 
+export * from './gamification/levels.js';
+
 export * from './theme/tokens.js';
 export * from './theme/mascot.js';
 export * from './theme/avatars.js';

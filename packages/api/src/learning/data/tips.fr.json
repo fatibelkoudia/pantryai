@@ -4,174 +4,449 @@
     "category": "fruits",
     "title": "Tous les fruits ne vont pas au frigo",
     "body": "Bananes, agrumes, melons et fruits encore un peu fermes se gardent mieux a temperature ambiante. Une fois bien murs, vous pouvez les passer au refrigerateur pour gagner quelques jours.",
-    "source": "ADEME, guide anti-gaspillage alimentaire"
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Où doit-on conserver les bananes et les melons pour qu'ils restent frais plus longtemps ?",
+      "choices": [
+        "Au frigo dès l'achat",
+        "À température ambiante",
+        "Dans un sac plastique fermé"
+      ],
+      "answerIndex": 1,
+      "explanation": "Les bananes et les melons se conservent mieux à température ambiante pour éviter qu'ils ne mûrissent trop vite ou ne deviennent trop mous."
+    }
   },
   {
     "id": "fruits-separate-ethylene",
     "category": "fruits",
     "title": "Eloignez les pommes du reste",
     "body": "Pommes, poires et bananes degagent de l'ethylene, un gaz qui accelere le murissement des fruits et legumes voisins. Rangez-les a part pour eviter que tout murisse trop vite.",
-    "source": "ADEME, guide anti-gaspillage alimentaire"
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Pourquoi faut-il éloigner les pommes des autres fruits et légumes ?",
+      "choices": [
+        "Elles attirent les insectes.",
+        "Elles dégagent de l'éthylène qui accélère le mûrissement.",
+        "Elles ont besoin de plus d'espace pour respirer."
+      ],
+      "answerIndex": 1,
+      "explanation": "Les pommes, poires et bananes produisent de l'éthylène, un gaz qui accélère le mûrissement des autres fruits et légumes."
+    }
   },
   {
     "id": "fruits-berries-wash-late",
     "category": "fruits",
     "title": "Ne lavez les fruits rouges qu'au dernier moment",
     "body": "Fraises, framboises et myrtilles s'abiment vite si elles restent humides. Gardez-les au frais dans leur barquette et lavez-les juste avant de les manger.",
-    "source": "ANSES, conseils de conservation des aliments"
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Pourquoi faut-il laver les fruits rouges juste avant de les manger ?",
+      "choices": [
+        "Pour éviter qu'ils ne perdent leur couleur",
+        "Pour éviter qu'ils ne s'abîment à cause de l'humidité",
+        "Pour qu'ils restent plus sucrés"
+      ],
+      "answerIndex": 1,
+      "explanation": "Les fruits rouges s'abîment rapidement s'ils restent humides, car l'eau accélère leur détérioration."
+    }
   },
   {
     "id": "fruits-freeze-overripe",
     "category": "fruits",
     "title": "Congelez les fruits trop murs",
     "body": "Plutot que de jeter des fruits trop murs, coupez-les et congelez-les. Ils seront parfaits plus tard pour un smoothie, une compote ou une patisserie.",
-    "source": "ADEME, guide anti-gaspillage alimentaire"
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Que faire avec des fruits trop murs selon ce conseil ?",
+      "choices": [
+        "Les jeter immédiatement",
+        "Les congeler pour une utilisation ultérieure",
+        "Les donner à un animal"
+      ],
+      "answerIndex": 1,
+      "explanation": "Le conseil recommande de couper et congeler les fruits trop murs pour les utiliser plus tard dans des recettes comme des smoothies, compotes ou pâtisseries."
+    }
   },
   {
     "id": "fruits-bruised-cut",
     "category": "fruits",
     "title": "Un fruit tache n'est pas un fruit perdu",
     "body": "Une zone molle ou abimee se retire au couteau, le reste du fruit reste bon a manger. Inspectez avant de jeter.",
-    "source": "ANSES, conseils de conservation des aliments"
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Que faire avec un fruit qui a une petite zone molle ou abîmée ?",
+      "choices": [
+        "Le jeter immédiatement",
+        "Couper la partie abîmée et manger le reste",
+        "Le cuire pour masquer le défaut"
+      ],
+      "answerIndex": 1,
+      "explanation": "La partie saine du fruit reste comestible après avoir retiré la zone molle ou abîmée."
+    }
   },
   {
     "id": "legumes-leafy-humidity",
     "category": "legumes",
     "title": "Salades et herbes aiment l'humidite",
     "body": "Enveloppez salade, epinards et herbes fraiches dans un linge humide au bac a legumes. Elles resteront croquantes plusieurs jours de plus.",
-    "source": "ADEME, guide anti-gaspillage alimentaire"
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Que faut-il faire pour garder les salades et les herbes fraîches plus longtemps ?",
+      "choices": [
+        "Les mettre dans un sac en plastique fermé",
+        "Les envelopper dans un linge humide au bac à légumes",
+        "Les laisser à l'air libre dans le réfrigérateur"
+      ],
+      "answerIndex": 1,
+      "explanation": "L'humidité préserve la fraîcheur des feuilles. Un linge humide maintient un environnement idéal sans excès d'eau."
+    }
   },
   {
     "id": "legumes-potatoes-dark",
     "category": "legumes",
     "title": "Pommes de terre, oignons et ail au sec et a l'abri",
     "body": "Gardez-les dans un endroit sombre, sec et aere, jamais au refrigerateur. Le froid transforme l'amidon des pommes de terre en sucre et change leur gout.",
-    "source": "ANSES, conseils de conservation des aliments"
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Pourquoi ne faut-il pas conserver les pommes de terre au réfrigérateur ?",
+      "choices": [
+        "Le froid les fait pourrir plus vite",
+        "Le froid transforme leur amidon en sucre et altère leur goût",
+        "Le froid les rend toxiques"
+      ],
+      "answerIndex": 1,
+      "explanation": "Le froid transforme l'amidon des pommes de terre en sucre, ce qui modifie leur goût et leur texture."
+    }
   },
   {
     "id": "legumes-separate-potato-onion",
     "category": "legumes",
     "title": "Ne stockez pas pommes de terre et oignons ensemble",
     "body": "Cote a cote, ils se font germer et pourrir plus vite. Rangez-les dans deux endroits separes pour qu'ils durent plus longtemps.",
-    "source": "ADEME, guide anti-gaspillage alimentaire"
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Pourquoi ne faut-il pas stocker les pommes de terre et les oignons ensemble ?",
+      "choices": [
+        "Ils perdent leur couleur",
+        "Ils germent et pourrissent plus vite",
+        "Ils deviennent plus sucrés"
+      ],
+      "answerIndex": 1,
+      "explanation": "Les pommes de terre et les oignons libèrent des gaz qui accélèrent leur germination et leur pourriture lorsqu'ils sont stockés côte à côte."
+    }
   },
   {
     "id": "legumes-tomatoes-room-temp",
     "category": "legumes",
     "title": "Les tomates ont meilleur gout hors du frigo",
     "body": "Le froid coupe leur arome et les rend farineuses. Gardez-les a temperature ambiante, a l'abri du soleil direct.",
-    "source": "ADEME, guide anti-gaspillage alimentaire"
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Pourquoi faut-il conserver les tomates à température ambiante plutôt qu'au frigo ?",
+      "choices": [
+        "Le froid améliore leur texture",
+        "Le froid réduit leur arôme et les rend farineuses",
+        "Le froid les rend plus sucrées"
+      ],
+      "answerIndex": 1,
+      "explanation": "Le froid altère la structure des tomates, ce qui diminue leur arôme et leur texture naturelle."
+    }
   },
   {
     "id": "legumes-soup-leftovers",
     "category": "legumes",
     "title": "Les legumes fatigues finissent en soupe",
     "body": "Un legume un peu mou est encore tout a fait bon cuit. Soupe, poelee ou bouillon sont parfaits pour utiliser ce qui traine dans le bac.",
-    "source": "ADEME, guide anti-gaspillage alimentaire"
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Que faire avec des légumes fatigués (un peu mous) ?",
+      "choices": [
+        "Les jeter immédiatement",
+        "Les cuisiner en soupe ou poêlée",
+        "Les congeler sans cuisson"
+      ],
+      "answerIndex": 1,
+      "explanation": "Les légumes fatigués sont encore bons une fois cuits. Les transformer en soupe, poêlée ou bouillon permet de réduire le gaspillage alimentaire."
+    }
   },
   {
     "id": "laitiers-coldest-shelf",
     "category": "produits-laitiers",
     "title": "Les produits laitiers vont au plus froid",
     "body": "Rangez lait, yaourts et fromages frais dans la partie la plus froide du refrigerateur, entre 0 et 4 degres, pas dans la porte ou la temperature varie.",
-    "source": "ANSES, recommandations de temperature du refrigerateur"
+    "source": "ANSES, recommandations de temperature du refrigerateur",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Où doit-on ranger les produits laitiers dans le réfrigérateur ?",
+      "choices": [
+        "Dans la porte pour les garder à température ambiante",
+        "Dans la partie la plus froide, entre 0 et 4 degrés",
+        "Sur l'étagère du haut pour une meilleure visibilité"
+      ],
+      "answerIndex": 1,
+      "explanation": "Les produits laitiers doivent être conservés entre 0 et 4 degrés pour éviter leur altération, car la porte du réfrigérateur a une température variable."
+    }
   },
   {
     "id": "laitiers-ddm-not-dlc",
     "category": "produits-laitiers",
     "title": "Sur un yaourt, c'est une DDM, pas une DLC",
     "body": "La mention \"a consommer de preference avant\" est une date de durabilite minimale. Passee cette date, un yaourt bien conserve reste souvent consommable s'il a bon aspect, bonne odeur et bon gout.",
-    "source": "ANSES, difference entre DLC et DDM"
+    "source": "ANSES, difference entre DLC et DDM",
+    "sourceUrl": "https://www.anses.fr/fr/content/date-limite-de-consommation-dlc-et-date-de-durabilite-minimale-ddm",
+    "quiz": {
+      "question": "Que signifie la mention 'à consommer de préférence avant' sur un yaourt ?",
+      "choices": [
+        "Date limite de consommation (DLC)",
+        "Date de durabilité minimale (DDM)",
+        "Date de péremption absolue"
+      ],
+      "answerIndex": 1,
+      "explanation": "La mention indique une date de durabilité minimale (DDM), ce qui signifie que le produit peut encore être consommé après cette date s'il est bien conservé et intact."
+    }
   },
   {
     "id": "laitiers-hard-cheese-mold",
     "category": "produits-laitiers",
     "title": "Une moisissure sur un fromage dur se coupe",
     "body": "Sur un fromage a pate dure, retirez environ 2 cm autour de la tache et le reste se mange. Sur un fromage frais ou rape, mieux vaut tout jeter.",
-    "source": "ANSES, conseils de conservation des aliments"
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Que faire si une moisissure apparaît sur un fromage à pâte dure ?",
+      "choices": [
+        "Tout jeter immédiatement",
+        "Couper environ 2 cm autour de la tache et consommer le reste",
+        "Le mettre au congélateur pour stopper la moisissure"
+      ],
+      "answerIndex": 1,
+      "explanation": "Pour les fromages à pâte dure, la moisissure ne pénètre pas profondément, donc couper 2 cm autour suffit. Les fromages frais ou râpés doivent être jetés car la moisissure peut contaminer tout le produit."
+    }
   },
   {
     "id": "laitiers-freeze-cheese-butter",
     "category": "produits-laitiers",
     "title": "Beurre et fromage rape se congelent",
     "body": "Si vous en avez trop, congelez le beurre et le fromage rape. Le rape s'utilise directement a la cuisson, sans decongelation.",
-    "source": "ADEME, guide anti-gaspillage alimentaire"
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Que peut-on faire avec du beurre ou du fromage râpé en trop ?",
+      "choices": [
+        "Les jeter immédiatement",
+        "Les congeler pour une utilisation ultérieure",
+        "Les donner aux voisins"
+      ],
+      "answerIndex": 1,
+      "explanation": "Congeler le beurre et le fromage râpé permet de les conserver plus longtemps sans gaspillage."
+    }
   },
   {
     "id": "laitiers-milk-close-cold",
     "category": "produits-laitiers",
     "title": "Refermez et remettez vite le lait au froid",
     "body": "Une fois ouvert, un lait frais se garde quelques jours au refrigerateur. Refermez bien la brique et ne la laissez pas trainer a temperature ambiante.",
-    "source": "ANSES, conseils de conservation des aliments"
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Pourquoi faut-il refermer rapidement la brique de lait après l'avoir ouverte ?",
+      "choices": [
+        "Pour éviter que le lait ne se réchauffe et ne s'abîme plus vite",
+        "Pour économiser l'énergie du réfrigérateur",
+        "Pour que le lait reste plus crémeux"
+      ],
+      "answerIndex": 0,
+      "explanation": "Refermer rapidement la brique limite l'exposition à l'air et à la chaleur, ce qui prolonge la fraîcheur du lait."
+    }
   },
   {
     "id": "viande-coldest-bottom",
     "category": "viande",
     "title": "Viande et poisson en bas du frigo",
     "body": "Placez la viande et le poisson crus dans la zone la plus froide, en bas, et sur une assiette pour eviter que le jus ne coule sur les autres aliments.",
-    "source": "ANSES, recommandations de temperature du refrigerateur"
+    "source": "ANSES, recommandations de temperature du refrigerateur",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Où doit-on ranger la viande et le poisson crus dans le frigo ?",
+      "choices": [
+        "Dans la porte du frigo",
+        "En bas du frigo, sur une assiette",
+        "Dans le bac à légumes"
+      ],
+      "answerIndex": 1,
+      "explanation": "La viande et le poisson crus doivent être placés dans la zone la plus froide, en bas du frigo, pour éviter la prolifération bactérienne."
+    }
   },
   {
     "id": "viande-respect-dlc",
     "category": "viande",
     "title": "Sur la viande, la DLC se respecte",
     "body": "Viande, poisson et charcuterie portent une date limite de consommation. Apres cette date le risque sanitaire augmente, ne les consommez pas meme s'ils semblent corrects.",
-    "source": "ANSES, difference entre DLC et DDM"
+    "source": "ANSES, difference entre DLC et DDM",
+    "sourceUrl": "https://www.anses.fr/fr/content/date-limite-de-consommation-dlc-et-date-de-durabilite-minimale-ddm",
+    "quiz": {
+      "question": "Que faut-il faire avec la viande après la date limite de consommation (DLC) ?",
+      "choices": [
+        "La consommer si elle semble correcte",
+        "Ne pas la consommer même si elle semble correcte",
+        "La congeler pour prolonger sa durée de vie"
+      ],
+      "answerIndex": 1,
+      "explanation": "La DLC indique une limite stricte pour éviter tout risque sanitaire. Même si la viande semble intacte, elle ne doit pas être consommée après cette date."
+    }
   },
   {
     "id": "viande-fish-same-day",
     "category": "viande",
     "title": "Le poisson frais se cuisine vite",
     "body": "Le poisson frais se conserve a peine un a deux jours au refrigerateur. Cuisinez-le rapidement ou congelez-le le jour meme de l'achat s'il etait bien frais.",
-    "source": "ANSES, conseils de conservation des aliments"
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Combien de temps le poisson frais se conserve-t-il au réfrigérateur ?",
+      "choices": [
+        "1 à 2 jours",
+        "3 à 4 jours",
+        "5 à 7 jours"
+      ],
+      "answerIndex": 0,
+      "explanation": "Le poisson frais se conserve généralement entre 1 et 2 jours au réfrigérateur pour éviter tout risque de détérioration."
+    }
   },
   {
     "id": "viande-freeze-fresh",
     "category": "viande",
     "title": "Congelez la viande tant qu'elle est fraiche",
     "body": "Pour congeler, faites-le avant la date limite, pas a la derniere minute. Decongelez ensuite au refrigerateur et jamais a temperature ambiante.",
-    "source": "ANSES, conseils de conservation des aliments"
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Pourquoi faut-il congeler la viande rapidement après l'achat ?",
+      "choices": [
+        "Pour éviter qu'elle ne se dégrade avant la date limite",
+        "Pour qu'elle reste toujours crue",
+        "Pour qu'elle cuise plus vite"
+      ],
+      "answerIndex": 0,
+      "explanation": "Congeler la viande rapidement après l'achat permet de préserver sa fraîcheur et d'éviter qu'elle ne se dégrade avant la date limite de consommation."
+    }
   },
   {
     "id": "viande-cooked-leftovers",
     "category": "viande",
     "title": "Les restes de viande cuite, 3 jours maxi",
     "body": "Refroidissez vite un plat de viande, couvrez-le et gardez-le au refrigerateur deux a trois jours au plus. Au moindre doute sur l'odeur, ne prenez pas de risque.",
-    "source": "ANSES, conseils de conservation des aliments"
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Combien de temps peut-on garder des restes de viande cuite au réfrigérateur ?",
+      "choices": [
+        "1 jour maximum",
+        "3 jours maximum",
+        "1 semaine maximum"
+      ],
+      "answerIndex": 1,
+      "explanation": "Les restes de viande cuite doivent être conservés au réfrigérateur pendant 2 à 3 jours maximum pour éviter tout risque de contamination."
+    }
   },
   {
     "id": "cereales-airtight-dry",
     "category": "cereales",
     "title": "Pates, riz et farine au sec et a l'abri",
     "body": "Conservez-les dans des boites hermetiques, dans un placard sec. Cela les protege de l'humidite et des insectes et evite que les odeurs ne s'y melent.",
-    "source": "ADEME, guide anti-gaspillage alimentaire"
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Pourquoi faut-il conserver les pâtes, le riz et la farine dans des boîtes hermétiques ?",
+      "choices": [
+        "Pour les garder au frais",
+        "Pour les protéger de l'humidité et des insectes",
+        "Pour les rendre plus savoureux"
+      ],
+      "answerIndex": 1,
+      "explanation": "Les boîtes hermétiques protègent ces aliments de l'humidité, des insectes et des odeurs environnantes, prolongeant ainsi leur durée de conservation."
+    }
   },
   {
     "id": "cereales-bread-paper-not-plastic",
     "category": "cereales",
     "title": "Le pain se garde dans un linge, pas dans du plastique",
     "body": "Un sac plastique ramollit la croute et favorise les moisissures. Enveloppez le pain dans un torchon ou une boite a pain. Rassis, il sera parfait en pain perdu ou en croutons.",
-    "source": "ADEME, guide anti-gaspillage alimentaire"
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Pourquoi ne faut-il pas conserver le pain dans un sac plastique ?",
+      "choices": [
+        "Pour éviter qu'il ne devienne trop mou",
+        "Pour empêcher la croûte de ramollir et les moisissures de se développer",
+        "Pour qu'il reste plus frais plus longtemps"
+      ],
+      "answerIndex": 1,
+      "explanation": "Le plastique retient l'humidité et accélère le ramollissement de la croûte, favorisant ainsi l'apparition de moisissures."
+    }
   },
   {
     "id": "cereales-freeze-bread",
     "category": "cereales",
     "title": "Congelez le pain en tranches",
     "body": "Coupez le pain avant de le congeler, vous n'aurez qu'a prelever ce qu'il vous faut. Un passage au grille-pain suffit a lui redonner du croquant.",
-    "source": "ADEME, guide anti-gaspillage alimentaire"
+    "source": "ADEME, guide anti-gaspillage alimentaire",
+    "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
+    "quiz": {
+      "question": "Que faut-il faire avant de congeler le pain pour faciliter son utilisation ?",
+      "choices": [
+        "Le couper en tranches",
+        "Le tremper dans l'eau",
+        "Le faire griller immédiatement"
+      ],
+      "answerIndex": 0,
+      "explanation": "Couper le pain en tranches avant congélation permet de prélever uniquement la quantité nécessaire sans décongeler tout le pain."
+    }
   },
   {
     "id": "cereales-dry-goods-ddm",
     "category": "cereales",
     "title": "Pates et riz se gardent tres longtemps",
     "body": "Les produits secs portent une DDM. Bien stockes, ils restent consommables longtemps apres la date indiquee, il suffit de verifier qu'ils n'ont ni odeur ni insecte.",
-    "source": "ANSES, difference entre DLC et DDM"
+    "source": "ANSES, difference entre DLC et DDM",
+    "sourceUrl": "https://www.anses.fr/fr/content/date-limite-de-consommation-dlc-et-date-de-durabilite-minimale-ddm",
+    "quiz": {
+      "question": "Que faut-il vérifier pour savoir si des pâtes ou du riz sont encore bons après la DDM ?",
+      "choices": [
+        "L'absence d'odeur et d'insectes",
+        "La couleur du produit",
+        "La texture du produit"
+      ],
+      "answerIndex": 0,
+      "explanation": "Les produits secs comme les pâtes ou le riz doivent être vérifiés pour détecter toute odeur inhabituelle ou présence d'insectes pour s'assurer qu'ils sont encore consommables."
+    }
   },
   {
     "id": "cereales-cooked-rice-cool-fast",
     "category": "cereales",
     "title": "Refroidissez vite le riz cuit",
     "body": "Le riz cuit laisse a temperature ambiante peut developper des bacteries. Mettez-le au refrigerateur rapidement et consommez-le sous 24 heures.",
-    "source": "ANSES, conseils de conservation des aliments"
+    "source": "ANSES, conseils de conservation des aliments",
+    "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
+    "quiz": {
+      "question": "Pourquoi faut-il refroidir rapidement le riz cuit ?",
+      "choices": [
+        "Pour éviter le développement de bactéries",
+        "Pour garder le riz moelleux",
+        "Pour économiser de l'énergie"
+      ],
+      "answerIndex": 0,
+      "explanation": "Le riz cuit laissé à température ambiante favorise la prolifération de bactéries comme Bacillus cereus, responsable d'intoxications alimentaires."
+    }
   }
 ]

@@ -145,9 +145,24 @@ you choose between staying and leaving without saving.
 
 ## Learning
 
-The Learn screen has short tips on how to store food so it lasts longer, grouped
-by type of food. They come from French food-safety and anti-waste guidance. You
-can turn the tip cards off if you do not want them.
+The Learn screen turns short food-storage tips into small lessons, grouped by
+type of food. The facts come from French food-safety and anti-waste guidance
+(ANSES, ADEME) and follow the language you picked in your settings.
+
+- **Lessons.** Tap a lesson and answer one quick multiple-choice question about
+  it. Right or wrong, you see the correct answer with a short explanation and
+  earn 20 XP. Each lesson pays its XP once; you can reopen it later to reread
+  the fact.
+- **Today's Food Mission.** One lesson is featured every day, the same for
+  everyone all day. It is the fastest way to keep your streak going.
+- **Daily streak.** The flame at the top counts the days in a row where you did
+  something against waste: finished a lesson or used up an item from your
+  stock. Miss a full day and it starts over.
+- **Levels.** Your XP total maps to a level with a title, from Rookie up to
+  Master Chef. The progress bar shows how far you are from the next one.
+- **Weekly challenges.** Small goals like using up items from your fridge or
+  ticking off your shopping list. They reset every Monday and can be earned
+  again each week.
 
 ## Your data and your rights
 

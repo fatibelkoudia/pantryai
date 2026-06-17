@@ -1,10 +1,11 @@
-import type { en } from './en.js';
+import type { TranslationCatalog } from './en.js';
 
-// French catalog. Right now it's just a copy of the English one so the app
-// doesn't break when someone switches to French. The real translations will be
-// filled in later in one pass. The `typeof en` type makes sure we can't forget
-// a key once we do.
-export const fr: typeof en = {
+// French catalog. The learn, streak, lesson, levels and challenges groups are
+// really translated; the older groups are still a copy of the English one so the
+// app doesn't break when someone switches to French. The real translations for
+// those will be filled in later in one pass. The `TranslationCatalog` type makes
+// sure we can't forget a key.
+export const fr: TranslationCatalog = {
   common: {
     save: 'Save',
     cancel: 'Cancel',
@@ -72,5 +73,81 @@ export const fr: typeof en = {
     confirm: 'Delete my account',
     deleting: 'Deleting…',
     failed: 'Could not delete your account. Please try again.',
+  },
+  learn: {
+    title: 'Apprendre',
+    subtitle: 'De meilleures habitudes alimentaires',
+    missionKicker: 'Mission du jour',
+    startLesson: 'Commencer',
+    reviewLesson: 'Revoir',
+    missionDone: 'Terminé ! Une nouvelle mission arrive demain.',
+    levelTitle: 'Niveau {{level}} · {{title}}',
+    lessonsDone: '{{done}}/{{total}} leçons',
+    xpToNext: '{{count}} XP avant le prochain niveau',
+    topLevel: 'Niveau maximum atteint !',
+    weeklyChallenges: 'Défis de la semaine',
+    resetsMonday: 'Nouvelle manche chaque lundi',
+    challengeDone: 'Terminé !',
+    categories: {
+      all: 'Tout',
+      fruits: 'Fruits',
+      legumes: 'Légumes',
+      'produits-laitiers': 'Laitages',
+      viande: 'Viande et poisson',
+      cereales: 'Céréales',
+    },
+    empty: 'Pas encore de leçon dans cette catégorie.',
+    loadError: 'Impossible de charger les leçons',
+    retry: 'Réessayer',
+    xpChip: '+{{count}} XP',
+    xpEarned: '+{{count}} XP gagnés',
+    trashyTitle: 'Aidez Trashy à rester petit',
+    trashyBody: 'De bonnes habitudes limitent le gaspillage et rendent Trashy heureux.',
+    rewardsA11y: 'Voir vos récompenses',
+  },
+  streak: {
+    days: 'Série de {{count}} jours',
+    title: 'Série quotidienne',
+    body: 'Terminez une leçon ou utilisez un article de votre stock chaque jour pour garder la flamme allumée.',
+    activeToday: "Aujourd'hui compte déjà. À demain !",
+    notYetToday: "Rien n'a encore compté pour aujourd'hui.",
+  },
+  lesson: {
+    preparing: 'Préparation de votre quiz…',
+    question: 'Petite question',
+    checkAnswer: 'Vérifier ma réponse',
+    correct: 'Bonne réponse !',
+    incorrect: 'Pas tout à fait !',
+    gotIt: 'Compris !',
+    completedBefore: 'Vous avez déjà terminé cette leçon.',
+    source: 'Source : {{source}}',
+    error: 'Impossible de charger cette leçon. Réessayez.',
+    close: 'Fermer',
+  },
+  levels: {
+    '1': 'Débutant',
+    '2': 'Économe',
+    '3': 'Anti-gaspi',
+    '4': 'Héros de la cuisine',
+    '5': 'Magicien du frigo',
+    '6': 'Maître Chef',
+  },
+  challenges: {
+    'clean-out-fridge': {
+      title: 'Videz votre frigo',
+      description: 'Mangez 3 articles de votre frigo cette semaine.',
+    },
+    'no-waste-weekend': {
+      title: 'Week-end zéro gaspi',
+      description: 'Mangez 3 articles cette semaine sans rien jeter.',
+    },
+    'use-it-all': {
+      title: 'Tout utiliser',
+      description: 'Utilisez 10 articles de votre stock cette semaine.',
+    },
+    'smart-shopper': {
+      title: 'Courses malines',
+      description: 'Cochez 5 articles de votre liste de courses cette semaine.',
+    },
   },
 };

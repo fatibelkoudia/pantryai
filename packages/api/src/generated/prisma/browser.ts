@@ -76,3 +76,8 @@ export type Challenge = Prisma.ChallengeModel;
  *
  */
 export type UserChallenge = Prisma.UserChallengeModel;
+/**
+ * Model LessonCompletion
+ *
+ */
+export type LessonCompletion = Prisma.LessonCompletionModel;

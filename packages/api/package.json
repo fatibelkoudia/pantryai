@@ -7,6 +7,17 @@
     "dev": "nest start --watch",
     "start": "node dist/main",
     "start:worker": "node dist/worker",
+    "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio",
+    "prisma:validate": "prisma validate",
+    "prisma:format": "prisma format",
+    "prisma:db:push": "prisma db push",
+    "prisma:db:pull": "prisma db pull",
+    "prisma:migrate:dev": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:migrate:status": "prisma migrate status",
+    "prisma:migrate:reset": "prisma migrate reset",
+    "prisma:seed": "prisma db seed",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --project unit",
@@ -14,6 +25,7 @@
     "test:integration": "vitest run --project integration",
     "test:all": "vitest run",
     "seed": "tsx scripts/seed.ts",
+    "generate-lessons": "tsx scripts/generate-lessons.ts",
     "test:parsers": "tsx scripts/test-parsers.ts",
     "record-ocr": "tsx scripts/record-ocr-fixture.ts",
     "smoke-fixtures": "tsx scripts/smoke-fixtures.ts",
@@ -82,5 +94,8 @@
     "typescript": "^5.8.3",
     "unplugin-swc": "^1.5.9",
     "vitest": "^3.0.0"
+  },
+  "prisma": {
+    "seed": "tsx scripts/seed.ts"
   }
 }

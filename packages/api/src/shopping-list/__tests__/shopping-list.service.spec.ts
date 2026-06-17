@@ -192,7 +192,11 @@ describe('ShoppingListService manual CRUD', () => {
     mockPrisma.shoppingItem.update.mockResolvedValue({ id: 's1', checked: true });
     await makeService().update('s1', 'user-1', { checked: true });
     expect(mockPrisma.shoppingItem.update).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { id: 's1' }, data: { checked: true } }),
+      expect.objectContaining({
+        where: { id: 's1' },
+        // ticking an item also stamps checkedAt for the weekly challenge window
+        data: { checked: true, checkedAt: expect.any(Date) },
+      }),
     );
   });
 

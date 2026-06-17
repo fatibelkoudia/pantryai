@@ -1,7 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import { getAvatarPreset, mascotMoodMeta, type StockLocation } from '@pantryai/shared';
+import { getAvatarPreset, mascotMoodMeta, type Locale, type StockLocation } from '@pantryai/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Image,
@@ -30,15 +31,19 @@ const LOCATION_LABELS: Record<StockLocation, string> = {
 export default function HomeScreen() {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
+  const { i18n } = useTranslation();
+  const locale: Locale = i18n.language.startsWith('fr') ? 'fr' : 'en';
 
   const waste = useQuery({
     queryKey: ['waste'],
     queryFn: () => apiClient.getWasteLevel(),
   });
+  // The server picks the daily tip from the date, so everyone sees the same one
+  // all day. The locale is part of the key so switching language refetches it.
   const tip = useQuery({
-    queryKey: ['learning', 'tip', 'today'],
-    queryFn: () => apiClient.getRandomTip(),
-    staleTime: 24 * 60 * 60 * 1000,
+    queryKey: ['learning', 'tip', 'today', locale],
+    queryFn: () => apiClient.getDailyTip(locale),
+    staleTime: 60 * 60 * 1000,
   });
   const expiring = useQuery({
     queryKey: ['stocks', 'expiring'],

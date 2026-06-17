@@ -16,7 +16,10 @@ export interface ConservationTip {
   category: TipCategory;
   title: string;
   body: string;
+  // the agency the tip comes from, like "ADEME, guide anti-gaspillage alimentaire"
   source: string;
+  // link to the page the tip is based on, so the app can show "read more"
+  sourceUrl: string;
 }
 
 export interface TipsResponse {
@@ -25,6 +28,61 @@ export interface TipsResponse {
 
 export interface RandomTipResponse {
   tip: ConservationTip | null;
+}
+
+// Every lesson pays the same XP once. Kept here so the app can show the reward
+// before the API answers.
+export const LESSON_XP = 20;
+
+// A tip the way the Learn screen shows it: the localized text plus whether the
+// signed-in user already finished it.
+export interface Lesson extends ConservationTip {
+  xp: number;
+  completed: boolean;
+  completedAt: string | null;
+}
+
+export interface LessonsResponse {
+  lessons: Lesson[];
+  completedCount: number;
+  totalCount: number;
+}
+
+// The question part of a lesson. The right answer is not in here on purpose:
+// the app sends the user's pick to the complete endpoint and the API judges it.
+export interface LessonQuiz {
+  question: string;
+  choices: string[];
+}
+
+// One full lesson, opened from a card. `quiz` is null when we could not generate
+// a question for it, and the app falls back to a plain read-and-confirm card.
+export interface LessonDetail extends ConservationTip {
+  xp: number;
+  completed: boolean;
+  quiz: LessonQuiz | null;
+}
+
+export interface LessonDetailResponse {
+  lesson: LessonDetail;
+}
+
+export interface CompleteLessonDto {
+  // Which choice the user picked. Left out when the lesson had no quiz.
+  answerIndex?: number;
+}
+
+export interface CompleteLessonResponse {
+  // null when the lesson was completed without a quiz
+  correct: boolean | null;
+  // the right choice and its explanation, so the app can do the reveal
+  answerIndex: number | null;
+  explanation: string | null;
+  // 0 when the lesson was already completed before (no double XP)
+  xpAwarded: number;
+  // the user's new XP total and daily streak after this completion
+  xp: number;
+  streak: number;
 }
 
 // Strip accents and lowercase so "Légumes" and "legume" both match our keywords.

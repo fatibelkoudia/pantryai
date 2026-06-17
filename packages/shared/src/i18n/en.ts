@@ -1,4 +1,4 @@
-// English catalog. For now only the profile and settings screens go through
+// English catalog. For now the profile, settings and learn screens go through
 // i18n, the rest of the app still has its strings inline. When we translate the
 // whole app the other screens will get their keys added here too.
 export const en = {
@@ -70,4 +70,86 @@ export const en = {
     deleting: 'Deleting…',
     failed: 'Could not delete your account. Please try again.',
   },
+  learn: {
+    title: 'Learn',
+    subtitle: 'Build smarter food habits',
+    missionKicker: "Today's Food Mission",
+    startLesson: 'Start lesson',
+    reviewLesson: 'Review',
+    missionDone: 'Done! A new mission lands tomorrow.',
+    levelTitle: 'Level {{level}} · {{title}}',
+    lessonsDone: '{{done}}/{{total}} lessons',
+    xpToNext: '{{count}} XP to the next level',
+    topLevel: 'Top level reached!',
+    weeklyChallenges: 'Weekly Challenges',
+    resetsMonday: 'New round every Monday',
+    challengeDone: 'Done!',
+    categories: {
+      all: 'All',
+      fruits: 'Fruit',
+      legumes: 'Veg',
+      'produits-laitiers': 'Dairy',
+      viande: 'Meat & fish',
+      cereales: 'Grains',
+    },
+    empty: 'No lessons in this category yet.',
+    loadError: 'Could not load lessons',
+    retry: 'Retry',
+    xpChip: '+{{count}} XP',
+    xpEarned: '+{{count}} XP earned',
+    trashyTitle: 'Help Trashy stay small',
+    trashyBody: 'Good habits keep waste down and Trashy happy.',
+    rewardsA11y: 'See your rewards',
+  },
+  streak: {
+    days: '{{count}}-day streak',
+    title: 'Daily streak',
+    body: 'Finish a lesson or use up a stock item every day to keep the flame alive.',
+    activeToday: 'Today already counts. See you tomorrow!',
+    notYetToday: 'Nothing counted for today yet.',
+  },
+  lesson: {
+    preparing: 'Preparing your quiz…',
+    question: 'Quick question',
+    checkAnswer: 'Check answer',
+    correct: 'Correct!',
+    incorrect: 'Not quite!',
+    gotIt: 'Got it!',
+    completedBefore: 'You already finished this lesson.',
+    source: 'Source: {{source}}',
+    error: 'Could not load this lesson. Please try again.',
+    close: 'Close',
+  },
+  levels: {
+    '1': 'Rookie',
+    '2': 'Food Saver',
+    '3': 'Waste Warrior',
+    '4': 'Kitchen Hero',
+    '5': 'Waste Wizard',
+    '6': 'Master Chef',
+  },
+  challenges: {
+    'clean-out-fridge': {
+      title: 'Clean Out Your Fridge',
+      description: 'Eat 3 items from your fridge this week.',
+    },
+    'no-waste-weekend': {
+      title: 'No Waste Weekend',
+      description: 'Eat 3 items this week without throwing anything away.',
+    },
+    'use-it-all': {
+      title: 'Use It All',
+      description: 'Use up 10 items from your stock this week.',
+    },
+    'smart-shopper': {
+      title: 'Smart Shopper',
+      description: 'Check off 5 items on your shopping list this week.',
+    },
+  },
 } as const;
+
+// Same shape as the English catalog but with plain strings for the values, so the
+// other languages must have every key without having to repeat the exact English
+// text. The other catalogs are typed against this.
+type DeepStrings<T> = { [K in keyof T]: T[K] extends object ? DeepStrings<T[K]> : string };
+export type TranslationCatalog = DeepStrings<typeof en>;
