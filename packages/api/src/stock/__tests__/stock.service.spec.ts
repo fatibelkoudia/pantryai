@@ -188,18 +188,50 @@ describe('StockService', () => {
   });
 
   describe('remove', () => {
-    it('soft-deletes a stock item by setting deletedAt', async () => {
-      mockPrismaService.stockItem.findFirst.mockResolvedValue(mockStockItem);
-      mockPrismaService.stockItem.update.mockResolvedValue({
+    it('records the explicit disposition when given', async () => {
+      mockPrismaService.stockItem.findFirst.mockResolvedValue({
         ...mockStockItem,
-        deletedAt: new Date(),
+        expirationDate: null,
       });
+      mockPrismaService.stockItem.update.mockResolvedValue({});
+
+      await service.remove('stock-uuid-1', 'user-uuid-1', 'DISCARDED');
+
+      expect(mockPrismaService.stockItem.update).toHaveBeenCalledWith({
+        where: { id: 'stock-uuid-1' },
+        data: { deletedAt: expect.any(Date), disposition: 'DISCARDED' },
+      });
+    });
+
+    it('defaults to CONSUMED when no disposition and the item is not expired', async () => {
+      const future = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      mockPrismaService.stockItem.findFirst.mockResolvedValue({
+        ...mockStockItem,
+        expirationDate: future,
+      });
+      mockPrismaService.stockItem.update.mockResolvedValue({});
 
       await service.remove('stock-uuid-1', 'user-uuid-1');
 
       expect(mockPrismaService.stockItem.update).toHaveBeenCalledWith({
         where: { id: 'stock-uuid-1' },
-        data: { deletedAt: expect.any(Date) },
+        data: { deletedAt: expect.any(Date), disposition: 'CONSUMED' },
+      });
+    });
+
+    it('defaults to EXPIRED when no disposition and the item is past its expiration', async () => {
+      const past = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      mockPrismaService.stockItem.findFirst.mockResolvedValue({
+        ...mockStockItem,
+        expirationDate: past,
+      });
+      mockPrismaService.stockItem.update.mockResolvedValue({});
+
+      await service.remove('stock-uuid-1', 'user-uuid-1');
+
+      expect(mockPrismaService.stockItem.update).toHaveBeenCalledWith({
+        where: { id: 'stock-uuid-1' },
+        data: { deletedAt: expect.any(Date), disposition: 'EXPIRED' },
       });
     });
 

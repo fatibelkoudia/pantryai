@@ -1096,6 +1096,7 @@ export const StockItemScalarFieldEnum = {
   expirationDate: 'expirationDate',
   expirationNotifiedAt: 'expirationNotifiedAt',
   location: 'location',
+  disposition: 'disposition',
   addedAt: 'addedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
@@ -1256,6 +1257,22 @@ export type EnumStockLocationFieldRefInput<$PrismaModel> = FieldRefInputType<
 export type ListEnumStockLocationFieldRefInput<$PrismaModel> = FieldRefInputType<
   $PrismaModel,
   'StockLocation[]'
+>;
+
+/**
+ * Reference to a field of type 'StockDisposition'
+ */
+export type EnumStockDispositionFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'StockDisposition'
+>;
+
+/**
+ * Reference to a field of type 'StockDisposition[]'
+ */
+export type ListEnumStockDispositionFieldRefInput<$PrismaModel> = FieldRefInputType<
+  $PrismaModel,
+  'StockDisposition[]'
 >;
 
 /**

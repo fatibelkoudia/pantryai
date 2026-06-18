@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { StockItemWithProduct } from '@pantryai/shared';
+import type { StockDisposition, StockItemWithProduct } from '@pantryai/shared';
 import { ExpirationBadge } from './ExpirationBadge';
 
 const LOCATION_LABEL: Record<string, string> = {
@@ -10,10 +10,10 @@ const LOCATION_LABEL: Record<string, string> = {
 
 interface StockCardProps {
   item: StockItemWithProduct;
-  onDelete?: (id: string) => void;
+  onRemove?: (id: string, disposition: StockDisposition) => void;
 }
 
-export function StockCard({ item, onDelete }: StockCardProps) {
+export function StockCard({ item, onRemove }: StockCardProps) {
   const { product } = item;
 
   return (
@@ -42,18 +42,27 @@ export function StockCard({ item, onDelete }: StockCardProps) {
         </div>
       </dl>
 
-      <div className="mt-2 flex gap-3 text-sm">
+      <div className="mt-2 flex flex-wrap gap-3 text-sm">
         <Link href={`/stocks/${item.id}`} className="font-medium text-brand hover:underline">
           Edit
         </Link>
-        {onDelete ? (
-          <button
-            type="button"
-            onClick={() => onDelete(item.id)}
-            className="font-medium text-expiry-expired hover:underline"
-          >
-            Delete
-          </button>
+        {onRemove ? (
+          <>
+            <button
+              type="button"
+              onClick={() => onRemove(item.id, 'CONSUMED')}
+              className="font-medium text-brand hover:underline"
+            >
+              Used it
+            </button>
+            <button
+              type="button"
+              onClick={() => onRemove(item.id, 'DISCARDED')}
+              className="font-medium text-expiry-expired hover:underline"
+            >
+              Threw it out
+            </button>
+          </>
         ) : null}
       </div>
     </article>

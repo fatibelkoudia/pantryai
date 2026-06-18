@@ -4,7 +4,12 @@ import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiClientError } from '@pantryai/shared';
-import type { StockItemWithProduct, StockLocation, UpdateStockItemDto } from '@pantryai/shared';
+import type {
+  StockDisposition,
+  StockItemWithProduct,
+  StockLocation,
+  UpdateStockItemDto,
+} from '@pantryai/shared';
 import { ConservationTipCard } from '@/components/ConservationTipCard';
 import { ExpirationBadge } from '@/components/ExpirationBadge';
 import { apiClient } from '@/lib/api';
@@ -86,9 +91,10 @@ function StockEditForm({ item }: { item: StockItemWithProduct }) {
   });
 
   const remove = useMutation({
-    mutationFn: () => apiClient.deleteStock(item.id),
+    mutationFn: (disposition: StockDisposition) => apiClient.deleteStock(item.id, disposition),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['stocks'] });
+      void queryClient.invalidateQueries({ queryKey: ['waste'] });
       router.push('/stocks');
     },
     onError: (err) => setError(err instanceof ApiClientError ? err.message : 'Delete failed'),
@@ -180,11 +186,19 @@ function StockEditForm({ item }: { item: StockItemWithProduct }) {
           </button>
           <button
             type="button"
-            onClick={() => remove.mutate()}
+            onClick={() => remove.mutate('CONSUMED')}
+            disabled={remove.isPending}
+            className="rounded-md border border-brand px-4 py-2 font-medium text-brand disabled:opacity-60"
+          >
+            {remove.isPending ? 'Removing…' : 'Used it'}
+          </button>
+          <button
+            type="button"
+            onClick={() => remove.mutate('DISCARDED')}
             disabled={remove.isPending}
             className="rounded-md border border-expiry-expired px-4 py-2 font-medium text-expiry-expired disabled:opacity-60"
           >
-            {remove.isPending ? 'Deleting…' : 'Delete'}
+            {remove.isPending ? 'Removing…' : 'Threw it out'}
           </button>
         </div>
       </form>

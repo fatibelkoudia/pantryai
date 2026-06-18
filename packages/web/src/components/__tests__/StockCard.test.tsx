@@ -46,10 +46,17 @@ describe('<StockCard />', () => {
     expect(links.some((a) => a.getAttribute('href') === '/stocks/stock-1')).toBe(true);
   });
 
-  it('calls onDelete with the item id', () => {
-    const onDelete = vi.fn();
-    render(<StockCard item={item} onDelete={onDelete} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
-    expect(onDelete).toHaveBeenCalledWith('stock-1');
+  it('calls onRemove with CONSUMED when "Used it" is clicked', () => {
+    const onRemove = vi.fn();
+    render(<StockCard item={item} onRemove={onRemove} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Used it' }));
+    expect(onRemove).toHaveBeenCalledWith('stock-1', 'CONSUMED');
+  });
+
+  it('calls onRemove with DISCARDED when "Threw it out" is clicked', () => {
+    const onRemove = vi.fn();
+    render(<StockCard item={item} onRemove={onRemove} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Threw it out' }));
+    expect(onRemove).toHaveBeenCalledWith('stock-1', 'DISCARDED');
   });
 });

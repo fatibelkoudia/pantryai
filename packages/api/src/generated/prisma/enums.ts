@@ -16,6 +16,14 @@ export const StockLocation = {
 
 export type StockLocation = (typeof StockLocation)[keyof typeof StockLocation];
 
+export const StockDisposition = {
+  CONSUMED: 'CONSUMED',
+  DISCARDED: 'DISCARDED',
+  EXPIRED: 'EXPIRED',
+} as const;
+
+export type StockDisposition = (typeof StockDisposition)[keyof typeof StockDisposition];
+
 export const OcrStatus = {
   PENDING: 'PENDING',
   PROCESSING: 'PROCESSING',

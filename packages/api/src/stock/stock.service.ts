@@ -1,4 +1,5 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import type { StockDisposition } from '@pantryai/shared';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateStockItemDto } from './dto/create-stock-item.dto.js';
 import { StockQueryDto } from './dto/stock-query.dto.js';
@@ -86,11 +87,21 @@ export class StockService {
     });
   }
 
-  async remove(id: string, userId: string) {
-    await this.findOne(id, userId);
+  async remove(id: string, userId: string, disposition?: StockDisposition) {
+    const item = await this.findOne(id, userId);
     await this.prisma.stockItem.update({
       where: { id },
-      data: { deletedAt: new Date() },
+      data: { deletedAt: new Date(), disposition: disposition ?? defaultDisposition(item) },
     });
   }
+}
+
+// When the client doesn't say how the item left the pantry, infer it: an item
+// removed past its expiration date is treated as EXPIRED waste, otherwise we
+// assume it was eaten (CONSUMED). An explicit DISCARDED only ever comes from the UI.
+function defaultDisposition(item: { expirationDate: Date | null }): StockDisposition {
+  if (item.expirationDate && item.expirationDate.getTime() < Date.now()) {
+    return 'EXPIRED';
+  }
+  return 'CONSUMED';
 }

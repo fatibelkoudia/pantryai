@@ -10,7 +10,9 @@ export * from './types/recipe.js';
 export * from './types/shopping.js';
 export * from './types/stock.js';
 export * from './types/user.js';
+export * from './types/waste.js';
 
 export * from './api/client.js';
 
 export * from './theme/tokens.js';
+export * from './theme/mascot.js';
