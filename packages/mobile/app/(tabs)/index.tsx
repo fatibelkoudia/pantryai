@@ -58,6 +58,8 @@ export default function StockScreen() {
       void queryClient.invalidateQueries({ queryKey: ['stocks'] });
       // Resolving an item moves the Waste Level, so refresh Trashy's mood too.
       void queryClient.invalidateQueries({ queryKey: ['waste'] });
+      // It can also complete a challenge (e.g. Use It All), so refresh XP/challenges.
+      void queryClient.invalidateQueries({ queryKey: ['challenges'] });
     },
   });
 
@@ -101,6 +103,9 @@ export default function StockScreen() {
         <View style={styles.headerActions}>
           <TouchableOpacity onPress={() => router.push('/mood')} accessibilityRole="button">
             <Text style={styles.addManually}>Trashy</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/rewards')} accessibilityRole="button">
+            <Text style={styles.addManually}>Rewards</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push('/expiring')} accessibilityRole="button">
             <Text style={styles.addManually}>Expiring soon</Text>

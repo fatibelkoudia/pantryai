@@ -1,13 +1,18 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import type { StockDisposition } from '@pantryai/shared';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateStockItemDto } from './dto/create-stock-item.dto.js';
 import { StockQueryDto } from './dto/stock-query.dto.js';
 import { UpdateStockItemDto } from './dto/update-stock-item.dto.js';
+import { STOCK_REMOVED, type StockRemovedEvent } from './stock.events.js';
 
 @Injectable()
 export class StockService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly events: EventEmitter2,
+  ) {}
 
   async findAll(userId: string, query: StockQueryDto) {
     const page = query.page ?? 1;
@@ -93,6 +98,8 @@ export class StockService {
       where: { id },
       data: { deletedAt: new Date(), disposition: disposition ?? defaultDisposition(item) },
     });
+    // Tell the gamification module so it can re-check the user's challenges.
+    this.events.emit(STOCK_REMOVED, { userId } satisfies StockRemovedEvent);
   }
 }
 

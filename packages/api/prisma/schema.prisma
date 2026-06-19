@@ -19,6 +19,8 @@ model User {
   ocrJobs      OcrJob[]
   devices      UserDevice[]
   shoppingItems ShoppingItem[]
+  xp           UserXp?
+  challenges   UserChallenge[]
 
   @@index([email])
   @@map("users")
@@ -170,4 +172,49 @@ model ShoppingItem {
 
   @@index([userId])
   @@map("shopping_items")
+}
+
+// One row per user that just keeps their XP total. The gamification module adds
+// to `total` whenever the user finishes a challenge.
+model UserXp {
+  userId    String   @id
+  total     Int      @default(0)
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("user_xp")
+}
+
+// One Trashy challenge (Clean Out Your Fridge, No Waste Weekend, and so on). These
+// are added on startup. `rule` is some JSON that says how we count progress for it
+// (see gamification/challenges.ts and challenge-rules.ts).
+model Challenge {
+  id          String          @id @default(uuid())
+  key         String          @unique
+  title       String
+  description String
+  xp          Int
+  rule        Json
+  createdAt   DateTime        @default(now())
+  users       UserChallenge[]
+
+  @@map("challenges")
+}
+
+// How far one user has got on one challenge. `completedAt` starts null and we set
+// it once when they finish. We use that to make sure we only ever give the XP once.
+model UserChallenge {
+  id          String    @id @default(uuid())
+  userId      String
+  challengeId String
+  progress    Int       @default(0)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id])
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, challengeId])
+  @@index([userId])
+  @@map("user_challenges")
 }

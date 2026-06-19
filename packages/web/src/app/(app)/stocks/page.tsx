@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { StockDisposition, StockLocation, StockQuery } from '@pantryai/shared';
+import { GamificationCard } from '@/components/GamificationCard';
 import { StockCard } from '@/components/StockCard';
+import { TodaysTipCard } from '@/components/TodaysTipCard';
 import { WasteMoodCard } from '@/components/WasteMoodCard';
 import { apiClient } from '@/lib/api';
 
@@ -45,12 +47,16 @@ export default function StocksPage() {
       queryClient.invalidateQueries({ queryKey: ['stocks'] });
       // Resolving an item changes the Waste Level, so refresh Trashy's mood too.
       queryClient.invalidateQueries({ queryKey: ['waste'] });
+      // It can also complete a challenge (e.g. Use It All), so refresh XP/challenges.
+      queryClient.invalidateQueries({ queryKey: ['challenges'] });
     },
   });
 
   return (
     <section className="flex flex-col gap-6">
       <WasteMoodCard />
+      <GamificationCard />
+      <TodaysTipCard />
 
       <header className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold">My stock</h1>

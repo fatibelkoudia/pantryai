@@ -29,7 +29,7 @@ describe('WasteService', () => {
 
     await service.getLevel('user-1');
 
-    const arg = mockPrismaService.stockItem.findMany.mock.calls[0][0];
+    const arg = mockPrismaService.stockItem.findMany.mock.calls[0]![0];
     expect(arg.where.userId).toBe('user-1');
     expect(arg.where.disposition).toEqual({ not: null });
     expect(arg.where.deletedAt.gte).toBeInstanceOf(Date);

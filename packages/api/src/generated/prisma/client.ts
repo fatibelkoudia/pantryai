@@ -82,3 +82,18 @@ export type RecipeIngredient = Prisma.RecipeIngredientModel;
  *
  */
 export type ShoppingItem = Prisma.ShoppingItemModel;
+/**
+ * Model UserXp
+ *
+ */
+export type UserXp = Prisma.UserXpModel;
+/**
+ * Model Challenge
+ *
+ */
+export type Challenge = Prisma.ChallengeModel;
+/**
+ * Model UserChallenge
+ *
+ */
+export type UserChallenge = Prisma.UserChallengeModel;
