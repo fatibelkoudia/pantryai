@@ -8,11 +8,7 @@
     "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
     "quiz": {
       "question": "Où doit-on conserver les bananes et les melons pour qu'ils restent frais plus longtemps ?",
-      "choices": [
-        "Au frigo dès l'achat",
-        "À température ambiante",
-        "Dans un sac plastique fermé"
-      ],
+      "choices": ["Au frigo dès l'achat", "À température ambiante", "Dans un sac plastique fermé"],
       "answerIndex": 1,
       "explanation": "Les bananes et les melons se conservent mieux à température ambiante pour éviter qu'ils ne mûrissent trop vite ou ne deviennent trop mous."
     }
@@ -314,11 +310,7 @@
     "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
     "quiz": {
       "question": "Combien de temps le poisson frais se conserve-t-il au réfrigérateur ?",
-      "choices": [
-        "1 à 2 jours",
-        "3 à 4 jours",
-        "5 à 7 jours"
-      ],
+      "choices": ["1 à 2 jours", "3 à 4 jours", "5 à 7 jours"],
       "answerIndex": 0,
       "explanation": "Le poisson frais se conserve généralement entre 1 et 2 jours au réfrigérateur pour éviter tout risque de détérioration."
     }
@@ -350,11 +342,7 @@
     "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
     "quiz": {
       "question": "Combien de temps peut-on garder des restes de viande cuite au réfrigérateur ?",
-      "choices": [
-        "1 jour maximum",
-        "3 jours maximum",
-        "1 semaine maximum"
-      ],
+      "choices": ["1 jour maximum", "3 jours maximum", "1 semaine maximum"],
       "answerIndex": 1,
       "explanation": "Les restes de viande cuite doivent être conservés au réfrigérateur pendant 2 à 3 jours maximum pour éviter tout risque de contamination."
     }

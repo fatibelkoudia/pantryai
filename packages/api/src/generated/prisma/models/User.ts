@@ -28,6 +28,7 @@ export type UserMinAggregateOutputType = {
   email: string | null;
   name: string | null;
   avatarId: string | null;
+  onboardingCompletedAt: Date | null;
   passwordHash: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
@@ -39,6 +40,7 @@ export type UserMaxAggregateOutputType = {
   email: string | null;
   name: string | null;
   avatarId: string | null;
+  onboardingCompletedAt: Date | null;
   passwordHash: string | null;
   createdAt: Date | null;
   updatedAt: Date | null;
@@ -50,6 +52,7 @@ export type UserCountAggregateOutputType = {
   email: number;
   name: number;
   avatarId: number;
+  onboardingCompletedAt: number;
   passwordHash: number;
   createdAt: number;
   updatedAt: number;
@@ -62,6 +65,7 @@ export type UserMinAggregateInputType = {
   email?: true;
   name?: true;
   avatarId?: true;
+  onboardingCompletedAt?: true;
   passwordHash?: true;
   createdAt?: true;
   updatedAt?: true;
@@ -73,6 +77,7 @@ export type UserMaxAggregateInputType = {
   email?: true;
   name?: true;
   avatarId?: true;
+  onboardingCompletedAt?: true;
   passwordHash?: true;
   createdAt?: true;
   updatedAt?: true;
@@ -84,6 +89,7 @@ export type UserCountAggregateInputType = {
   email?: true;
   name?: true;
   avatarId?: true;
+  onboardingCompletedAt?: true;
   passwordHash?: true;
   createdAt?: true;
   updatedAt?: true;
@@ -169,6 +175,7 @@ export type UserGroupByOutputType = {
   email: string;
   name: string | null;
   avatarId: string | null;
+  onboardingCompletedAt: Date | null;
   passwordHash: string;
   createdAt: Date;
   updatedAt: Date;
@@ -198,6 +205,7 @@ export type UserWhereInput = {
   email?: Prisma.StringFilter<'User'> | string;
   name?: Prisma.StringNullableFilter<'User'> | string | null;
   avatarId?: Prisma.StringNullableFilter<'User'> | string | null;
+  onboardingCompletedAt?: Prisma.DateTimeNullableFilter<'User'> | Date | string | null;
   passwordHash?: Prisma.StringFilter<'User'> | string;
   createdAt?: Prisma.DateTimeFilter<'User'> | Date | string;
   updatedAt?: Prisma.DateTimeFilter<'User'> | Date | string;
@@ -220,6 +228,7 @@ export type UserOrderByWithRelationInput = {
   email?: Prisma.SortOrder;
   name?: Prisma.SortOrderInput | Prisma.SortOrder;
   avatarId?: Prisma.SortOrderInput | Prisma.SortOrder;
+  onboardingCompletedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   passwordHash?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
@@ -243,6 +252,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[];
     name?: Prisma.StringNullableFilter<'User'> | string | null;
     avatarId?: Prisma.StringNullableFilter<'User'> | string | null;
+    onboardingCompletedAt?: Prisma.DateTimeNullableFilter<'User'> | Date | string | null;
     passwordHash?: Prisma.StringFilter<'User'> | string;
     createdAt?: Prisma.DateTimeFilter<'User'> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<'User'> | Date | string;
@@ -267,6 +277,7 @@ export type UserOrderByWithAggregationInput = {
   email?: Prisma.SortOrder;
   name?: Prisma.SortOrderInput | Prisma.SortOrder;
   avatarId?: Prisma.SortOrderInput | Prisma.SortOrder;
+  onboardingCompletedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   passwordHash?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
@@ -284,6 +295,11 @@ export type UserScalarWhereWithAggregatesInput = {
   email?: Prisma.StringWithAggregatesFilter<'User'> | string;
   name?: Prisma.StringNullableWithAggregatesFilter<'User'> | string | null;
   avatarId?: Prisma.StringNullableWithAggregatesFilter<'User'> | string | null;
+  onboardingCompletedAt?:
+    | Prisma.DateTimeNullableWithAggregatesFilter<'User'>
+    | Date
+    | string
+    | null;
   passwordHash?: Prisma.StringWithAggregatesFilter<'User'> | string;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'User'> | Date | string;
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<'User'> | Date | string;
@@ -295,6 +311,7 @@ export type UserCreateInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -314,6 +331,7 @@ export type UserUncheckedCreateInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -333,6 +351,7 @@ export type UserUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -352,6 +371,7 @@ export type UserUncheckedUpdateInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -371,6 +391,7 @@ export type UserCreateManyInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -382,6 +403,7 @@ export type UserUpdateManyMutationInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -393,6 +415,7 @@ export type UserUncheckedUpdateManyInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -404,6 +427,7 @@ export type UserCountOrderByAggregateInput = {
   email?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   avatarId?: Prisma.SortOrder;
+  onboardingCompletedAt?: Prisma.SortOrder;
   passwordHash?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
@@ -415,6 +439,7 @@ export type UserMaxOrderByAggregateInput = {
   email?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   avatarId?: Prisma.SortOrder;
+  onboardingCompletedAt?: Prisma.SortOrder;
   passwordHash?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
@@ -426,6 +451,7 @@ export type UserMinOrderByAggregateInput = {
   email?: Prisma.SortOrder;
   name?: Prisma.SortOrder;
   avatarId?: Prisma.SortOrder;
+  onboardingCompletedAt?: Prisma.SortOrder;
   passwordHash?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   updatedAt?: Prisma.SortOrder;
@@ -445,12 +471,12 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null;
 };
 
-export type DateTimeFieldUpdateOperationsInput = {
-  set?: Date | string;
-};
-
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null;
+};
+
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string;
 };
 
 export type UserCreateNestedOneWithoutSettingsInput = {
@@ -657,6 +683,7 @@ export type UserCreateWithoutSettingsInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -675,6 +702,7 @@ export type UserUncheckedCreateWithoutSettingsInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -721,6 +749,7 @@ export type UserUpdateWithoutSettingsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -739,6 +768,7 @@ export type UserUncheckedUpdateWithoutSettingsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -757,6 +787,7 @@ export type UserCreateWithoutDevicesInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -775,6 +806,7 @@ export type UserUncheckedCreateWithoutDevicesInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -821,6 +853,7 @@ export type UserUpdateWithoutDevicesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -839,6 +872,7 @@ export type UserUncheckedUpdateWithoutDevicesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -857,6 +891,7 @@ export type UserCreateWithoutStockItemsInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -875,6 +910,7 @@ export type UserUncheckedCreateWithoutStockItemsInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -921,6 +957,7 @@ export type UserUpdateWithoutStockItemsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -939,6 +976,7 @@ export type UserUncheckedUpdateWithoutStockItemsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -957,6 +995,7 @@ export type UserCreateWithoutOcrJobsInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -975,6 +1014,7 @@ export type UserUncheckedCreateWithoutOcrJobsInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -1021,6 +1061,7 @@ export type UserUpdateWithoutOcrJobsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -1039,6 +1080,7 @@ export type UserUncheckedUpdateWithoutOcrJobsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -1057,6 +1099,7 @@ export type UserCreateWithoutShoppingItemsInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -1075,6 +1118,7 @@ export type UserUncheckedCreateWithoutShoppingItemsInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -1121,6 +1165,7 @@ export type UserUpdateWithoutShoppingItemsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -1139,6 +1184,7 @@ export type UserUncheckedUpdateWithoutShoppingItemsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -1157,6 +1203,7 @@ export type UserCreateWithoutXpInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -1175,6 +1222,7 @@ export type UserUncheckedCreateWithoutXpInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -1209,6 +1257,7 @@ export type UserUpdateWithoutXpInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -1227,6 +1276,7 @@ export type UserUncheckedUpdateWithoutXpInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -1245,6 +1295,7 @@ export type UserCreateWithoutChallengesInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -1263,6 +1314,7 @@ export type UserUncheckedCreateWithoutChallengesInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -1309,6 +1361,7 @@ export type UserUpdateWithoutChallengesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -1327,6 +1380,7 @@ export type UserUncheckedUpdateWithoutChallengesInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -1345,6 +1399,7 @@ export type UserCreateWithoutLessonsInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -1363,6 +1418,7 @@ export type UserUncheckedCreateWithoutLessonsInput = {
   email: string;
   name?: string | null;
   avatarId?: string | null;
+  onboardingCompletedAt?: Date | string | null;
   passwordHash: string;
   createdAt?: Date | string;
   updatedAt?: Date | string;
@@ -1409,6 +1465,7 @@ export type UserUpdateWithoutLessonsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -1427,6 +1484,7 @@ export type UserUncheckedUpdateWithoutLessonsInput = {
   email?: Prisma.StringFieldUpdateOperationsInput | string;
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  onboardingCompletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -1538,6 +1596,7 @@ export type UserSelect<
     email?: boolean;
     name?: boolean;
     avatarId?: boolean;
+    onboardingCompletedAt?: boolean;
     passwordHash?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
@@ -1563,6 +1622,7 @@ export type UserSelectCreateManyAndReturn<
     email?: boolean;
     name?: boolean;
     avatarId?: boolean;
+    onboardingCompletedAt?: boolean;
     passwordHash?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
@@ -1579,6 +1639,7 @@ export type UserSelectUpdateManyAndReturn<
     email?: boolean;
     name?: boolean;
     avatarId?: boolean;
+    onboardingCompletedAt?: boolean;
     passwordHash?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
@@ -1592,6 +1653,7 @@ export type UserSelectScalar = {
   email?: boolean;
   name?: boolean;
   avatarId?: boolean;
+  onboardingCompletedAt?: boolean;
   passwordHash?: boolean;
   createdAt?: boolean;
   updatedAt?: boolean;
@@ -1601,7 +1663,15 @@ export type UserSelectScalar = {
 export type UserOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  'id' | 'email' | 'name' | 'avatarId' | 'passwordHash' | 'createdAt' | 'updatedAt' | 'deletedAt',
+  | 'id'
+  | 'email'
+  | 'name'
+  | 'avatarId'
+  | 'onboardingCompletedAt'
+  | 'passwordHash'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'deletedAt',
   ExtArgs['result']['user']
 >;
 export type UserInclude<
@@ -1644,6 +1714,7 @@ export type $UserPayload<
       email: string;
       name: string | null;
       avatarId: string | null;
+      onboardingCompletedAt: Date | null;
       passwordHash: string;
       createdAt: Date;
       updatedAt: Date;
@@ -2285,6 +2356,7 @@ export interface UserFieldRefs {
   readonly email: Prisma.FieldRef<'User', 'String'>;
   readonly name: Prisma.FieldRef<'User', 'String'>;
   readonly avatarId: Prisma.FieldRef<'User', 'String'>;
+  readonly onboardingCompletedAt: Prisma.FieldRef<'User', 'DateTime'>;
   readonly passwordHash: Prisma.FieldRef<'User', 'String'>;
   readonly createdAt: Prisma.FieldRef<'User', 'DateTime'>;
   readonly updatedAt: Prisma.FieldRef<'User', 'DateTime'>;

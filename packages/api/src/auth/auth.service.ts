@@ -55,7 +55,13 @@ export class AuthService {
 
     return {
       ...tokens,
-      user: { id: user.id, email: user.email, name: user.name, avatarId: user.avatarId },
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        avatarId: user.avatarId,
+        onboardingCompletedAt: user.onboardingCompletedAt,
+      },
     };
   }
 
@@ -76,7 +82,13 @@ export class AuthService {
 
     return {
       ...tokens,
-      user: { id: user.id, email: user.email, name: user.name, avatarId: user.avatarId },
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        avatarId: user.avatarId,
+        onboardingCompletedAt: user.onboardingCompletedAt,
+      },
     };
   }
 
@@ -87,7 +99,13 @@ export class AuthService {
     if (!user || user.deletedAt) {
       throw new NotFoundException('User not found');
     }
-    return { id: user.id, email: user.email, name: user.name, avatarId: user.avatarId };
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      avatarId: user.avatarId,
+      onboardingCompletedAt: user.onboardingCompletedAt,
+    };
   }
 
   async refresh(refreshToken: string): Promise<{ accessToken: string }> {

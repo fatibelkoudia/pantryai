@@ -13,6 +13,9 @@ export class ProfileResponseDto {
   @ApiProperty({ nullable: true, type: String })
   avatarId!: string | null;
 
+  @ApiProperty({ nullable: true, type: Date })
+  onboardingCompletedAt!: Date | null;
+
   @ApiProperty()
   createdAt!: Date;
 

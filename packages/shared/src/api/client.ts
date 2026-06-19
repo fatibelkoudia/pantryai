@@ -207,6 +207,11 @@ export class PantryApiClient {
     });
   }
 
+  /** Mark the first-run onboarding as done (finishing and skipping both count). Idempotent. */
+  completeOnboarding(): Promise<User> {
+    return this.request<User>('/users/me/onboarding/complete', { method: 'POST' });
+  }
+
   /** Change the password. Fails with 401 when the current password is wrong. */
   changePassword(dto: ChangePasswordDto): Promise<void> {
     return this.request<void>('/users/me/password', {

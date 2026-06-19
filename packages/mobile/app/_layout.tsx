@@ -9,7 +9,7 @@ import {
 import { Stack, useRootNavigationState, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
-import { registerForPushNotifications } from '../src/lib/push';
+import { syncPushRegistrationIfGranted } from '../src/lib/push';
 import { LocaleSync } from '../src/components/LocaleSync';
 import { useAuthStore } from '../src/store/auth';
 import { colors } from '../src/theme';
@@ -20,6 +20,7 @@ const queryClient = new QueryClient();
 
 function AuthGate({ children }: { children: React.ReactNode }) {
   const status = useAuthStore((s) => s.status);
+  const user = useAuthStore((s) => s.user);
   const hydrate = useAuthStore((s) => s.hydrate);
   const segments = useSegments();
   const router = useRouter();
@@ -30,24 +31,32 @@ function AuthGate({ children }: { children: React.ReactNode }) {
     void hydrate();
   }, [hydrate]);
 
-  // once we know the user is logged in, register this device for push alerts
+  // once we know the user is logged in, re-register this device for push alerts,
+  // but only if they already granted permission. New users grant it from the
+  // onboarding notifications step, so nobody gets prompted on launch.
   useEffect(() => {
     if (status === 'authed') {
-      void registerForPushNotifications();
+      void syncPushRegistrationIfGranted();
     }
   }, [status]);
 
-  // send people to the login screen if they're not logged in, or to the tabs if they are
-  // we wait for navState.key so we don't try to navigate before the navigator is ready
+  // Three-way routing. We wait for navState.key so we don't navigate before the
+  // navigator is ready. A user we couldn't load (getMe failed) counts as onboarded
+  // so a network blip never traps them on the welcome flow.
   useEffect(() => {
     if (status === 'loading' || !navState?.key) return;
     const inAuthGroup = segments[0] === '(auth)';
+    const inOnboarding = segments[0] === 'onboarding';
+    const needsOnboarding = user != null && user.onboardingCompletedAt == null;
+
     if (status === 'anon' && !inAuthGroup) {
       router.replace('/(auth)/login');
-    } else if (status === 'authed' && inAuthGroup) {
+    } else if (status === 'authed' && needsOnboarding && !inOnboarding) {
+      router.replace('/onboarding');
+    } else if (status === 'authed' && !needsOnboarding && (inAuthGroup || inOnboarding)) {
       router.replace('/(tabs)');
     }
-  }, [status, segments, router, navState?.key]);
+  }, [status, user, segments, router, navState?.key]);
 
   if (status === 'loading') {
     return (
@@ -83,6 +92,7 @@ export default function RootLayout() {
         <LocaleSync />
         <Stack>
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
             name="add-stock"

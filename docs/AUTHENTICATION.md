@@ -1,6 +1,6 @@
 # How authentication works in PantryAI
 
-Last updated: 2026-06-14
+Last updated: 2026-07-13
 
 This doc explains how login works in our app. The short version: we built our
 own JWT auth in the NestJS API. We do NOT use Supabase Auth. Supabase is only
@@ -58,6 +58,11 @@ Both tokens carry the user id (`sub`) and email in their payload.
 3. Create the user row in the database.
 4. Sign an access token and a refresh token.
 5. Return `{ accessToken, refreshToken, user }`.
+
+The `user` object carries `onboardingCompletedAt`, which is null for a fresh
+account. The apps use that to send a new user through the first-run onboarding
+before the app proper. See
+[architecture/onboarding.md](./architecture/onboarding.md).
 
 ## Login flow
 
@@ -117,10 +122,18 @@ So inside a controller we can do `req.user.userId` to know who is calling.
 
 ### Mobile (Expo)
 
-Mobile is not fully wired yet. There is a small store
-(`packages/mobile/src/store/auth.ts`) that holds the access token in memory.
-The plan from the conception doc is to keep tokens in `expo-secure-store` (the
-secure storage on the phone). This is still a TODO.
+The mobile store (`packages/mobile/src/store/auth.ts`, a small Zustand store)
+works the same way as web:
+
+- The **access token** lives only in memory on the store.
+- The **refresh token** is saved in `expo-secure-store` (the phone's secure
+  storage, the keychain on iOS), handled in
+  `packages/mobile/src/lib/secure-store.ts`.
+- On startup the store reads the saved refresh token, calls `/auth/refresh` to
+  get an access token, and loads the user so the app opens already logged in.
+- The client has a refresh handler wired in: if a request gets a `401` it tries
+  one refresh and retries before logging the user out. Logout deletes the saved
+  refresh token.
 
 ## Deleting an account (RGPD)
 

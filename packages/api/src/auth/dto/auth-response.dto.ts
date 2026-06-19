@@ -12,6 +12,13 @@ export class AuthUserDto {
 
   @ApiProperty({ nullable: true, description: 'Preset avatar id picked on the profile page' })
   avatarId!: string | null;
+
+  @ApiProperty({
+    nullable: true,
+    type: Date,
+    description: 'Null until the user finishes (or skips) the first-run onboarding',
+  })
+  onboardingCompletedAt!: Date | null;
 }
 
 export class AuthResponseDto {

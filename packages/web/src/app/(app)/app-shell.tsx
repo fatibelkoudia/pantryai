@@ -6,12 +6,17 @@ import { Navbar } from '@/components/Navbar';
 import { useAuth } from '@/lib/auth-context';
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { status } = useAuth();
+  const { status, user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (status === 'anon') router.replace('/login');
-  }, [status, router]);
+    if (status === 'anon') {
+      router.replace('/login');
+    } else if (status === 'authed' && user && !user.onboardingCompletedAt) {
+      // a new account that lands here (e.g. reload mid-flow) is sent to finish onboarding
+      router.replace('/welcome');
+    }
+  }, [status, user, router]);
 
   if (status !== 'authed') {
     return (

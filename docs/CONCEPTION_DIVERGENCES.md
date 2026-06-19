@@ -1,6 +1,6 @@
 # Divergences from the conception
 
-Last updated: 2026-07-12
+Last updated: 2026-07-13
 
 This file tracks everything where the real code is different from what we wrote
 in the conception dossier (`help/pantry_ai_conception.pdf`) or in the features
@@ -349,6 +349,32 @@ fixed 7 days before, and its default is now the 3 days the settings use.
 
 What to fix in the dossier: present the 70% as the default of a user preference
 instead of a constant.
+
+## 16. First-run onboarding (addition, not in the conception)
+
+The conception dossier and the features list never describe a first-run
+onboarding or spell out the login screen, they only assume auth exists. We added
+a first-run flow: after registering, a new account sees a few intro slides
+(Trashy explaining the app) and then a short, fully skippable setup (language,
+avatar and name, pantry defaults, and on mobile a notifications opt-in). We also
+rebuilt the login and register screens on the Trashy design system, since they
+were the only screens still using raw styles.
+
+This needed one new field, `User.onboardingCompletedAt`, and one new endpoint,
+`POST /users/me/onboarding/complete`. The migration backfills every existing
+account as completed, so only new signups see the flow. Nothing else about auth
+changed, this sits on top of the JWT auth in
+[AUTHENTICATION.md](./AUTHENTICATION.md). The setup steps write through the
+profile and settings endpoints that already existed. Full write-up in
+[architecture/onboarding.md](./architecture/onboarding.md).
+
+One behaviour change came with it on mobile: the app used to ask for the push
+notification permission the moment you logged in. It now only re-registers the
+token if permission was already granted, and the actual prompt moved into the
+onboarding notifications step (with a screen explaining why first).
+
+What to fix in the dossier: add the onboarding flow and the login/register
+screens to the feature list, and note the `onboardingCompletedAt` field.
 
 ## Notes
 

@@ -18,6 +18,7 @@ We wrote one file per topic instead of one giant file, so each one stays short.
 - [shared-types.md](./shared-types.md) - the `shared` package and why web, mobile, and the api all import from it
 - [waste-and-gamification.md](./waste-and-gamification.md) - how the Waste Level score and the Trashy challenges work
 - [profile-and-settings.md](./profile-and-settings.md) - the profile page, the per-user settings, and the i18n scaffolding
+- [onboarding.md](./onboarding.md) - the login/register screens and the first-run onboarding a new account sees
 
 For how login works, see [AUTHENTICATION.md](../AUTHENTICATION.md). For the list of
 places where the code ended up different from the original conception, see

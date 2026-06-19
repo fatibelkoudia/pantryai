@@ -52,6 +52,18 @@ export class UsersController {
     return this.usersService.changePassword(req.user.userId, dto);
   }
 
+  @Post('me/onboarding/complete')
+  @ApiOperation({
+    summary: 'Mark the first-run onboarding as done for the authenticated user',
+    description:
+      'Finishing and skipping both count. Idempotent: calling it again keeps the original date.',
+  })
+  @ApiResponse({ status: 201, description: 'The updated profile', type: ProfileResponseDto })
+  @ApiResponse({ status: 401, description: 'Missing or invalid access token' })
+  completeOnboarding(@Request() req: { user: JwtUser }): Promise<ProfileResponseDto> {
+    return this.usersService.completeOnboarding(req.user.userId);
+  }
+
   @Get('me/settings')
   @ApiOperation({
     summary: 'Get the settings of the authenticated user',

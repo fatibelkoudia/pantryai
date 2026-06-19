@@ -8,6 +8,7 @@ const mockUser = {
   email: 'tima@example.com',
   name: 'Tima',
   avatarId: null,
+  onboardingCompletedAt: null,
   passwordHash: '$2b$12$hashedpassword',
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -100,6 +101,44 @@ describe('UsersService', () => {
       await expect(service.updateProfile('user-uuid-1', { name: 'X' })).rejects.toThrow(
         NotFoundException,
       );
+    });
+  });
+
+  describe('completeOnboarding', () => {
+    it('stamps the completion date when it was never set', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue(mockUser);
+      mockPrismaService.user.update.mockResolvedValue({
+        ...mockUser,
+        onboardingCompletedAt: new Date(),
+      });
+
+      const result = await service.completeOnboarding('user-uuid-1');
+
+      expect(mockPrismaService.user.update).toHaveBeenCalledWith({
+        where: { id: 'user-uuid-1' },
+        data: { onboardingCompletedAt: expect.any(Date) },
+      });
+      expect(result.onboardingCompletedAt).toBeInstanceOf(Date);
+    });
+
+    it('is idempotent: does not overwrite an existing completion date', async () => {
+      const alreadyDone = new Date('2026-01-01T00:00:00.000Z');
+      mockPrismaService.user.findUnique.mockResolvedValue({
+        ...mockUser,
+        onboardingCompletedAt: alreadyDone,
+      });
+
+      const result = await service.completeOnboarding('user-uuid-1');
+
+      expect(mockPrismaService.user.update).not.toHaveBeenCalled();
+      expect(result.onboardingCompletedAt).toBe(alreadyDone);
+    });
+
+    it('throws NotFoundException for a deleted account', async () => {
+      mockPrismaService.user.findUnique.mockResolvedValue({ ...mockUser, deletedAt: new Date() });
+
+      await expect(service.completeOnboarding('user-uuid-1')).rejects.toThrow(NotFoundException);
+      expect(mockPrismaService.user.update).not.toHaveBeenCalled();
     });
   });
 

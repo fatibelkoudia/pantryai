@@ -4,6 +4,9 @@ export interface User {
   name: string | null;
   // one of the preset avatar ids from theme/avatars.ts, or null for the default
   avatarId: string | null;
+  // null until the user finishes or skips the first-run onboarding. The clients use
+  // this to decide whether to show the welcome flow after login.
+  onboardingCompletedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }

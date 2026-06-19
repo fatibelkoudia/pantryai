@@ -47,21 +47,27 @@ else shares a general limit of 100 requests per minute.
 
 | Method | Path             | Auth | What it does                                                                          |
 | ------ | ---------------- | ---- | ------------------------------------------------------------------------------------- |
-| POST   | `/auth/register` | no   | Create an account, returns tokens                                                     |
-| POST   | `/auth/login`    | no   | Log in, returns tokens                                                                |
+| POST   | `/auth/register` | no   | Create an account, returns tokens + the user                                          |
+| POST   | `/auth/login`    | no   | Log in, returns tokens + the user                                                     |
 | POST   | `/auth/refresh`  | no   | Swap a refresh token for a new access token                                           |
 | GET    | `/auth/me`       | yes  | The current user's profile                                                            |
 | DELETE | `/auth/me`       | yes  | Delete the account (RGPD Article 17): anonymize, cascade delete, purge pending images |
 
+The `user` in every auth response carries `onboardingCompletedAt`. It is null on a
+brand new account and set once they finish or skip the first-run onboarding, which
+is how the apps know whether to show the welcome flow. See
+[architecture/onboarding.md](./architecture/onboarding.md).
+
 ### Users (`/users`)
 
-| Method | Path                 | Auth | What it does                                                                                            |
-| ------ | -------------------- | ---- | ------------------------------------------------------------------------------------------------------- |
-| PATCH  | `/users/me`          | yes  | Update the profile: name, email, avatar. Returns 409 if the email is already taken by another account   |
-| POST   | `/users/me/password` | yes  | Change the password. Needs the current password, returns 401 when it is wrong                           |
-| GET    | `/users/me/settings` | yes  | The user's settings. The row is created with defaults the first time it is read                         |
-| PATCH  | `/users/me/settings` | yes  | Update one or more settings, values outside their allowed range get a 400                               |
-| GET    | `/users/me/export`   | yes  | Export the user's data as JSON (RGPD Article 20): profile, settings, stock, OCR job metadata, no images |
+| Method | Path                            | Auth | What it does                                                                                            |
+| ------ | ------------------------------- | ---- | ------------------------------------------------------------------------------------------------------- |
+| PATCH  | `/users/me`                     | yes  | Update the profile: name, email, avatar. Returns 409 if the email is already taken by another account   |
+| POST   | `/users/me/onboarding/complete` | yes  | Mark the first-run onboarding as done (finishing or skipping both count). Idempotent                    |
+| POST   | `/users/me/password`            | yes  | Change the password. Needs the current password, returns 401 when it is wrong                           |
+| GET    | `/users/me/settings`            | yes  | The user's settings. The row is created with defaults the first time it is read                         |
+| PATCH  | `/users/me/settings`            | yes  | Update one or more settings, values outside their allowed range get a 400                               |
+| GET    | `/users/me/export`              | yes  | Export the user's data as JSON (RGPD Article 20): profile, settings, stock, OCR job metadata, no images |
 
 A note on email changes: we do not run a mail server, so there is no confirmation
 email. The new address applies right away, we only check that no other account
