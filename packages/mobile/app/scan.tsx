@@ -3,8 +3,8 @@ import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { apiClient } from '../../src/api/client';
-import { colors, font } from '../../src/theme';
+import { apiClient } from '../src/api/client';
+import { colors, font } from '../src/theme';
 
 type ScanMode = 'ean' | 'qr';
 

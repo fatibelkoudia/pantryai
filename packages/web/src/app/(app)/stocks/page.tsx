@@ -4,10 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { StockDisposition, StockLocation, StockQuery } from '@pantryai/shared';
-import { GamificationCard } from '@/components/GamificationCard';
 import { StockCard } from '@/components/StockCard';
-import { TodaysTipCard } from '@/components/TodaysTipCard';
-import { WasteMoodCard } from '@/components/WasteMoodCard';
 import { apiClient } from '@/lib/api';
 
 const LOCATION_TABS: { value: StockLocation | 'ALL'; label: string }[] = [
@@ -54,12 +51,8 @@ export default function StocksPage() {
 
   return (
     <section className="flex flex-col gap-6">
-      <WasteMoodCard />
-      <GamificationCard />
-      <TodaysTipCard />
-
       <header className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">My stock</h1>
+        <h1 className="text-2xl font-bold">Inventory</h1>
         <Link
           href="/stocks/new"
           className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg"

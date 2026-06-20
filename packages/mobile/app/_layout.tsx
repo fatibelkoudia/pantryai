@@ -92,6 +92,8 @@ export default function RootLayout() {
             name="scan-result"
             options={{ title: 'Receipt Result', presentation: 'modal' }}
           />
+          <Stack.Screen name="scan" options={{ title: 'Scan' }} />
+          <Stack.Screen name="shopping" options={{ title: 'Shopping list' }} />
           <Stack.Screen name="expiring" options={{ title: 'Expiring soon' }} />
           <Stack.Screen name="mood" options={{ title: "Trashy's Mood" }} />
           <Stack.Screen name="rewards" options={{ title: 'Rewards' }} />

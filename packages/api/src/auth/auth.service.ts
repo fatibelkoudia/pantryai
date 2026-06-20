@@ -83,6 +83,16 @@ export class AuthService {
     };
   }
 
+  // Used by the clients to load the signed-in user again after a cold start, when
+  // they only have a token back from the refresh cookie and not the user yet.
+  async getMe(userId: string): Promise<AuthResponseDto['user']> {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user || user.deletedAt) {
+      throw new NotFoundException('User not found');
+    }
+    return { id: user.id, email: user.email, name: user.name };
+  }
+
   async refresh(refreshToken: string): Promise<{ accessToken: string }> {
     const refreshSecret = process.env['JWT_REFRESH_SECRET'];
     if (!refreshSecret) {

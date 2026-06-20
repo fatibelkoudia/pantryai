@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { apiClient } from '../../src/api/client';
-import { colors } from '../../src/theme';
+import { colors, font } from '../../src/theme';
 
 function RecipeCard({ suggestion }: { suggestion: RecipeSuggestion }) {
   const { recipe, score, matchedIngredients, missingIngredients } = suggestion;
@@ -107,7 +107,7 @@ export default function RecipesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.softMint,
   },
   centered: {
     flex: 1,
@@ -115,11 +115,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
     gap: 10,
+    backgroundColor: colors.softMint,
   },
   title: {
     fontSize: 22,
-    fontWeight: '700',
-    color: '#111',
+    fontFamily: font.black,
+    color: colors.charcoal,
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 8,
@@ -130,8 +131,8 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   card: {
-    backgroundColor: '#f9f9f9',
-    borderRadius: 12,
+    backgroundColor: colors.white,
+    borderRadius: 16,
     overflow: 'hidden',
   },
   image: {
@@ -151,8 +152,8 @@ const styles = StyleSheet.create({
   cardTitle: {
     flex: 1,
     fontSize: 16,
-    fontWeight: '700',
-    color: '#1a1a1a',
+    fontFamily: font.bold,
+    color: colors.charcoal,
   },
   badge: {
     backgroundColor: colors.leafGreen,
@@ -161,66 +162,66 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   badgeText: {
-    color: '#fff',
+    color: colors.onBrand,
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: font.bold,
   },
   category: {
     fontSize: 13,
-    color: '#888',
+    color: colors.textMuted,
   },
   label: {
     fontSize: 13,
-    fontWeight: '600',
-    color: '#444',
+    fontFamily: font.semibold,
+    color: colors.charcoal,
     marginTop: 6,
   },
   have: {
     fontSize: 14,
-    color: '#555',
+    color: colors.textMuted,
   },
   missing: {
     fontSize: 14,
-    color: '#c62828',
+    color: colors.coralOrange,
   },
   complete: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: font.semibold,
     color: colors.leafGreen,
     marginTop: 6,
   },
   emptyTitle: {
     fontSize: 17,
-    fontWeight: '700',
-    color: '#333',
+    fontFamily: font.bold,
+    color: colors.charcoal,
     textAlign: 'center',
   },
   emptySub: {
     fontSize: 14,
-    color: '#777',
+    color: colors.textMuted,
     textAlign: 'center',
   },
   errorTitle: {
     fontSize: 16,
-    fontWeight: '700',
-    color: '#c62828',
+    fontFamily: font.bold,
+    color: colors.coralOrange,
     textAlign: 'center',
   },
   errorSub: {
     fontSize: 14,
-    color: '#555',
+    color: colors.textMuted,
     textAlign: 'center',
   },
   button: {
     backgroundColor: colors.leafGreen,
     paddingHorizontal: 24,
     paddingVertical: 12,
-    borderRadius: 8,
+    borderRadius: 12,
     marginTop: 8,
   },
   buttonText: {
-    color: '#fff',
+    color: colors.onBrand,
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: font.semibold,
   },
 });

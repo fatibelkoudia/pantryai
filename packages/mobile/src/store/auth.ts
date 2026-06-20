@@ -41,7 +41,9 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       const { accessToken } = await apiClient.refresh(refreshToken);
       apiClient.setAccessToken(accessToken);
-      set({ accessToken, status: 'authed' });
+      // grab the user too so the Home greeting and Profile aren't blank on a cold start
+      const user = await apiClient.getMe().catch(() => null);
+      set({ accessToken, user, status: 'authed' });
     } catch {
       // the refresh token doesn't work anymore, so clear it and go back to login
       await deleteStoredRefreshToken();

@@ -1,6 +1,6 @@
 # Divergences from the conception
 
-Last updated: 2026-06-18
+Last updated: 2026-06-20
 
 This file tracks everything where the real code is different from what we wrote
 in the conception dossier (`help/pantry_ai_conception.pdf`) or in the features
@@ -24,6 +24,7 @@ instead and why. We should update the dossier later so it matches.
 | 10  | PDF parsing library     | Conception §8 says native PDF receipts (Carrefour/Leclerc) are read with `pdf-parse` at "Niveau 1".                                   | We read the PDF text layer with `unpdf` instead, then fall back to Mistral OCR only for image-only PDFs. | `unpdf` is pure JS/ESM and fits our Rust-free, ESM-first setup better. Same two-tier idea, different library. See below.                                                        |
 | 11  | Brand typeface          | The brand doc (`help/UX.md`) names the typeface "Nunito Rounded".                                                                     | We ship plain **Nunito**.                                                                                | "Nunito Rounded" is not a real Google Fonts family. Nunito is the rounded-feel font Google actually serves, and it is what the design system was built on. See below.           |
 | 12  | Waste Level formula     | The dossier names a "Waste Level" / Trashy mood but never defines the formula (DEV_PLAN §5.3 flagged it as a blocker).                | We defined it: waste = discarded + expired; score = consumed / (all resolved) over a 30-day window.      | The mascot mechanic needed a concrete number. We picked a simple, explainable ratio and recorded the disposition on the existing soft-delete instead of a new table. See below. |
+| 14  | App navigation          | The Trashy brand (`help/UX.md` / Trashy.jpg) shows a 5-pillar app: Home, Inventory, Meal Ideas, Learn, Profile.                       | We built exactly those 5 as the main nav. Scan and Shopping list sit as secondary screens, not as tabs.  | Scan and Shopping aren't one of the five pillars, so they're reached from the Home/Inventory headers instead of crowding the tab bar. See below.                                |
 
 ## 1. Row-Level Security (the important one)
 
@@ -208,6 +209,24 @@ measured or completed. We had to pin that down, so:
 What to fix in the dossier: write down the challenge rules and XP values, the
 `UserXp`/`Challenge`/`UserChallenge` tables, that challenges are seeded at runtime,
 and that completion is event-driven over the 4.3b disposition signal.
+
+## 14. Scan and Shopping are secondary screens, not nav pillars
+
+The Trashy brand previews (`help/UX.md` / Trashy.jpg) show a five-tab app: Home,
+Inventory, Meal Ideas, Learn, Profile. We built exactly those five as the main
+navigation (the mobile bottom tab bar and the web top nav). Scanning a receipt or
+barcode and the shopping list are real features, but they aren't one of the five
+pillars, so we kept them as secondary screens you open from inside the app (the
+Scan/Add/Shopping quick actions on Home and the Inventory header) rather than
+giving them their own tab.
+
+This is a small arrangement choice, not a contradiction: the conception never
+pins down the exact tab set, and keeping the bar to the five branded pillars
+matches the previews and stops the nav from getting crowded. Everything is still
+one tap away.
+
+What to fix in the dossier: if it ever lists the app's tabs, note that Scan and
+Shopping are reached from within the app, not from the main nav.
 
 ## Notes
 
