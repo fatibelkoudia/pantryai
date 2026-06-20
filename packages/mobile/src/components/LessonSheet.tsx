@@ -25,11 +25,14 @@ export function LessonSheet({ tipId, onClose }: LessonSheetProps) {
 
   const [picked, setPicked] = useState<number | null>(null);
   const [result, setResult] = useState<CompleteLessonResponse | null>(null);
+  // a lesson starts on the tip so people read it first, then they move to the quiz
+  const [phase, setPhase] = useState<'read' | 'quiz'>('read');
 
   // fresh state every time a different lesson opens
   useEffect(() => {
     setPicked(null);
     setResult(null);
+    setPhase('read');
   }, [tipId]);
 
   const lesson = useQuery({
@@ -109,6 +112,17 @@ export function LessonSheet({ tipId, onClose }: LessonSheetProps) {
               </Text>
             </TouchableOpacity>
           )}
+        </View>
+      ) : phase === 'read' ? (
+        // read the tip first, the quiz comes after
+        <View style={styles.body}>
+          <Text style={styles.lessonTitle}>{detail.title}</Text>
+          <Text style={styles.lessonBody}>{detail.body}</Text>
+          <SourceLink source={detail.source} url={detail.sourceUrl} />
+          <Text style={styles.readHint}>{t('lesson.readHint')}</Text>
+          <TouchableOpacity style={styles.primaryButton} onPress={() => setPhase('quiz')}>
+            <Text style={styles.primaryButtonText}>{t('lesson.quizMe')}</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         // the quiz view
@@ -208,6 +222,7 @@ const styles = StyleSheet.create({
   },
   lessonTitle: { fontSize: 17, fontFamily: font.bold, color: colors.charcoal },
   lessonBody: { fontSize: 14, color: colors.textMuted, lineHeight: 20 },
+  readHint: { fontSize: 13, fontFamily: font.semibold, color: colors.forestGreen, marginTop: 4 },
   source: { fontSize: 11, color: colors.forestGreen, textDecorationLine: 'underline' },
   choices: { gap: 8 },
   choice: {
