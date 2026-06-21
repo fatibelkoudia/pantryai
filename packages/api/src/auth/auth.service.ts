@@ -1,15 +1,13 @@
 import {
   ConflictException,
-  forwardRef,
-  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { OcrService } from '../ocr/ocr.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { R2StorageService } from '../storage/r2-storage.service.js';
 import { AuthResponseDto } from './dto/auth-response.dto.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
@@ -32,8 +30,7 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-    @Inject(forwardRef(() => OcrService))
-    private readonly ocrService: OcrService,
+    private readonly storage: R2StorageService,
   ) {}
 
   async register(dto: RegisterDto): Promise<AuthResponseDto> {
@@ -166,7 +163,7 @@ export class AuthService {
     await Promise.all(
       pendingJobs.map((job) =>
         job.imageKey
-          ? this.ocrService.deleteImageFromR2(job.imageKey).catch(() => undefined)
+          ? this.storage.deleteObject(job.imageKey).catch(() => undefined)
           : Promise.resolve(),
       ),
     );

@@ -66,8 +66,8 @@ let priv: PrivateProcessor;
 beforeEach(() => {
   vi.clearAllMocks();
   prismaMock = makePrisma();
-  service = new OcrService(prismaMock as unknown as PrismaService, {} as never);
-  processor = new OcrProcessor(prismaMock as unknown as PrismaService, service);
+  service = new OcrService(prismaMock as unknown as PrismaService, {} as never, {} as never);
+  processor = new OcrProcessor(prismaMock as unknown as PrismaService, service, {} as never);
   priv = processor as unknown as PrivateProcessor;
 });
 

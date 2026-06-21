@@ -35,8 +35,8 @@ const mockJwtService = {
   verify: vi.fn(),
 };
 
-const mockOcrService = {
-  deleteImageFromR2: vi.fn(),
+const mockStorageService = {
+  deleteObject: vi.fn(),
 };
 
 vi.mock('bcrypt', () => ({
@@ -55,7 +55,7 @@ describe('AuthService', () => {
     service = new AuthService(
       mockPrismaService as never,
       mockJwtService as unknown as JwtService,
-      mockOcrService as never,
+      mockStorageService as never,
     );
   });
 
@@ -214,7 +214,7 @@ describe('AuthService', () => {
         { imageKey: 'receipts/user-uuid-1/job-1.jpg' },
       ]);
       mockPrismaService.$transaction.mockResolvedValue([]);
-      mockOcrService.deleteImageFromR2.mockResolvedValue(undefined);
+      mockStorageService.deleteObject.mockResolvedValue(undefined);
 
       await service.deleteAccount('user-uuid-1');
 
@@ -233,7 +233,7 @@ describe('AuthService', () => {
           passwordHash: '!deleted',
         }),
       });
-      expect(mockOcrService.deleteImageFromR2).toHaveBeenCalledWith(
+      expect(mockStorageService.deleteObject).toHaveBeenCalledWith(
         'receipts/user-uuid-1/job-1.jpg',
       );
     });
@@ -254,7 +254,7 @@ describe('AuthService', () => {
         { imageKey: 'receipts/user-uuid-1/job-1.jpg' },
       ]);
       mockPrismaService.$transaction.mockResolvedValue([]);
-      mockOcrService.deleteImageFromR2.mockRejectedValue(new Error('R2 unavailable'));
+      mockStorageService.deleteObject.mockRejectedValue(new Error('R2 unavailable'));
 
       await expect(service.deleteAccount('user-uuid-1')).resolves.toBeUndefined();
     });

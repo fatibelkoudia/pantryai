@@ -138,8 +138,12 @@ function makeFakeQrJob(jobId: string, url = TEST_QR_URL): Job<QrJobPayload> {
 let processor: OcrProcessor;
 
 beforeEach(() => {
-  const ocrService = new OcrService(testPrisma as unknown as PrismaService, {} as never);
-  processor = new OcrProcessor(testPrisma as unknown as PrismaService, ocrService);
+  const ocrService = new OcrService(
+    testPrisma as unknown as PrismaService,
+    {} as never,
+    {} as never,
+  );
+  processor = new OcrProcessor(testPrisma as unknown as PrismaService, ocrService, {} as never);
   vi.clearAllMocks();
   vi.unstubAllGlobals();
   mockLookup.mockResolvedValue(PUBLIC_IP);

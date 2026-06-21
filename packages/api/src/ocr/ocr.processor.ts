@@ -1,4 +1,3 @@
-import { DeleteObjectCommand, GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Mistral } from '@mistralai/mistralai';
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Logger } from '@nestjs/common';
@@ -6,6 +5,7 @@ import { Job } from 'bullmq';
 import { lookup } from 'node:dns/promises';
 import Tesseract from 'tesseract.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { R2StorageService } from '../storage/r2-storage.service.js';
 import { OcrService } from './ocr.service.js';
 import type { OcrJobPayload, QrJobPayload } from './ocr.service.js';
 import type { ParsedReceipt, ParsedReceiptItem } from './parsers/index.js';
@@ -27,9 +27,7 @@ Respond with valid JSON only.`;
 @Processor('ocr', { concurrency: 3 })
 export class OcrProcessor extends WorkerHost {
   private readonly logger = new Logger(OcrProcessor.name);
-  private readonly s3: S3Client;
   private readonly mistral: Mistral;
-  private readonly bucket: string;
 
   private readonly parserRegistry = new ParserRegistry();
   private readonly genericParser = new GenericParser();
@@ -37,18 +35,10 @@ export class OcrProcessor extends WorkerHost {
   constructor(
     private readonly prisma: PrismaService,
     private readonly ocr: OcrService,
+    private readonly storage: R2StorageService,
   ) {
     super();
-    this.s3 = new S3Client({
-      region: 'auto',
-      ...(process.env['R2_ENDPOINT'] && { endpoint: process.env['R2_ENDPOINT'] }),
-      credentials: {
-        accessKeyId: process.env['R2_ACCESS_KEY_ID'] ?? '',
-        secretAccessKey: process.env['R2_SECRET_ACCESS_KEY'] ?? '',
-      },
-    });
     this.mistral = new Mistral({ apiKey: process.env['MISTRAL_API_KEY'] ?? '' });
-    this.bucket = process.env['R2_BUCKET_NAME'] ?? 'pantryai';
   }
 
   async process(job: Job<OcrJobPayload | QrJobPayload>): Promise<void> {
@@ -68,7 +58,7 @@ export class OcrProcessor extends WorkerHost {
         data: { status: 'PROCESSING' },
       });
 
-      imageBuffer = await this.downloadFromR2(imageKey);
+      imageBuffer = await this.storage.getObject(imageKey);
 
       let rawText: string;
       if (mimeType === 'application/pdf') {
@@ -235,7 +225,7 @@ export class OcrProcessor extends WorkerHost {
 
   private async safeDeleteFromR2(imageKey: string): Promise<void> {
     if (!imageKey) return;
-    await this.deleteFromR2(imageKey).catch((err: unknown) => {
+    await this.storage.deleteObject(imageKey).catch((err: unknown) => {
       this.logger.warn(`Failed to delete R2 image ${imageKey}: ${(err as Error).message}`);
     });
   }
@@ -368,22 +358,6 @@ export class OcrProcessor extends WorkerHost {
       chunks.push(value);
     }
     return new TextDecoder().decode(Buffer.concat(chunks));
-  }
-
-  private async downloadFromR2(imageKey: string): Promise<Buffer> {
-    const response = await this.s3.send(
-      new GetObjectCommand({ Bucket: this.bucket, Key: imageKey }),
-    );
-
-    const chunks: Uint8Array[] = [];
-    for await (const chunk of response.Body as AsyncIterable<Uint8Array>) {
-      chunks.push(chunk);
-    }
-    return Buffer.concat(chunks);
-  }
-
-  private async deleteFromR2(imageKey: string): Promise<void> {
-    await this.s3.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: imageKey }));
   }
 
   private async runMistralOcr(imageBuffer: Buffer, mimeType = 'image/jpeg'): Promise<string> {
