@@ -1,3 +1,7 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
+
 export type ExpiryLevel = 'ok' | 'soon' | 'expired' | 'none';
 
 /** Whole days from now until `dateIso` (negative = past). Returns null when no date. */
@@ -29,29 +33,25 @@ const LEVEL_CLASS: Record<ExpiryLevel, string> = {
   none: 'bg-expiry-none-bg text-expiry-none',
 };
 
-function label(days: number | null): string {
-  if (days === null) return 'No date';
-  if (days < 0) {
-    const n = Math.abs(days);
-    return `Expired ${n} day${n === 1 ? '' : 's'} ago`;
-  }
-  if (days === 0) return 'Expires today';
-  return `${days} day${days === 1 ? '' : 's'} left`;
-}
-
 interface ExpirationBadgeProps {
   expirationDate?: string | undefined;
 }
 
 export function ExpirationBadge({ expirationDate }: ExpirationBadgeProps) {
+  const { t } = useTranslation();
   const days = daysUntil(expirationDate);
   const level = expiryLevel(days);
-  const text = label(days);
+
+  let text: string;
+  if (days === null) text = t('expiry.noDate');
+  else if (days < 0) text = t('expiry.expiredAgo', { count: Math.abs(days) });
+  else if (days === 0) text = t('expiry.today');
+  else text = t('expiry.daysLeft', { count: days });
 
   return (
     <span
       role="status"
-      aria-label={`Expiration: ${text}`}
+      aria-label={t('expiry.a11y', { text })}
       data-level={level}
       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${LEVEL_CLASS[level]}`}
     >

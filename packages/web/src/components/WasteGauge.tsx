@@ -1,3 +1,6 @@
+'use client';
+
+import { useTranslation } from 'react-i18next';
 import { colors } from '@pantryai/shared';
 
 interface WasteGaugeProps {
@@ -9,6 +12,7 @@ interface WasteGaugeProps {
 // A semicircular 0-100 gauge. The arc fills proportionally to the score and is
 // colored by the mood it lands in (green -> yellow -> coral).
 export function WasteGauge({ score, accent }: WasteGaugeProps) {
+  const { t } = useTranslation();
   const clamped = Math.max(0, Math.min(100, Math.round(score)));
 
   // Semicircle path: radius 80, centered at (100,100), from left to right.
@@ -21,7 +25,7 @@ export function WasteGauge({ score, accent }: WasteGaugeProps) {
       aria-valuenow={clamped}
       aria-valuemin={0}
       aria-valuemax={100}
-      aria-label="Waste Level"
+      aria-label={t('waste.gaugeLabel')}
     >
       <svg viewBox="0 0 200 120" width="200" height="120" aria-hidden="true">
         <path
@@ -51,7 +55,7 @@ export function WasteGauge({ score, accent }: WasteGaugeProps) {
           {clamped}
         </text>
         <text x="100" y="112" textAnchor="middle" fontSize="13" fill={colors.textMuted}>
-          Waste Level
+          {t('waste.gaugeLabel')}
         </text>
       </svg>
     </div>

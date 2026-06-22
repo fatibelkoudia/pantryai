@@ -1,6 +1,10 @@
 'use client';
 
+'use client';
+
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import { useQuery } from '@tanstack/react-query';
 import { colors, mascotMoodMeta, wasteMoodBands } from '@pantryai/shared';
 import { apiClient } from '@/lib/api';
@@ -8,20 +12,6 @@ import { WasteWeeklyBars } from './WasteWeeklyBars';
 
 // Max bar height in px, same as the weekly bars.
 const BAR_MAX = 48;
-const MONTHS_SHORT = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
 
 function accentForScore(score: number): string {
   const band = wasteMoodBands.find((b) => score >= b.min);
@@ -29,9 +19,9 @@ function accentForScore(score: number): string {
 }
 
 // 'YYYY-MM' -> 'Mar', with the year added on January so long ranges stay readable.
-function monthLabel(month: string, first: boolean): string {
+function monthLabel(month: string, first: boolean, t: TFunction): string {
   const mm = Number(month.slice(5));
-  const name = MONTHS_SHORT[mm - 1] ?? month;
+  const name = t(`waste.months.${mm - 1}`, { defaultValue: month });
   if (first || mm === 1) return `${name} ${month.slice(2, 4)}`;
   return name;
 }
@@ -44,6 +34,7 @@ interface WasteHistoryProps {
 // month since the first resolved item. The all-time data is only fetched when
 // that tab is opened.
 export function WasteHistory({ weeklyScores }: WasteHistoryProps) {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<'weeks' | 'all'>('weeks');
 
   const history = useQuery({
@@ -56,11 +47,11 @@ export function WasteHistory({ weeklyScores }: WasteHistoryProps) {
   return (
     <div className="flex w-full max-w-xs flex-col gap-2">
       <div className="flex items-center justify-between">
-        <div role="tablist" aria-label="History range" className="flex gap-1">
+        <div role="tablist" aria-label={t('waste.history.range')} className="flex gap-1">
           {(
             [
-              ['weeks', '4 weeks'],
-              ['all', 'All time'],
+              ['weeks', t('waste.history.weeks4')],
+              ['all', t('waste.history.allTime')],
             ] as const
           ).map(([key, label]) => (
             <button
@@ -77,22 +68,26 @@ export function WasteHistory({ weeklyScores }: WasteHistoryProps) {
           ))}
         </div>
         <span className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
-          score /100
+          {t('waste.history.scoreOutOf')}
         </span>
       </div>
       {tab === 'weeks' ? (
         <WasteWeeklyBars scores={weeklyScores} />
       ) : history.isLoading ? (
-        <p className="text-xs text-slate-500">Loading history…</p>
+        <p className="text-xs text-slate-500">{t('waste.history.loading')}</p>
       ) : months.length === 0 ? (
-        <p className="text-xs text-slate-500">No history yet. Resolve some items first!</p>
+        <p className="text-xs text-slate-500">{t('waste.history.empty')}</p>
       ) : (
         <div className="w-full overflow-x-auto">
           <div
             role="img"
-            aria-label={`Monthly waste scores out of 100. ${months
-              .map((m) => `${m.month}: ${m.score === null ? 'no items' : m.score}`)
-              .join(', ')}`}
+            aria-label={t('waste.history.monthlyA11y', {
+              summary: months
+                .map(
+                  (m) => `${m.month}: ${m.score === null ? t('waste.history.noItems') : m.score}`,
+                )
+                .join(', '),
+            })}
             className="flex items-end gap-3"
           >
             {months.map((m, i) => (
@@ -112,7 +107,7 @@ export function WasteHistory({ weeklyScores }: WasteHistoryProps) {
                   }
                 />
                 <span className="whitespace-nowrap text-[10px] text-slate-500">
-                  {monthLabel(m.month, i === 0)}
+                  {monthLabel(m.month, i === 0, t)}
                 </span>
               </div>
             ))}

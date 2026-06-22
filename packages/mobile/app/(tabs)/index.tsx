@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { getAvatarPreset, mascotMoodMeta, type Locale, type StockLocation } from '@pantryai/shared';
+import { getAvatarPreset, mascotMoodMeta, type Locale } from '@pantryai/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -22,16 +22,10 @@ import { buttonLip, colors, font } from '../../src/theme';
 // How many "Use Soon" items to preview before sending the user to the full list.
 const EXPIRING_PREVIEW = 3;
 
-const LOCATION_LABELS: Record<StockLocation, string> = {
-  FRIDGE: 'Fridge',
-  FREEZER: 'Freezer',
-  PANTRY: 'Pantry',
-};
-
 export default function HomeScreen() {
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const locale: Locale = i18n.language.startsWith('fr') ? 'fr' : 'en';
 
   const waste = useQuery({
@@ -78,7 +72,7 @@ export default function HomeScreen() {
           style={[styles.avatar, avatar ? { backgroundColor: avatar.bg } : null]}
           onPress={() => router.push('/profile')}
           accessibilityRole="button"
-          accessibilityLabel="Open your profile"
+          accessibilityLabel={t('home.openProfileA11y')}
         >
           {avatar ? (
             <Text style={styles.avatarEmoji}>{avatar.emoji}</Text>
@@ -87,14 +81,18 @@ export default function HomeScreen() {
           )}
         </TouchableOpacity>
         <View style={styles.headerText}>
-          <Text style={styles.greeting}>{firstName ? `Hello, ${firstName} 👋` : 'Hello 👋'}</Text>
-          <Text style={styles.tagline}>Ready to waste less today?</Text>
+          <Text style={styles.greeting}>
+            {firstName
+              ? t('home.greetingMobile', { name: firstName })
+              : t('home.greetingMobileGeneric')}
+          </Text>
+          <Text style={styles.tagline}>{t('home.taglineMobile')}</Text>
         </View>
         <TouchableOpacity
           style={styles.headerBtn}
           onPress={() => router.push('/scan')}
           accessibilityRole="button"
-          accessibilityLabel="Scan a receipt"
+          accessibilityLabel={t('home.scanReceiptA11y')}
         >
           <Ionicons name="scan-outline" size={20} color={colors.forestGreen} />
         </TouchableOpacity>
@@ -102,7 +100,7 @@ export default function HomeScreen() {
           style={styles.headerBtn}
           onPress={() => router.push('/expiring')}
           accessibilityRole="button"
-          accessibilityLabel="See expiring items"
+          accessibilityLabel={t('home.seeExpiringA11y')}
         >
           <Ionicons name="notifications-outline" size={20} color={colors.forestGreen} />
         </TouchableOpacity>
@@ -117,17 +115,19 @@ export default function HomeScreen() {
             <TouchableOpacity
               onPress={() => router.push('/mood')}
               accessibilityRole="button"
-              accessibilityLabel="See Trashy's mood details"
+              accessibilityLabel={t('home.moodDetailsA11y')}
             >
               <TrashyMood mood={waste.data.mood} size={130} showLabel={false} />
             </TouchableOpacity>
-            <Text style={styles.statusTitle}>Status: {mood.label}</Text>
-            <Text style={styles.moodMessage}>{mood.message}</Text>
+            <Text style={styles.statusTitle}>
+              {t('home.status', { label: t(`waste.moods.${waste.data.mood}`) })}
+            </Text>
+            <Text style={styles.moodMessage}>{t(`waste.messages.${waste.data.mood}`)}</Text>
             <View
               style={styles.wasteTrack}
               accessibilityRole="progressbar"
               accessibilityValue={{ min: 0, max: 100, now: Math.round(waste.data.score) }}
-              accessibilityLabel="Waste Level"
+              accessibilityLabel={t('waste.gaugeLabel')}
             >
               <View
                 style={[
@@ -140,19 +140,19 @@ export default function HomeScreen() {
               />
             </View>
             <TouchableOpacity style={styles.cta} onPress={() => router.push('/(tabs)/recipes')}>
-              <Text style={styles.ctaText}>Help Trashy stay small</Text>
+              <Text style={styles.ctaText}>{t('learn.trashyTitle')}</Text>
             </TouchableOpacity>
           </View>
         ) : (
-          <Text style={styles.muted}>Could not check on Trashy right now.</Text>
+          <Text style={styles.muted}>{t('home.couldNotCheckTrashy')}</Text>
         )}
       </View>
 
       {/* Use Soon */}
       <View style={styles.sectionHeaderRow}>
-        <Text style={styles.sectionTitle}>Use Soon</Text>
+        <Text style={styles.sectionTitle}>{t('home.useSoon')}</Text>
         <TouchableOpacity onPress={() => router.push('/expiring')}>
-          <Text style={styles.seeAll}>See all</Text>
+          <Text style={styles.seeAll}>{t('home.seeAll')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -160,7 +160,7 @@ export default function HomeScreen() {
         <ActivityIndicator color={colors.leafGreen} />
       ) : expiringItems.length === 0 ? (
         <View style={styles.emptyCard}>
-          <Text style={styles.muted}>Nothing expiring soon. Nice work keeping waste down!</Text>
+          <Text style={styles.muted}>{t('home.nothingExpiring')}</Text>
         </View>
       ) : (
         expiringItems.slice(0, EXPIRING_PREVIEW).map((item) => {
@@ -174,11 +174,13 @@ export default function HomeScreen() {
               <View style={styles.itemInfo}>
                 <Text style={styles.itemName}>{item.product.name}</Text>
                 <Text style={styles.itemMeta}>
-                  {LOCATION_LABELS[item.location]} · {item.quantity} {item.unit}
+                  {t(`locations.${item.location}`)} · {item.quantity} {item.unit}
                 </Text>
               </View>
               <View style={[styles.badge, { backgroundColor: palette.bg }]}>
-                <Text style={[styles.badgeText, { color: palette.fg }]}>{expiryLabel(days)}</Text>
+                <Text style={[styles.badgeText, { color: palette.fg }]}>
+                  {expiryLabel(days, t)}
+                </Text>
               </View>
             </View>
           );
@@ -186,7 +188,7 @@ export default function HomeScreen() {
       )}
 
       {/* Cook with what you have: best recipe match for the current stock */}
-      <Text style={[styles.sectionTitle, styles.sectionSpacing]}>Cook with what you have</Text>
+      <Text style={[styles.sectionTitle, styles.sectionSpacing]}>{t('home.cookWithStock')}</Text>
       {recipes.isLoading ? (
         <ActivityIndicator color={colors.leafGreen} />
       ) : topSuggestion ? (
@@ -199,7 +201,9 @@ export default function HomeScreen() {
                 resizeMode="cover"
               />
               <View style={styles.matchPill}>
-                <Text style={styles.matchText}>{Math.round(topSuggestion.score * 100)}% match</Text>
+                <Text style={styles.matchText}>
+                  {t('recipe.match', { percent: Math.round(topSuggestion.score * 100) })}
+                </Text>
               </View>
             </View>
           ) : null}
@@ -210,27 +214,26 @@ export default function HomeScreen() {
                 <Text style={styles.haveCountText}>{topSuggestion.matchedIngredients.length}</Text>
               </View>
               <Text style={styles.haveText}>
-                You already have {topSuggestion.matchedIngredients.length}/
-                {topSuggestion.recipe.ingredients.length} ingredients.
+                {t('home.alreadyHave', {
+                  matched: topSuggestion.matchedIngredients.length,
+                  total: topSuggestion.recipe.ingredients.length,
+                })}
               </Text>
             </View>
             <TouchableOpacity style={styles.cta} onPress={() => router.push('/(tabs)/recipes')}>
-              <Text style={styles.ctaText}>Cook this</Text>
+              <Text style={styles.ctaText}>{t('home.cookThis')}</Text>
             </TouchableOpacity>
           </View>
         </View>
       ) : (
         <View style={styles.emptyCard}>
-          <Text style={styles.muted}>
-            No recipe matches your stock yet (a suggestion needs {matchPercent}% of its
-            ingredients). Add more items to unlock ideas.
-          </Text>
+          <Text style={styles.muted}>{t('home.noRecipeMatch', { percent: matchPercent })}</Text>
           <TouchableOpacity
             style={styles.cta}
             onPress={() => router.push('/(tabs)/recipes')}
             accessibilityRole="button"
           >
-            <Text style={styles.ctaText}>Browse recipes</Text>
+            <Text style={styles.ctaText}>{t('home.browseRecipes')}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -242,10 +245,10 @@ export default function HomeScreen() {
             <Ionicons name="bulb-outline" size={20} color={colors.forestGreen} />
           </View>
           <View style={styles.tipBody}>
-            <Text style={styles.tipLabel}>Today&apos;s Tip</Text>
+            <Text style={styles.tipLabel}>{t('home.todaysTip')}</Text>
             <Text style={styles.tipTitle}>{tip.data.tip.title}</Text>
             <Text style={styles.tipText}>{tip.data.tip.body}</Text>
-            <Text style={styles.tipSource}>Source: {tip.data.tip.source}</Text>
+            <Text style={styles.tipSource}>{t('tip.source', { source: tip.data.tip.source })}</Text>
           </View>
         </View>
       ) : null}

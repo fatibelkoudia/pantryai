@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useRef } from 'react';
 import {
   ActivityIndicator,
@@ -17,6 +18,7 @@ const POLL_MS = 2_000;
 const TIMEOUT_MS = 60_000;
 
 export default function ScanResultScreen() {
+  const { t } = useTranslation();
   const { jobId } = useLocalSearchParams<{ jobId: string }>();
   const router = useRouter();
   const startedAt = useRef(Date.now());
@@ -41,12 +43,12 @@ export default function ScanResultScreen() {
   if (isError) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorTitle}>Could not load result</Text>
+        <Text style={styles.errorTitle}>{t('scanResult.loadError')}</Text>
         <Text style={styles.errorSub}>
-          {error instanceof Error ? error.message : 'Unknown error'}
+          {error instanceof Error ? error.message : t('common.unknownError')}
         </Text>
         <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-          <Text style={styles.buttonText}>Go Back</Text>
+          <Text style={styles.buttonText}>{t('scanResult.goBack')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -59,8 +61,8 @@ export default function ScanResultScreen() {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color={colors.leafGreen} />
-        <Text style={styles.processingText}>Processing your receipt…</Text>
-        <Text style={styles.processingSubText}>This usually takes a few seconds</Text>
+        <Text style={styles.processingText}>{t('scanResult.processing')}</Text>
+        <Text style={styles.processingSubText}>{t('scanResult.processingHint')}</Text>
       </View>
     );
   }
@@ -68,10 +70,10 @@ export default function ScanResultScreen() {
   if (timedOut) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorTitle}>Still processing…</Text>
-        <Text style={styles.errorSub}>Your items will appear in your stock shortly.</Text>
+        <Text style={styles.errorTitle}>{t('scanResult.timeout')}</Text>
+        <Text style={styles.errorSub}>{t('scanResult.timeoutMessage')}</Text>
         <TouchableOpacity style={styles.button} onPress={() => router.replace('/(tabs)')}>
-          <Text style={styles.buttonText}>Go to Stock</Text>
+          <Text style={styles.buttonText}>{t('scanResult.goToStock')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -80,10 +82,10 @@ export default function ScanResultScreen() {
   if (job.status === 'FAILED') {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorTitle}>Processing failed</Text>
-        <Text style={styles.errorSub}>{job.error ?? 'Unknown error'}</Text>
+        <Text style={styles.errorTitle}>{t('scanResult.failed')}</Text>
+        <Text style={styles.errorSub}>{job.error ?? t('common.unknownError')}</Text>
         <TouchableOpacity style={styles.button} onPress={() => router.back()}>
-          <Text style={styles.buttonText}>Try Again</Text>
+          <Text style={styles.buttonText}>{t('scanResult.tryAgain')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -94,7 +96,8 @@ export default function ScanResultScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        {job.retailer ?? 'Receipt'} — {items.length} item{items.length !== 1 ? 's' : ''} added
+        {job.retailer ?? t('scanResult.receiptDefault')} — {items.length} item
+        {items.length !== 1 ? 's' : ''} added
       </Text>
 
       <FlatList

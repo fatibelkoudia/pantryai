@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useId, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { OcrParsedItem } from '@pantryai/shared';
 
 interface ReceiptReviewModalProps {
@@ -22,6 +23,7 @@ export function ReceiptReviewModal({
   onConfirm,
   onCancel,
 }: ReceiptReviewModalProps) {
+  const { t } = useTranslation();
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
 
@@ -78,24 +80,26 @@ export function ReceiptReviewModal({
       >
         <header>
           <h2 id={titleId} className="text-lg font-bold">
-            Review receipt items
+            {t('receipt.reviewTitle')}
           </h2>
           <p className="mt-1 text-sm text-slate-500">
             {retailer ? `${retailer} — ` : ''}
-            {items.length} item(s) detected. Untick anything you don&apos;t want to add.
+            {t('receipt.detected', { count: items.length })}
           </p>
         </header>
 
         {items.length === 0 ? (
-          <p className="text-sm text-slate-600">No items were detected in this receipt.</p>
+          <p className="text-sm text-slate-600">{t('receipt.none')}</p>
         ) : (
           <>
             <div className="flex items-center justify-between border-b border-border pb-2">
               <label className="flex items-center gap-2 text-sm font-medium">
                 <input type="checkbox" checked={allSelected} onChange={toggleAll} />
-                Select all
+                {t('receipt.selectAll')}
               </label>
-              <span className="text-sm text-slate-500">{selected.size} selected</span>
+              <span className="text-sm text-slate-500">
+                {t('receipt.selectedCount', { count: selected.size })}
+              </span>
             </div>
 
             <ul className="flex flex-col gap-1 overflow-y-auto">
@@ -124,7 +128,7 @@ export function ReceiptReviewModal({
                       </span>
                       {item.confidence < 0.5 ? (
                         <span className="rounded bg-expiry-soon-bg px-1.5 py-0.5 text-xs text-expiry-soon">
-                          Low confidence
+                          {t('receipt.lowConfidence')}
                         </span>
                       ) : null}
                     </label>
@@ -141,7 +145,7 @@ export function ReceiptReviewModal({
             onClick={onCancel}
             className="rounded-md border border-border px-4 py-2 font-medium"
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             type="button"
@@ -149,7 +153,7 @@ export function ReceiptReviewModal({
             disabled={pending || selected.size === 0}
             className="rounded-md bg-brand px-4 py-2 font-medium text-brand-fg disabled:opacity-60"
           >
-            {pending ? 'Adding…' : `Add ${selected.size} to stock`}
+            {pending ? t('receipt.adding') : t('receipt.addToStock', { count: selected.size })}
           </button>
         </footer>
       </div>

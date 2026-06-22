@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { ShoppingItem } from '@pantryai/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
@@ -14,12 +15,6 @@ import {
 } from 'react-native';
 import { apiClient } from '../../src/api/client';
 import { buttonLip, colors, font } from '../../src/theme';
-
-const SOURCE_LABELS: Record<ShoppingItem['source'], string> = {
-  LOW_STOCK: 'Low / expiring',
-  RECIPE: 'Recipe',
-  MANUAL: 'Manual',
-};
 
 // lowercase + drop accents so "Pâtes" and "pates" compare equal
 function normalizeName(name: string): string {
@@ -35,6 +30,7 @@ function ShoppingRow({
   onToggle: () => void;
   onRemove: () => void;
 }) {
+  const { t } = useTranslation();
   return (
     <View style={styles.row}>
       <TouchableOpacity onPress={onToggle} style={styles.check} accessibilityRole="checkbox">
@@ -47,12 +43,12 @@ function ShoppingRow({
           {item.name}
           {item.quantity != null ? `  ${item.quantity}${item.unit ? ` ${item.unit}` : ''}` : ''}
         </Text>
-        <Text style={styles.source}>{SOURCE_LABELS[item.source]}</Text>
+        <Text style={styles.source}>{t(`shopping.sources.${item.source}`)}</Text>
       </View>
       <TouchableOpacity
         onPress={onRemove}
         accessibilityRole="button"
-        accessibilityLabel={`Remove ${item.name}`}
+        accessibilityLabel={t('shopping.removeA11y', { name: item.name })}
         style={styles.removeBtn}
       >
         <Ionicons name="trash-outline" size={18} color={colors.brickRed} />
@@ -62,6 +58,7 @@ function ShoppingRow({
 }
 
 export default function ShoppingScreen() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [showAdd, setShowAdd] = useState(false);
   const [name, setName] = useState('');
@@ -182,15 +179,15 @@ export default function ShoppingScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Shopping</Text>
-        <Text style={styles.subtitle}>Your list before you head out</Text>
+        <Text style={styles.title}>{t('nav.shopping')}</Text>
+        <Text style={styles.subtitle}>{t('shopping.subtitle')}</Text>
       </View>
 
       {isError ? (
         <View style={styles.centered}>
-          <Text style={styles.errorTitle}>Could not load your list</Text>
+          <Text style={styles.errorTitle}>{t('shopping.loadError')}</Text>
           <TouchableOpacity style={styles.button} onPress={() => refetch()}>
-            <Text style={styles.buttonText}>Retry</Text>
+            <Text style={styles.buttonText}>{t('common.retry')}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -209,10 +206,10 @@ export default function ShoppingScreen() {
                     <View style={styles.cardIcon}>
                       <Ionicons name="basket-outline" size={20} color={colors.amberText} />
                     </View>
-                    <Text style={styles.cardTitle}>Check before buying</Text>
+                    <Text style={styles.cardTitle}>{t('shopping.checkBeforeBuying')}</Text>
                   </View>
                   <Text style={styles.cardBody}>
-                    You already have these at home: {duplicateNames}
+                    {t('shopping.alreadyHave', { items: duplicateNames })}
                   </Text>
                   <TouchableOpacity
                     style={styles.cardBtn}
@@ -221,7 +218,9 @@ export default function ShoppingScreen() {
                     accessibilityRole="button"
                   >
                     <Text style={styles.cardBtnText}>
-                      {removeDuplicates.isPending ? 'Removing…' : 'Remove duplicates'}
+                      {removeDuplicates.isPending
+                        ? t('shopping.removing')
+                        : t('shopping.removeDuplicates')}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -234,11 +233,13 @@ export default function ShoppingScreen() {
                     <View style={styles.cardIcon}>
                       <Ionicons name="restaurant-outline" size={20} color={colors.forestGreen} />
                     </View>
-                    <Text style={styles.cardTitle}>Complete your meals</Text>
+                    <Text style={styles.cardTitle}>{t('shopping.completeMeals')}</Text>
                   </View>
                   <Text style={styles.cardBody}>
-                    Add {missingItems.length} item{missingItems.length > 1 ? 's' : ''} to cook{' '}
-                    {suggestions.length} suggested recipe{suggestions.length > 1 ? 's' : ''}:
+                    {t('shopping.addToComplete', {
+                      itemCount: missingItems.length,
+                      recipeCount: suggestions.length,
+                    })}
                   </Text>
                   <View style={styles.chipsWrap}>
                     {missingItems.map((ingredient) => (
@@ -254,7 +255,7 @@ export default function ShoppingScreen() {
                     accessibilityRole="button"
                   >
                     <Text style={styles.cardBtnText}>
-                      {addMissing.isPending ? 'Adding…' : 'Add missing items'}
+                      {addMissing.isPending ? t('shopping.adding') : t('shopping.addMissing')}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -263,7 +264,7 @@ export default function ShoppingScreen() {
               {/* List header + stock generator */}
               <View style={styles.sectionRow}>
                 <Text style={styles.sectionTitle}>
-                  Your list{items.length > 0 ? ` (${items.length})` : ''}
+                  {t('shopping.yourList', { count: items.length })}
                 </Text>
                 <TouchableOpacity
                   style={styles.generatePill}
@@ -273,21 +274,19 @@ export default function ShoppingScreen() {
                 >
                   <Ionicons name="refresh-outline" size={14} color={colors.forestGreen} />
                   <Text style={styles.generateText}>
-                    {generate.isPending ? 'Generating…' : 'Generate from stock'}
+                    {generate.isPending
+                      ? t('shopping.generating')
+                      : t('shopping.generateFromStock')}
                   </Text>
                 </TouchableOpacity>
               </View>
-              <Text style={styles.generateHint}>
-                Adds what&apos;s running low or expiring soon from your inventory.
-              </Text>
+              <Text style={styles.generateHint}>{t('shopping.generateHint')}</Text>
             </View>
           }
           ListEmptyComponent={
             <View style={styles.emptyBox}>
-              <Text style={styles.emptyTitle}>Your shopping list is empty</Text>
-              <Text style={styles.emptySub}>
-                Generate it from your stock above, or add an item with the + button.
-              </Text>
+              <Text style={styles.emptyTitle}>{t('shopping.empty')}</Text>
+              <Text style={styles.emptySub}>{t('shopping.emptyHint')}</Text>
             </View>
           }
           renderItem={({ item }) => (
@@ -305,7 +304,7 @@ export default function ShoppingScreen() {
         style={styles.fab}
         onPress={() => setShowAdd(true)}
         accessibilityRole="button"
-        accessibilityLabel="Add an item"
+        accessibilityLabel={t('shopping.addItemA11y')}
       >
         <Ionicons name="add" size={28} color={colors.onBrand} />
       </TouchableOpacity>
@@ -319,12 +318,12 @@ export default function ShoppingScreen() {
       >
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Add an item</Text>
+            <Text style={styles.modalTitle}>{t('shopping.addItemModal')}</Text>
             <TextInput
               style={styles.modalInput}
               value={name}
               onChangeText={setName}
-              placeholder="e.g. Olive oil"
+              placeholder={t('shopping.itemPlaceholder')}
               placeholderTextColor={colors.textMuted}
               autoFocus
               onSubmitEditing={handleAdd}
@@ -336,7 +335,7 @@ export default function ShoppingScreen() {
                 onPress={() => setShowAdd(false)}
                 accessibilityRole="button"
               >
-                <Text style={styles.modalCancelText}>Cancel</Text>
+                <Text style={styles.modalCancelText}>{t('common.cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.modalAdd, (!name.trim() || add.isPending) && styles.disabled]}
@@ -344,7 +343,9 @@ export default function ShoppingScreen() {
                 disabled={!name.trim() || add.isPending}
                 accessibilityRole="button"
               >
-                <Text style={styles.modalAddText}>{add.isPending ? 'Adding…' : 'Add'}</Text>
+                <Text style={styles.modalAddText}>
+                  {add.isPending ? t('shopping.adding') : t('common.add')}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

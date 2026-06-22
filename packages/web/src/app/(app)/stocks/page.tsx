@@ -2,19 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { StockDisposition, StockLocation, StockQuery } from '@pantryai/shared';
 import { StockCard } from '@/components/StockCard';
 import { apiClient } from '@/lib/api';
 
-const LOCATION_TABS: { value: StockLocation | 'ALL'; label: string }[] = [
-  { value: 'ALL', label: 'All' },
-  { value: 'FRIDGE', label: 'Fridge' },
-  { value: 'FREEZER', label: 'Freezer' },
-  { value: 'PANTRY', label: 'Pantry' },
-];
+const LOCATION_TABS: (StockLocation | 'ALL')[] = ['ALL', 'FRIDGE', 'FREEZER', 'PANTRY'];
 
 export default function StocksPage() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [location, setLocation] = useState<StockLocation | 'ALL'>('ALL');
   const [expiringSoon, setExpiringSoon] = useState(false);
@@ -52,28 +49,28 @@ export default function StocksPage() {
   return (
     <section className="flex flex-col gap-6">
       <header className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">Inventory</h1>
+        <h1 className="text-2xl font-bold">{t('stock.inventory')}</h1>
         <Link
           href="/stocks/new"
           className="rounded-md bg-brand px-4 py-2 text-sm font-medium text-brand-fg"
         >
-          Add item
+          {t('stock.addItem')}
         </Link>
       </header>
 
       <div className="flex flex-wrap items-center gap-4">
-        <div role="tablist" aria-label="Filter by location" className="flex gap-1">
+        <div role="tablist" aria-label={t('stock.filterByLocationA11y')} className="flex gap-1">
           {LOCATION_TABS.map((tab) => (
             <button
-              key={tab.value}
+              key={tab}
               role="tab"
-              aria-selected={location === tab.value}
-              onClick={() => setLocation(tab.value)}
+              aria-selected={location === tab}
+              onClick={() => setLocation(tab)}
               className={`rounded-md px-3 py-1 text-sm font-medium ${
-                location === tab.value ? 'bg-brand text-brand-fg' : 'border border-border'
+                location === tab ? 'bg-brand text-brand-fg' : 'border border-border'
               }`}
             >
-              {tab.label}
+              {t(`locations.${tab}`)}
             </button>
           ))}
         </div>
@@ -84,17 +81,17 @@ export default function StocksPage() {
             checked={expiringSoon}
             onChange={(e) => setExpiringSoon(e.target.checked)}
           />
-          Expiring soon (≤7 days)
+          {t('stock.expiringFilter')}
         </label>
 
         <div className="flex flex-1 flex-col gap-1">
           <label htmlFor="search" className="sr-only">
-            Search by product name
+            {t('stock.searchNameLabel')}
           </label>
           <input
             id="search"
             type="search"
-            placeholder="Search by product name…"
+            placeholder={t('stock.searchNamePlaceholder')}
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             className="w-full rounded-md border border-border px-3 py-2 text-sm"
@@ -104,11 +101,11 @@ export default function StocksPage() {
 
       {stocks.isLoading ? (
         <p role="status" className="text-slate-500">
-          Loading your stock…
+          {t('stock.loading')}
         </p>
       ) : stocks.isError ? (
         <p role="alert" className="text-expiry-expired">
-          Could not load stock. Please try again.
+          {t('stock.loadError')}
         </p>
       ) : stocks.data && stocks.data.items.length > 0 ? (
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -123,12 +120,12 @@ export default function StocksPage() {
         </ul>
       ) : (
         <div className="rounded-card border border-dashed border-border p-10 text-center text-slate-500">
-          <p>No stock items yet.</p>
+          <p>{t('stock.empty')}</p>
           <Link
             href="/stocks/new"
             className="mt-2 inline-block font-medium text-brand hover:underline"
           >
-            Add your first item
+            {t('stock.addFirst')}
           </Link>
         </div>
       )}

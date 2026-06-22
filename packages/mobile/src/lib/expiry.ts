@@ -1,3 +1,4 @@
+import type { TFunction } from 'i18next';
 import { expiry } from '../theme';
 
 export type ExpiryLevel = 'ok' | 'soon' | 'urgent' | 'expired' | 'none';
@@ -25,14 +26,13 @@ export function expiryLevel(days: number | null): ExpiryLevel {
   return 'ok';
 }
 
-export function expiryLabel(days: number | null): string {
-  if (days === null) return 'No date';
-  if (days < 0) {
-    const n = Math.abs(days);
-    return `Expired ${n}d ago`;
-  }
-  if (days === 0) return 'Today';
-  return `${days}d left`;
+// Short badge label. Takes the i18next translator so both languages work; the
+// keys live under `expiry.*` in the shared catalog.
+export function expiryLabel(days: number | null, t: TFunction): string {
+  if (days === null) return t('expiry.noDate');
+  if (days < 0) return t('expiry.expiredAgoShort', { count: Math.abs(days) });
+  if (days === 0) return t('expiry.todayShort');
+  return t('expiry.daysLeftShort', { count: days });
 }
 
 // badge colors from the shared Trashy tokens (same roles as the web app)

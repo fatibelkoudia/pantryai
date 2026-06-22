@@ -1,18 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiClientError } from '@pantryai/shared';
 import type { ShoppingItem } from '@pantryai/shared';
 import { apiClient } from '@/lib/api';
 
-const SOURCE_LABELS: Record<ShoppingItem['source'], string> = {
-  LOW_STOCK: 'Low / expiring',
-  RECIPE: 'Recipe',
-  MANUAL: 'Manual',
-};
-
 export default function ShoppingListPage() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +23,7 @@ export default function ShoppingListPage() {
   }
 
   function onError(err: unknown) {
-    setError(err instanceof ApiClientError ? err.message : 'Something went wrong. Please retry.');
+    setError(err instanceof ApiClientError ? err.message : t('common.error'));
   }
 
   const generate = useMutation({
@@ -70,11 +66,8 @@ export default function ShoppingListPage() {
   return (
     <section className="mx-auto flex max-w-2xl flex-col gap-6">
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">Shopping list</h1>
-        <p className="text-sm text-slate-500">
-          Generate a list from what is running low or expiring, plus the ingredients your suggested
-          recipes are missing. Add your own items too.
-        </p>
+        <h1 className="text-2xl font-bold">{t('shopping.title')}</h1>
+        <p className="text-sm text-slate-500">{t('shopping.subtitle')}</p>
       </header>
 
       {error ? (
@@ -93,16 +86,16 @@ export default function ShoppingListPage() {
           disabled={generate.isPending}
           className="rounded-md bg-brand px-4 py-2 font-medium text-brand-fg disabled:opacity-60"
         >
-          {generate.isPending ? 'Generating…' : 'Generate from stock + recipes'}
+          {generate.isPending ? t('shopping.generating') : t('shopping.generate')}
         </button>
       </div>
 
       <form onSubmit={handleAdd} className="flex gap-2">
         <input
-          aria-label="Add an item"
+          aria-label={t('shopping.addItemLabel')}
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Add an item…"
+          placeholder={t('shopping.addItemPlaceholder')}
           className="flex-1 rounded-md border border-border px-3 py-2"
         />
         <button
@@ -110,22 +103,22 @@ export default function ShoppingListPage() {
           disabled={add.isPending || !name.trim()}
           className="rounded-md border border-border px-4 py-2 text-sm font-medium disabled:opacity-60"
         >
-          Add
+          {t('common.add')}
         </button>
       </form>
 
       {list.isLoading ? (
         <p role="status" className="text-slate-500">
-          Loading your list…
+          {t('shopping.loading')}
         </p>
       ) : list.isError ? (
         <p role="alert" className="text-expiry-expired">
-          Could not load your shopping list. Please try again.
+          {t('shopping.loadError')}
         </p>
       ) : items.length === 0 ? (
         <div className="rounded-card border border-dashed border-border p-10 text-center text-slate-500">
-          <p>Your shopping list is empty.</p>
-          <p className="mt-1 text-sm">Generate one from your stock or add an item above.</p>
+          <p>{t('shopping.empty')}</p>
+          <p className="mt-1 text-sm">{t('shopping.emptyHint')}</p>
         </div>
       ) : (
         <ul className="flex flex-col gap-2">
@@ -138,7 +131,11 @@ export default function ShoppingListPage() {
                 type="checkbox"
                 checked={item.checked}
                 onChange={() => toggle.mutate(item)}
-                aria-label={`Mark ${item.name} as ${item.checked ? 'not bought' : 'bought'}`}
+                aria-label={
+                  item.checked
+                    ? t('shopping.markNotBoughtA11y', { name: item.name })
+                    : t('shopping.markBoughtA11y', { name: item.name })
+                }
                 className="h-5 w-5"
               />
               <div className="flex flex-1 flex-col">
@@ -152,15 +149,17 @@ export default function ShoppingListPage() {
                     </span>
                   ) : null}
                 </span>
-                <span className="text-xs text-slate-400">{SOURCE_LABELS[item.source]}</span>
+                <span className="text-xs text-slate-400">
+                  {t(`shopping.sources.${item.source}`)}
+                </span>
               </div>
               <button
                 type="button"
                 onClick={() => remove.mutate(item.id)}
-                aria-label={`Remove ${item.name}`}
+                aria-label={t('shopping.removeA11y', { name: item.name })}
                 className="text-sm text-slate-400 hover:text-expiry-expired"
               >
-                Remove
+                {t('common.remove')}
               </button>
             </li>
           ))}

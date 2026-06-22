@@ -2,6 +2,7 @@ import type { StockItemWithProduct } from '@pantryai/shared';
 import { resolveTipCategory } from '@pantryai/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { apiClient } from '../api/client';
 import { getTipsDisabled, setTipsDisabled } from '../lib/tips';
@@ -15,6 +16,7 @@ interface ConservationTipCardProps {
 // what the user has in stock so the tip is relevant, and let them hide it for now
 // or turn tips off for good (risk F5).
 export function ConservationTipCard({ items }: ConservationTipCardProps) {
+  const { t } = useTranslation();
   const [disabled, setDisabled] = useState<boolean | null>(null);
   const [dismissed, setDismissed] = useState(false);
 
@@ -51,9 +53,9 @@ export function ConservationTipCard({ items }: ConservationTipCardProps) {
   }
 
   return (
-    <View style={styles.card} accessibilityLabel="Conservation tip">
+    <View style={styles.card} accessibilityLabel={t('tip.conservationA11y')}>
       <View style={styles.headerRow}>
-        <Text style={styles.kicker}>Conservation tip</Text>
+        <Text style={styles.kicker}>{t('tip.conservationKicker')}</Text>
         <TouchableOpacity onPress={() => setDismissed(true)} accessibilityRole="button">
           <Text style={styles.dismiss}>✕</Text>
         </TouchableOpacity>
@@ -61,9 +63,9 @@ export function ConservationTipCard({ items }: ConservationTipCardProps) {
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.body}>{body}</Text>
       <View style={styles.footerRow}>
-        <Text style={styles.source}>Source: {source}</Text>
+        <Text style={styles.source}>{t('tip.source', { source })}</Text>
         <TouchableOpacity onPress={hideTips} accessibilityRole="button">
-          <Text style={styles.hide}>Hide tips</Text>
+          <Text style={styles.hide}>{t('tip.hide')}</Text>
         </TouchableOpacity>
       </View>
     </View>

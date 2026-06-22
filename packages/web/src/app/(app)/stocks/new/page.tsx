@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiClientError } from '@pantryai/shared';
 import type { CreateStockItemDto, Product, StockLocation } from '@pantryai/shared';
@@ -10,6 +11,7 @@ import { apiClient } from '@/lib/api';
 const LOCATIONS: StockLocation[] = ['FRIDGE', 'FREEZER', 'PANTRY'];
 
 export default function NewStockPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -57,7 +59,7 @@ export default function NewStockPage() {
       const found = await apiClient.getProductByEan13(ean.trim());
       setProduct(found);
     } catch (err) {
-      setError(err instanceof ApiClientError ? err.message : 'Product lookup failed');
+      setError(err instanceof ApiClientError ? err.message : t('product.lookupFailed'));
     } finally {
       setEanLoading(false);
     }
@@ -74,7 +76,7 @@ export default function NewStockPage() {
       });
       setProduct(created);
     } catch (err) {
-      setError(err instanceof ApiClientError ? err.message : 'Could not create product');
+      setError(err instanceof ApiClientError ? err.message : t('product.createFailed'));
     } finally {
       setCreating(false);
     }
@@ -97,14 +99,14 @@ export default function NewStockPage() {
       await queryClient.invalidateQueries({ queryKey: ['stocks'] });
       router.push('/stocks');
     } catch (err) {
-      setError(err instanceof ApiClientError ? err.message : 'Could not add to stock');
+      setError(err instanceof ApiClientError ? err.message : t('product.addFailed'));
       setSaving(false);
     }
   }
 
   return (
     <section className="mx-auto flex max-w-xl flex-col gap-6">
-      <h1 className="text-2xl font-bold">Add a stock item</h1>
+      <h1 className="text-2xl font-bold">{t('product.addTitle')}</h1>
 
       {error ? (
         <p role="alert" className="text-sm text-expiry-expired">
@@ -114,12 +116,12 @@ export default function NewStockPage() {
 
       {/* Step 1 — choose a product */}
       <div className="rounded-card border border-border bg-surface-card p-4">
-        <h2 className="mb-3 font-semibold">1. Choose a product</h2>
+        <h2 className="mb-3 font-semibold">{t('product.step1')}</h2>
 
         {product ? (
           <div className="flex items-center justify-between gap-2 rounded-md bg-green-50 px-3 py-2 text-sm">
             <span>
-              Selected: <strong>{product.name}</strong>
+              {t('product.selected')} <strong>{product.name}</strong>
               {product.brand ? ` — ${product.brand}` : ''}
             </span>
             <button
@@ -127,26 +129,26 @@ export default function NewStockPage() {
               onClick={() => setProduct(null)}
               className="font-medium text-brand hover:underline"
             >
-              Change
+              {t('common.change')}
             </button>
           </div>
         ) : (
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-1">
               <label htmlFor="search" className="text-sm font-medium">
-                Search existing products
+                {t('product.searchExisting')}
               </label>
               <input
                 id="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="rounded-md border border-border px-3 py-2"
-                placeholder="Start typing a name…"
+                placeholder={t('product.startTyping')}
               />
               {searchTerm.length >= 2 ? (
                 <ul className="mt-1 flex flex-col gap-1">
                   {searching ? (
-                    <li className="px-1 py-1 text-sm text-slate-500">Searching…</li>
+                    <li className="px-1 py-1 text-sm text-slate-500">{t('product.searching')}</li>
                   ) : matches.length > 0 ? (
                     matches.map((p) => (
                       <li key={p.id}>
@@ -162,7 +164,7 @@ export default function NewStockPage() {
                     ))
                   ) : (
                     <li className="px-1 py-1 text-sm text-slate-500">
-                      No match. Look it up by barcode or create it below.
+                      {t('product.noMatchBarcode')}
                     </li>
                   )}
                 </ul>
@@ -171,7 +173,7 @@ export default function NewStockPage() {
 
             <div className="border-t border-border pt-4 flex flex-col gap-1">
               <label htmlFor="ean" className="text-sm font-medium">
-                Find by barcode (EAN-13)
+                {t('product.findByBarcode')}
               </label>
               <div className="flex gap-2">
                 <input
@@ -180,7 +182,7 @@ export default function NewStockPage() {
                   value={ean}
                   onChange={(e) => setEan(e.target.value)}
                   className="flex-1 rounded-md border border-border px-3 py-2"
-                  placeholder="3033490004934"
+                  placeholder={t('product.barcodePlaceholder')}
                 />
                 <button
                   type="button"
@@ -188,17 +190,17 @@ export default function NewStockPage() {
                   disabled={eanLoading}
                   className="rounded-md border border-border px-4 py-2 text-sm font-medium disabled:opacity-60"
                 >
-                  {eanLoading ? 'Looking up…' : 'Look up'}
+                  {eanLoading ? t('product.lookingUp') : t('product.lookUp')}
                 </button>
               </div>
             </div>
 
             <div className="border-t border-border pt-4">
-              <p className="mb-2 text-sm text-slate-500">Or create a new product</p>
+              <p className="mb-2 text-sm text-slate-500">{t('product.orCreate')}</p>
               <div className="flex flex-col gap-2">
                 <div className="flex flex-col gap-1">
                   <label htmlFor="new-name" className="text-sm font-medium">
-                    Name
+                    {t('product.name')}
                   </label>
                   <input
                     id="new-name"
@@ -209,7 +211,8 @@ export default function NewStockPage() {
                 </div>
                 <div className="flex flex-col gap-1">
                   <label htmlFor="new-brand" className="text-sm font-medium">
-                    Brand <span className="text-slate-400">(optional)</span>
+                    {t('product.brand')}{' '}
+                    <span className="text-slate-400">{t('product.optional')}</span>
                   </label>
                   <input
                     id="new-brand"
@@ -224,7 +227,7 @@ export default function NewStockPage() {
                   disabled={creating || !newName.trim()}
                   className="self-start rounded-md border border-border px-4 py-2 text-sm font-medium disabled:opacity-60"
                 >
-                  {creating ? 'Creating…' : 'Use this product'}
+                  {creating ? t('product.creating') : t('product.useProduct')}
                 </button>
               </div>
             </div>
@@ -234,11 +237,11 @@ export default function NewStockPage() {
 
       {/* Step 2 — stock details */}
       <form onSubmit={addToStock} className="rounded-card border border-border bg-surface-card p-4">
-        <h2 className="mb-3 font-semibold">2. Stock details</h2>
+        <h2 className="mb-3 font-semibold">{t('product.step2')}</h2>
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-1">
             <label htmlFor="quantity" className="text-sm font-medium">
-              Quantity
+              {t('stock.quantity')}
             </label>
             <input
               id="quantity"
@@ -253,7 +256,7 @@ export default function NewStockPage() {
           </div>
           <div className="flex flex-col gap-1">
             <label htmlFor="unit" className="text-sm font-medium">
-              Unit
+              {t('stock.unit')}
             </label>
             <input
               id="unit"
@@ -265,7 +268,8 @@ export default function NewStockPage() {
           </div>
           <div className="flex flex-col gap-1">
             <label htmlFor="expiration" className="text-sm font-medium">
-              Expiration date <span className="text-slate-400">(optional)</span>
+              {t('stock.expiration')}{' '}
+              <span className="text-slate-400">{t('product.optional')}</span>
             </label>
             <input
               id="expiration"
@@ -277,7 +281,7 @@ export default function NewStockPage() {
           </div>
           <div className="flex flex-col gap-1">
             <label htmlFor="location" className="text-sm font-medium">
-              Location
+              {t('stock.location')}
             </label>
             <select
               id="location"
@@ -287,7 +291,7 @@ export default function NewStockPage() {
             >
               {LOCATIONS.map((loc) => (
                 <option key={loc} value={loc}>
-                  {loc}
+                  {t(`locations.${loc}`)}
                 </option>
               ))}
             </select>
@@ -298,7 +302,7 @@ export default function NewStockPage() {
           disabled={!product || saving}
           className="mt-4 rounded-md bg-brand px-4 py-2 font-medium text-brand-fg disabled:opacity-60"
         >
-          {saving ? 'Adding…' : 'Add to stock'}
+          {saving ? t('product.adding') : t('product.addToStock')}
         </button>
       </form>
     </section>

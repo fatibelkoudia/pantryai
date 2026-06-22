@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useId, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiClientError } from '@pantryai/shared';
 import type { OcrJob, OcrParsedItem } from '@pantryai/shared';
@@ -11,6 +12,7 @@ const ACCEPTED = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'];
 const TERMINAL = ['COMPLETED', 'CONFIRMED', 'FAILED'] as const;
 
 export function ReceiptUploader() {
+  const { t } = useTranslation();
   const inputId = useId();
   const queryClient = useQueryClient();
   const [progress, setProgress] = useState(0);
@@ -32,7 +34,7 @@ export function ReceiptUploader() {
       setJobId(id);
     },
     onError: (err) => {
-      setError(err instanceof ApiClientError ? err.message : 'Upload failed');
+      setError(err instanceof ApiClientError ? err.message : t('receipt.uploadFailed'));
     },
   });
 
@@ -54,7 +56,7 @@ export function ReceiptUploader() {
       setJobId(null);
     },
     onError: (err) => {
-      setError(err instanceof ApiClientError ? err.message : 'Could not add the selected items');
+      setError(err instanceof ApiClientError ? err.message : t('receipt.confirmFailed'));
     },
   });
 
@@ -62,14 +64,14 @@ export function ReceiptUploader() {
     (file: File | undefined) => {
       if (!file) return;
       if (!ACCEPTED.includes(file.type)) {
-        setError('Unsupported file type, use JPEG, PNG, WebP or PDF.');
+        setError(t('receipt.unsupported'));
         return;
       }
       setError(null);
       setJobId(null);
       upload.mutate(file);
     },
-    [upload],
+    [upload, t],
   );
 
   const onDrop = useCallback(
@@ -106,10 +108,8 @@ export function ReceiptUploader() {
           dragOver ? 'border-brand bg-green-50' : 'border-border bg-surface-card'
         }`}
       >
-        <span className="font-medium">Drag &amp; drop a receipt here</span>
-        <span className="text-sm text-slate-500">
-          or click to choose a file (JPEG, PNG, WebP, PDF)
-        </span>
+        <span className="font-medium">{t('receipt.drop')}</span>
+        <span className="text-sm text-slate-500">{t('receipt.orClick')}</span>
         <input
           id={inputId}
           type="file"
@@ -129,13 +129,13 @@ export function ReceiptUploader() {
       {uploading ? (
         <div className="flex flex-col gap-1">
           <label htmlFor="upload-progress" className="text-sm text-slate-600">
-            Uploading… {progress}%
+            {t('receipt.uploading', { progress })}
           </label>
           <progress
             id="upload-progress"
             max={100}
             value={progress}
-            aria-label="Upload progress"
+            aria-label={t('receipt.uploadProgressA11y')}
             className="w-full"
           />
         </div>
@@ -143,19 +143,19 @@ export function ReceiptUploader() {
 
       {polling ? (
         <p role="status" className="text-sm text-slate-600">
-          Processing receipt… (status: {status ?? 'PENDING'})
+          {t('receipt.processing', { status: status ?? 'PENDING' })}
         </p>
       ) : null}
 
       {status === 'FAILED' ? (
         <p role="alert" className="text-sm text-expiry-expired">
-          Receipt processing failed: {job.data?.error ?? 'unknown error'}
+          {t('receipt.failed', { error: job.data?.error ?? t('common.unknownError') })}
         </p>
       ) : null}
 
       {addedCount !== null ? (
         <p role="status" className="text-sm font-medium text-expiry-ok">
-          Added {addedCount} item(s) to your stock.
+          {t('receipt.added', { count: addedCount })}
         </p>
       ) : null}
 

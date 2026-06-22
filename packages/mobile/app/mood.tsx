@@ -1,7 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import {
-  FORGIVENESS_HINT,
-  PANTRY_BLOCKED_HINT,
   mascotMoodMeta,
   wasteMoodBands,
   wasteTrendMeta,
@@ -11,6 +9,7 @@ import {
 } from '@pantryai/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useEffect, useRef, useState } from 'react';
 import {
   AccessibilityInfo,
@@ -267,6 +266,7 @@ function BouncingTrashy({ mood }: { mood: WasteMood }) {
 // "Trashy's Mood" screen: the Waste Level over the last 30 days, plus what to do
 // about it. Reached by tapping the mascot on Home.
 export default function MoodScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [sheet, setSheet] = useState<StatSheet | null>(null);
   const [historyTab, setHistoryTab] = useState<'weeks' | 'all'>('weeks');
@@ -341,12 +341,14 @@ export default function MoodScreen() {
       <View style={[styles.heroCard, { backgroundColor: MOOD_TINTS[mood] }]}>
         <View style={styles.chipRow}>
           <View style={styles.moodChip}>
-            <Text style={styles.moodChipText}>{meta.label}</Text>
+            <Text style={styles.moodChipText}>{t(`waste.moods.${mood}`)}</Text>
           </View>
           {trend && trendMeta ? (
             <View style={[styles.moodChip, { backgroundColor: trendMeta.bg }]}>
               <Ionicons name={TREND_ICONS[trend]} size={12} color={trendMeta.fg} />
-              <Text style={[styles.moodChipText, { color: trendMeta.fg }]}>{trendMeta.label}</Text>
+              <Text style={[styles.moodChipText, { color: trendMeta.fg }]}>
+                {t(`waste.trend.${trend}`)}
+              </Text>
             </View>
           ) : null}
         </View>
@@ -391,7 +393,7 @@ export default function MoodScreen() {
                     active && { color: step.text, fontFamily: font.bold },
                   ]}
                 >
-                  {mascotMoodMeta[step.mood].label}
+                  {t(`waste.moods.${step.mood}`)}
                 </Text>
               </View>
             );
@@ -400,12 +402,12 @@ export default function MoodScreen() {
         {nextMood !== null ? (
           <View style={styles.nextMoodBlock}>
             {pantryBlocked || itemsToNextMood === null ? (
-              <Text style={styles.nextMoodText}>{PANTRY_BLOCKED_HINT}</Text>
+              <Text style={styles.nextMoodText}>{t('waste.pantryBlockedHint')}</Text>
             ) : (
               <Text style={styles.nextMoodText}>
                 Use <Text style={styles.nextMoodStrong}>~{itemsToNextMood} more items</Text> and
                 Trashy feels{' '}
-                <Text style={styles.nextMoodStrong}>{mascotMoodMeta[nextMood].label}</Text>
+                <Text style={styles.nextMoodStrong}>{t(`waste.moods.${nextMood}`)}</Text>
               </Text>
             )}
             <View style={styles.nextMoodTrack}>
@@ -500,7 +502,7 @@ export default function MoodScreen() {
         ) : (
           <MonthlyBars months={history.data?.months ?? []} />
         )}
-        <Text style={styles.forgivenessHint}>{FORGIVENESS_HINT}</Text>
+        <Text style={styles.forgivenessHint}>{t('waste.forgivenessHint')}</Text>
       </View>
 
       {/* Keep Trashy small: what to use next + where to act */}
@@ -528,7 +530,7 @@ export default function MoodScreen() {
                     <Text style={styles.itemName}>{item.product.name}</Text>
                     <View style={[styles.badge, { backgroundColor: palette.bg }]}>
                       <Text style={[styles.badgeText, { color: palette.fg }]}>
-                        {expiryLabel(days)}
+                        {expiryLabel(days, t)}
                       </Text>
                     </View>
                   </View>

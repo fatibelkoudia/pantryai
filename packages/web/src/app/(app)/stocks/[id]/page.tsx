@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ApiClientError } from '@pantryai/shared';
 import type {
@@ -24,6 +25,7 @@ function toDateInput(iso: string | undefined): string {
 }
 
 export default function StockDetailPage() {
+  const { t } = useTranslation();
   const params = useParams<{ id: string }>();
   const id = params.id;
 
@@ -35,14 +37,14 @@ export default function StockDetailPage() {
   if (stock.isLoading) {
     return (
       <p role="status" className="text-slate-500">
-        Loading…
+        {t('common.loading')}
       </p>
     );
   }
   if (stock.isError || !stock.data) {
     return (
       <p role="alert" className="text-expiry-expired">
-        Stock item not found.
+        {t('stock.notFound')}
       </p>
     );
   }
@@ -72,6 +74,7 @@ export default function StockDetailPage() {
  * on mount, so the parent must only render this once the item is available.
  */
 function StockEditForm({ item }: { item: StockItemWithProduct }) {
+  const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -87,7 +90,8 @@ function StockEditForm({ item }: { item: StockItemWithProduct }) {
       void queryClient.invalidateQueries({ queryKey: ['stocks'] });
       router.push('/stocks');
     },
-    onError: (err) => setError(err instanceof ApiClientError ? err.message : 'Update failed'),
+    onError: (err) =>
+      setError(err instanceof ApiClientError ? err.message : t('stock.updateFailed')),
   });
 
   const remove = useMutation({
@@ -97,7 +101,8 @@ function StockEditForm({ item }: { item: StockItemWithProduct }) {
       void queryClient.invalidateQueries({ queryKey: ['waste'] });
       router.push('/stocks');
     },
-    onError: (err) => setError(err instanceof ApiClientError ? err.message : 'Delete failed'),
+    onError: (err) =>
+      setError(err instanceof ApiClientError ? err.message : t('stock.deleteFailed')),
   });
 
   function onSubmit(event: React.FormEvent) {
@@ -117,11 +122,11 @@ function StockEditForm({ item }: { item: StockItemWithProduct }) {
       ) : null}
 
       <form onSubmit={onSubmit} className="rounded-card border border-border bg-surface-card p-4">
-        <h2 className="mb-3 font-semibold">Edit</h2>
+        <h2 className="mb-3 font-semibold">{t('stock.editTitle')}</h2>
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-1">
             <label htmlFor="quantity" className="text-sm font-medium">
-              Quantity
+              {t('stock.quantity')}
             </label>
             <input
               id="quantity"
@@ -136,7 +141,7 @@ function StockEditForm({ item }: { item: StockItemWithProduct }) {
           </div>
           <div className="flex flex-col gap-1">
             <label htmlFor="unit" className="text-sm font-medium">
-              Unit
+              {t('stock.unit')}
             </label>
             <input
               id="unit"
@@ -148,7 +153,7 @@ function StockEditForm({ item }: { item: StockItemWithProduct }) {
           </div>
           <div className="flex flex-col gap-1">
             <label htmlFor="expiration" className="text-sm font-medium">
-              Expiration date
+              {t('stock.expiration')}
             </label>
             <input
               id="expiration"
@@ -160,7 +165,7 @@ function StockEditForm({ item }: { item: StockItemWithProduct }) {
           </div>
           <div className="flex flex-col gap-1">
             <label htmlFor="location" className="text-sm font-medium">
-              Location
+              {t('stock.location')}
             </label>
             <select
               id="location"
@@ -170,7 +175,7 @@ function StockEditForm({ item }: { item: StockItemWithProduct }) {
             >
               {LOCATIONS.map((loc) => (
                 <option key={loc} value={loc}>
-                  {loc}
+                  {t(`locations.${loc}`)}
                 </option>
               ))}
             </select>
@@ -182,7 +187,7 @@ function StockEditForm({ item }: { item: StockItemWithProduct }) {
             disabled={update.isPending}
             className="rounded-md bg-brand px-4 py-2 font-medium text-brand-fg disabled:opacity-60"
           >
-            {update.isPending ? 'Saving…' : 'Save changes'}
+            {update.isPending ? t('common.saving') : t('stock.saveChanges')}
           </button>
           <button
             type="button"
@@ -190,7 +195,7 @@ function StockEditForm({ item }: { item: StockItemWithProduct }) {
             disabled={remove.isPending}
             className="rounded-md border border-brand px-4 py-2 font-medium text-brand disabled:opacity-60"
           >
-            {remove.isPending ? 'Removing…' : 'Used it'}
+            {remove.isPending ? t('stock.removing') : t('stock.usedIt')}
           </button>
           <button
             type="button"
@@ -198,7 +203,7 @@ function StockEditForm({ item }: { item: StockItemWithProduct }) {
             disabled={remove.isPending}
             className="rounded-md border border-expiry-expired px-4 py-2 font-medium text-expiry-expired disabled:opacity-60"
           >
-            {remove.isPending ? 'Removing…' : 'Threw it out'}
+            {remove.isPending ? t('stock.removing') : t('stock.threwOut')}
           </button>
         </div>
       </form>

@@ -2,10 +2,12 @@
 
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { RecipeCard } from '@/components/RecipeCard';
 import { apiClient } from '@/lib/api';
 
 export default function RecipesPage() {
+  const { t } = useTranslation();
   const recipes = useQuery({
     queryKey: ['recipes', 'suggest'],
     queryFn: () => apiClient.suggestRecipes(),
@@ -21,20 +23,17 @@ export default function RecipesPage() {
   return (
     <section className="flex flex-col gap-6">
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">Recipe ideas</h1>
-        <p className="text-sm text-slate-500">
-          Based on what is in your stock right now. These are recipes you can make at least{' '}
-          {matchPercent}% of.
-        </p>
+        <h1 className="text-2xl font-bold">{t('recipe.title')}</h1>
+        <p className="text-sm text-slate-500">{t('recipe.subtitle', { percent: matchPercent })}</p>
       </header>
 
       {recipes.isLoading ? (
         <p role="status" className="text-slate-500">
-          Finding recipes from your stock…
+          {t('recipe.loading')}
         </p>
       ) : recipes.isError ? (
         <p role="alert" className="text-expiry-expired">
-          Could not load recipes. Please try again.
+          {t('recipe.loadError')}
         </p>
       ) : recipes.data && recipes.data.suggestions.length > 0 ? (
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -46,9 +45,9 @@ export default function RecipesPage() {
         </ul>
       ) : (
         <div className="rounded-card border border-dashed border-border p-10 text-center text-slate-500">
-          <p>No recipes match your stock yet.</p>
+          <p>{t('recipe.empty')}</p>
           <Link href="/stocks" className="mt-2 inline-block font-medium text-brand hover:underline">
-            Add more items to your stock
+            {t('recipe.addMore')}
           </Link>
         </div>
       )}

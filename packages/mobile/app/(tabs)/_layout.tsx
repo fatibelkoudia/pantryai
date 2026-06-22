@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
 import { buttonLip, colors, font } from '../../src/theme';
 import type { IoniconName } from '../../src/lib/foodIcons';
@@ -29,6 +30,7 @@ function TabIcon({
 // Profile lives behind the avatar in the Home header, and Scan behind the header buttons,
 // so neither needs a tab.
 export default function TabLayout() {
+  const { t } = useTranslation();
   return (
     <Tabs
       screenOptions={{
@@ -50,7 +52,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: t('nav.home'),
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} outline="home-outline" filled="home" />
           ),
@@ -59,7 +61,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="inventory"
         options={{
-          title: 'Inventory',
+          title: t('nav.inventory'),
           tabBarIcon: ({ focused }) => (
             <TabIcon
               focused={focused}
@@ -72,7 +74,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="recipes"
         options={{
-          title: 'Recipes',
+          title: t('nav.recipes'),
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} outline="restaurant-outline" filled="restaurant" />
           ),
@@ -81,7 +83,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="shopping"
         options={{
-          title: 'Shopping',
+          title: t('nav.shopping'),
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} outline="basket-outline" filled="basket" />
           ),
@@ -90,7 +92,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="learn"
         options={{
-          title: 'Learn',
+          title: t('nav.learn'),
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} outline="school-outline" filled="school" />
           ),

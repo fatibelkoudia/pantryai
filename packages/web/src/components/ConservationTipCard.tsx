@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { resolveTipCategory } from '@pantryai/shared';
 import type { Product } from '@pantryai/shared';
@@ -22,6 +23,7 @@ interface ConservationTipCardProps {
 // the product to a category so the tip is relevant. The user can hide it for now
 // or turn tips off for good (risk F5), and we remember that in localStorage.
 export function ConservationTipCard({ product }: ConservationTipCardProps) {
+  const { t } = useTranslation();
   // Read the stored preference once on mount. Defaults to enabled.
   const [disabled, setDisabled] = useState<boolean>(tipsDisabled);
   const [dismissed, setDismissed] = useState(false);
@@ -47,30 +49,32 @@ export function ConservationTipCard({ product }: ConservationTipCardProps) {
 
   return (
     <aside
-      aria-label="Conservation tip"
+      aria-label={t('tip.conservationA11y')}
       className="rounded-card border border-border bg-surface-card p-4"
     >
       <div className="flex items-start justify-between gap-3">
-        <p className="text-xs font-semibold uppercase tracking-wide text-brand">Conservation tip</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-brand">
+          {t('tip.conservationKicker')}
+        </p>
         <button
           type="button"
           onClick={() => setDismissed(true)}
-          aria-label="Dismiss tip"
+          aria-label={t('tip.dismissA11y')}
           className="text-sm text-slate-400 hover:text-slate-600"
         >
-          Dismiss
+          {t('tip.dismiss')}
         </button>
       </div>
       <h2 className="mt-1 font-semibold">{title}</h2>
       <p className="mt-1 text-sm text-slate-600">{body}</p>
       <div className="mt-3 flex items-center justify-between gap-3">
-        <p className="text-xs text-slate-400">Source: {source}</p>
+        <p className="text-xs text-slate-400">{t('tip.source', { source })}</p>
         <button
           type="button"
           onClick={disableTips}
           className="text-xs text-slate-400 underline hover:text-slate-600"
         >
-          Don&apos;t show tips
+          {t('tip.disable')}
         </button>
       </div>
     </aside>
