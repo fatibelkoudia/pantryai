@@ -1,11 +1,12 @@
 import { LOCALE_FLAGS, SUPPORTED_LOCALES } from '@pantryai/shared';
 import type { Locale } from '@pantryai/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { apiClient } from '../../api/client';
-import { colors, font, radii, spacing } from '../../theme';
+import { colors, font, glass, glow, radii, spacing } from '../../theme';
 import { StepScaffold } from './StepScaffold';
 
 interface StepProps {
@@ -38,6 +39,7 @@ export function LanguageStep({ stepIndex, totalSteps, onAdvance }: StepProps) {
   });
 
   function pick(locale: Locale) {
+    void Haptics.selectionAsync();
     setSelected(locale);
     void i18n.changeLanguage(locale);
   }
@@ -85,9 +87,13 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: radii.card,
     paddingVertical: spacing.lg,
-    backgroundColor: colors.white,
+    backgroundColor: glass.bg,
   },
-  cardSelected: { borderColor: colors.leafGreen, backgroundColor: colors.softMint },
+  cardSelected: {
+    borderColor: colors.leafGreen,
+    backgroundColor: colors.softMint,
+    boxShadow: `0 0 24px ${glow.brand}`,
+  },
   flag: { fontSize: 40 },
   label: { fontSize: 15, fontFamily: font.bold, color: colors.charcoal },
 });

@@ -1,6 +1,6 @@
 # Divergences from the conception
 
-Last updated: 2026-07-13
+Last updated: 2026-07-14
 
 This file tracks everything where the real code is different from what we wrote
 in the conception dossier (`help/pantry_ai_conception.pdf`) or in the features
@@ -372,6 +372,25 @@ One behaviour change came with it on mobile: the app used to ask for the push
 notification permission the moment you logged in. It now only re-registers the
 token if permission was already granted, and the actual prompt moved into the
 onboarding notifications step (with a screen explaining why first).
+
+**Updated 2026-07-14 (the onboarding redesign):** the first version of the flow
+was functional but flat, so we redesigned it to actually sell the app. The intro
+is now a four-slide story with Trashy's mood following along: the problem first
+(a counter that counts up to ADEME's figure of about 30 kg of food thrown away
+per person per year in France, roughly 100 euros), then scan, rescue and play,
+each slide with a small animated mock of the real feature (a receipt turning
+into pantry chips, an expiring item saved by a recipe, the streak and XP bits).
+The setup steps got warmer conversational copy in both languages, an animated
+progress bar instead of the "Step X of Y" text, and the flow now ends on a
+celebration screen (confetti, a very happy Trashy) whose button is what calls
+the completion endpoint. The motion is deliberately calm: fast ease-out
+transitions, no springs or bouncing (we tried and it looked childish). Visually everything sits on slowly
+drifting pastel blobs behind frosted glass cards, still on the Trashy palette.
+This pulled the first animation libraries into the repo: framer-motion on web,
+and react-native-reanimated (with react-native-worklets), expo-linear-gradient
+and expo-haptics on mobile. All motion respects the OS reduced-motion setting
+on both platforms. The flow logic and the API did not change: same steps, same
+per-step saves, same completion endpoint.
 
 What to fix in the dossier: add the onboarding flow and the login/register
 screens to the feature list, and note the `onboardingCompletedAt` field.

@@ -1,11 +1,12 @@
 import { avatarPresets, getAvatarPreset } from '@pantryai/shared';
 import { useMutation } from '@tanstack/react-query';
+import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { apiClient } from '../../api/client';
 import { useAuthStore } from '../../store/auth';
-import { colors, font, radii, spacing } from '../../theme';
+import { colors, font, glow, radii, spacing } from '../../theme';
 import { TextField } from '../TextField';
 import { StepScaffold } from './StepScaffold';
 
@@ -59,7 +60,10 @@ export function ProfileStep({ stepIndex, totalSteps, onAdvance }: StepProps) {
         {avatarPresets.map((preset) => (
           <TouchableOpacity
             key={preset.id}
-            onPress={() => setAvatarId(preset.id)}
+            onPress={() => {
+              void Haptics.selectionAsync();
+              setAvatarId(preset.id);
+            }}
             accessibilityRole="button"
             accessibilityState={{ selected: selected.id === preset.id }}
             style={[
@@ -94,6 +98,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarChoiceSelected: { borderWidth: 2, borderColor: colors.forestGreen },
+  avatarChoiceSelected: {
+    borderWidth: 2,
+    borderColor: colors.forestGreen,
+    boxShadow: `0 0 20px ${glow.brand}`,
+  },
   avatarEmoji: { fontSize: 28 },
 });

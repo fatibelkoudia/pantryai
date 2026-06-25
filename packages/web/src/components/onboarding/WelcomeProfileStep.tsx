@@ -60,8 +60,8 @@ export function WelcomeProfileStep({ stepIndex, totalSteps, onAdvance }: StepPro
             onClick={() => setAvatarId(preset.id)}
             aria-pressed={selected.id === preset.id}
             style={{ backgroundColor: preset.bg }}
-            className={`flex h-14 w-14 items-center justify-center rounded-full text-2xl ${
-              selected.id === preset.id ? 'ring-2 ring-brand-deep' : ''
+            className={`flex h-14 w-14 items-center justify-center rounded-full text-2xl transition-all duration-150 ${
+              selected.id === preset.id ? 'scale-105 ring-2 ring-brand-deep shadow-glow-brand' : ''
             }`}
           >
             {preset.emoji}
@@ -79,7 +79,7 @@ export function WelcomeProfileStep({ stepIndex, totalSteps, onAdvance }: StepPro
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder={t('profile.namePlaceholder')}
-        className="rounded-md border border-border bg-surface-input px-3 py-2"
+        className="rounded-xl border border-border bg-white/70 px-3 py-2 backdrop-blur-sm"
       />
     </StepShell>
   );

@@ -43,6 +43,17 @@ export const expiry = {
   none: { bg: '#EAE7E7', fg: '#5B6660' },
 } as const;
 
+// Aurora-glass recipe for the onboarding flows: frosted cards floating over soft
+// drifting color blobs. The web mirrors these in the globals.css @theme block.
+export const glass = {
+  bg: 'rgba(255, 255, 255, 0.72)', // frosted card fill over the aurora blobs
+  border: 'rgba(255, 255, 255, 0.65)', // hairline that catches the light
+} as const;
+
+export const glow = {
+  brand: 'rgba(76, 175, 80, 0.35)', // soft leaf-green halo for CTAs and selected cards
+} as const;
+
 // The "3D-lite" button lip from the design doc: a slightly darker bottom edge so
 // solid buttons look pressable instead of flat. Spread into RN button styles;
 // the web mirrors it with `box-shadow: 0 3px 0 rgb(0 0 0 / 0.15)`.

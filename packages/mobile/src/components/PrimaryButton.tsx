@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   type ViewStyle,
 } from 'react-native';
-import { buttonLip, colors, font, radii } from '../theme';
+import { buttonLip, colors, font, glow as glowToken, radii } from '../theme';
 
 interface PrimaryButtonProps {
   label: string;
@@ -15,6 +15,8 @@ interface PrimaryButtonProps {
   // primary is the solid green pill with the 3D lip; ghost is a plain text button
   // for "skip" and secondary actions.
   variant?: 'primary' | 'ghost';
+  // soft green halo for the onboarding CTAs
+  glow?: boolean;
   style?: ViewStyle;
 }
 
@@ -26,6 +28,7 @@ export function PrimaryButton({
   loading = false,
   disabled = false,
   variant = 'primary',
+  glow = false,
   style,
 }: PrimaryButtonProps) {
   const isGhost = variant === 'ghost';
@@ -40,6 +43,7 @@ export function PrimaryButton({
       style={[
         styles.base,
         isGhost ? styles.ghost : styles.primary,
+        glow && !isGhost && styles.glow,
         isDisabled && styles.disabled,
         style,
       ]}
@@ -67,6 +71,9 @@ const styles = StyleSheet.create({
   },
   ghost: {
     backgroundColor: 'transparent',
+  },
+  glow: {
+    boxShadow: `0 0 24px ${glowToken.brand}`,
   },
   disabled: { opacity: 0.6 },
   primaryText: { fontSize: 16, fontFamily: font.black, color: colors.onBrand },

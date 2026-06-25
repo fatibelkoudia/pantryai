@@ -4,7 +4,9 @@ import { StyleSheet, Text, View } from 'react-native';
 import { requestPushPermissionsAndRegister } from '../../lib/push';
 import { colors, font, spacing } from '../../theme';
 import { PrimaryButton } from '../PrimaryButton';
-import { TrashyMood } from '../TrashyMood';
+import { MascotEntrance } from './MascotEntrance';
+import { GlassCard } from './GlassCard';
+import { StepProgress } from './StepProgress';
 
 interface StepProps {
   stepIndex: number;
@@ -34,16 +36,16 @@ export function NotificationsStep({ stepIndex, totalSteps, onAdvance }: StepProp
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.progress}>
-          {t('onboarding.stepOf', { step: stepIndex + 1, total: totalSteps })}
-        </Text>
-        <View style={styles.hero}>
-          <TrashyMood mood="GOOD" size={160} showLabel={false} />
-          <Text style={styles.title}>{t('onboarding.notifications.title')}</Text>
-          <Text style={styles.body}>{t('onboarding.notifications.body')}</Text>
-          {denied ? (
-            <Text style={styles.denied}>{t('onboarding.notifications.denied')}</Text>
-          ) : null}
+        <StepProgress stepIndex={stepIndex} totalSteps={totalSteps} />
+        <View style={styles.heroWrap}>
+          <GlassCard style={styles.hero}>
+            <MascotEntrance mood="GOOD" size={150} />
+            <Text style={styles.title}>{t('onboarding.notifications.title')}</Text>
+            <Text style={styles.body}>{t('onboarding.notifications.body')}</Text>
+            {denied ? (
+              <Text style={styles.denied}>{t('onboarding.notifications.denied')}</Text>
+            ) : null}
+          </GlassCard>
         </View>
       </View>
 
@@ -52,6 +54,7 @@ export function NotificationsStep({ stepIndex, totalSteps, onAdvance }: StepProp
           label={denied ? t('onboarding.finish') : t('onboarding.notifications.enable')}
           onPress={denied ? onAdvance : enable}
           loading={working}
+          glow
         />
         {denied ? null : (
           <PrimaryButton
@@ -68,17 +71,11 @@ export function NotificationsStep({ stepIndex, totalSteps, onAdvance }: StepProp
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: { flex: 1, padding: spacing.lg },
-  progress: {
-    fontSize: 13,
-    fontFamily: font.bold,
-    color: colors.leafGreen,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  hero: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md },
+  content: { flex: 1, padding: spacing.lg, gap: spacing.md },
+  heroWrap: { flex: 1, justifyContent: 'center' },
+  hero: { alignItems: 'center', gap: spacing.md },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontFamily: font.black,
     color: colors.forestGreen,
     textAlign: 'center',

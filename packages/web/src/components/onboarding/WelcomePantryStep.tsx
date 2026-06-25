@@ -52,15 +52,15 @@ export function WelcomePantryStep({ stepIndex, totalSteps, onAdvance }: StepProp
       error={error}
     >
       <span className="text-sm font-bold">{t('onboarding.pantry.defaultLocation')}</span>
-      <div className="flex gap-2 rounded-card bg-surface-input p-1">
+      <div className="flex gap-2 rounded-card bg-white/50 p-1 backdrop-blur-sm">
         {LOCATIONS.map((loc) => (
           <button
             key={loc}
             type="button"
             onClick={() => setLocation(loc)}
             aria-pressed={location === loc}
-            className={`flex-1 rounded-md py-2 text-sm font-semibold ${
-              location === loc ? 'bg-mint text-brand-deep' : 'text-expiry-none'
+            className={`flex-1 rounded-md py-2 text-sm font-semibold transition ${
+              location === loc ? 'bg-mint text-brand-deep shadow-sm' : 'text-expiry-none'
             }`}
           >
             {t(`settings.locations.${loc}`)}
@@ -75,7 +75,7 @@ export function WelcomePantryStep({ stepIndex, totalSteps, onAdvance }: StepProp
           onClick={() => setDays((d) => Math.max(min, d - 1))}
           disabled={days <= min}
           aria-label={`${t('onboarding.pantry.expiringWindow')} -`}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-input text-lg font-bold disabled:opacity-40"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/70 text-lg font-bold transition hover:bg-mint disabled:opacity-40"
         >
           −
         </button>
@@ -87,7 +87,7 @@ export function WelcomePantryStep({ stepIndex, totalSteps, onAdvance }: StepProp
           onClick={() => setDays((d) => Math.min(max, d + 1))}
           disabled={days >= max}
           aria-label={`${t('onboarding.pantry.expiringWindow')} +`}
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-input text-lg font-bold disabled:opacity-40"
+          className="flex h-10 w-10 items-center justify-center rounded-full bg-white/70 text-lg font-bold transition hover:bg-mint disabled:opacity-40"
         >
           +
         </button>

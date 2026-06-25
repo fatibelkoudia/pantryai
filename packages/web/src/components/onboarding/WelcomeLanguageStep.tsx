@@ -61,8 +61,10 @@ export function WelcomeLanguageStep({ stepIndex, totalSteps, onAdvance }: StepPr
             type="button"
             onClick={() => pick(locale)}
             aria-pressed={selected === locale}
-            className={`flex flex-1 flex-col items-center gap-2 rounded-card border bg-surface-card py-6 ${
-              selected === locale ? 'border-brand bg-mint' : 'border-border'
+            className={`flex flex-1 flex-col items-center gap-2 rounded-card border py-6 backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 ${
+              selected === locale
+                ? 'border-brand bg-mint shadow-glow-brand'
+                : 'border-border bg-white/60'
             }`}
           >
             <span className="text-4xl">{LOCALE_FLAGS[locale]}</span>
