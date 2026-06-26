@@ -48,15 +48,6 @@ const MOOD_TINTS: Record<WasteMood, string> = {
   AWFUL: colors.redTint,
 };
 
-// One feeling line per mood for the hero headline.
-const MOOD_FEELING: Record<WasteMood, string> = {
-  EXCELLENT: 'Trashy is feeling fantastic!',
-  GOOD: 'Trashy is feeling light today!',
-  OKAY: 'Trashy is feeling so-so.',
-  BAD: 'Trashy is getting heavy…',
-  AWFUL: 'Trashy is overflowing!',
-};
-
 // How many expiring items to list in the "Keep Trashy small" card.
 const EXPIRING_PREVIEW = 3;
 
@@ -86,68 +77,54 @@ function accentForScore(score: number): string {
 
 // Max bar height for the weekly chart, in px.
 const WEEK_BAR_MAX = 48;
-const WEEK_LABELS = ['3w ago', '2w', '1w', 'now'];
+// Stable keys for the four weekly bars; the labels come from i18n (waste.weeks.*).
+const WEEK_KEYS = ['w3', 'w2', 'w1', 'now'] as const;
 
 // Which stat card detail sheet is open.
 type StatSheet = 'used' | 'tossed' | 'co2';
 
-const SHEET_TITLES: Record<StatSheet, string> = {
-  used: 'Items used',
-  tossed: 'Thrown out',
-  co2: 'CO2 avoided',
+// i18n key for each detail sheet's title.
+const SHEET_TITLE_KEYS: Record<StatSheet, string> = {
+  used: 'waste.detail.usedTitle',
+  tossed: 'waste.detail.tossedTitle',
+  co2: 'waste.detail.co2Title',
 };
-
-// Readable names for the CO2 factor table categories.
-const CATEGORY_LABELS: Record<string, string> = {
-  viande: 'Meat',
-  'produits-laitiers': 'Dairy',
-  cereales: 'Grains',
-  fruits: 'Fruit',
-  legumes: 'Vegetables',
-};
-
-const MONTHS_SHORT = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
 
 // 'YYYY-MM' -> 'Mar', with the year added on January so long ranges stay readable.
-function monthLabel(month: string, first: boolean): string {
+// `months` is the localized list of short month names (waste.months.*).
+function monthLabel(month: string, first: boolean, months: string[]): string {
   const mm = Number(month.slice(5));
-  const name = MONTHS_SHORT[mm - 1] ?? month;
+  const name = months[mm - 1] ?? month;
   if (first || mm === 1) return `${name} ${month.slice(2, 4)}`;
   return name;
 }
 
 // '2026-07-05T…' -> 'Jul 5'
-function shortDate(iso: string): string {
+function shortDate(iso: string, months: string[]): string {
   const d = new Date(iso);
-  return `${MONTHS_SHORT[d.getMonth()] ?? '?'} ${d.getDate()}`;
+  return `${months[d.getMonth()] ?? '?'} ${d.getDate()}`;
+}
+
+// The 12 short month names in the current language, for the chart and dates.
+function useMonthNames(t: (key: string) => string): string[] {
+  return Array.from({ length: 12 }, (_, i) => t(`waste.months.${i}`));
 }
 
 // Four little bars, one per week, oldest on the left. Quiet weeks get a gray stub.
 function WeeklyBars({ scores }: { scores: (number | null)[] }) {
+  const { t } = useTranslation();
+  const labels = WEEK_KEYS.map((k) => t(`waste.weeks.${k}`));
   const summary = scores
-    .map((s, i) => `${WEEK_LABELS[i]}: ${s === null ? 'no items' : s}`)
+    .map((s, i) => `${labels[i]}: ${s === null ? t('waste.history.noItems') : s}`)
     .join(', ');
   return (
     <View
       style={styles.weekRow}
       accessibilityRole="image"
-      accessibilityLabel={`Weekly waste scores. ${summary}`}
+      accessibilityLabel={t('waste.history.weeklyA11y', { summary })}
     >
       {scores.map((score, i) => (
-        <View key={WEEK_LABELS[i]} style={styles.weekCol}>
+        <View key={WEEK_KEYS[i]} style={styles.weekCol}>
           <Text style={styles.weekValue}>{score === null ? '–' : score}</Text>
           <View
             style={[
@@ -160,7 +137,7 @@ function WeeklyBars({ scores }: { scores: (number | null)[] }) {
                   },
             ]}
           />
-          <Text style={styles.weekLabel}>{WEEK_LABELS[i]}</Text>
+          <Text style={styles.weekLabel}>{labels[i]}</Text>
         </View>
       ))}
     </View>
@@ -169,18 +146,20 @@ function WeeklyBars({ scores }: { scores: (number | null)[] }) {
 
 // The all-time view: one bar per month, oldest on the left, scrolls sideways.
 function MonthlyBars({ months }: { months: { month: string; score: number | null }[] }) {
+  const { t } = useTranslation();
+  const monthNames = useMonthNames(t);
   if (months.length === 0) {
-    return <Text style={styles.actionSub}>No history yet. Resolve some items first!</Text>;
+    return <Text style={styles.actionSub}>{t('waste.history.empty')}</Text>;
   }
   const summary = months
-    .map((m) => `${m.month}: ${m.score === null ? 'no items' : m.score}`)
+    .map((m) => `${m.month}: ${m.score === null ? t('waste.history.noItems') : m.score}`)
     .join(', ');
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       <View
         style={styles.weekRow}
         accessibilityRole="image"
-        accessibilityLabel={`Monthly waste scores out of 100. ${summary}`}
+        accessibilityLabel={t('waste.history.monthlyA11y', { summary })}
       >
         {months.map((m, i) => (
           <View key={m.month} style={styles.monthCol}>
@@ -196,7 +175,7 @@ function MonthlyBars({ months }: { months: { month: string; score: number | null
                     },
               ]}
             />
-            <Text style={styles.weekLabel}>{monthLabel(m.month, i === 0)}</Text>
+            <Text style={styles.weekLabel}>{monthLabel(m.month, i === 0, monthNames)}</Text>
           </View>
         ))}
       </View>
@@ -206,6 +185,8 @@ function MonthlyBars({ months }: { months: { month: string; score: number | null
 
 // One row in a detail sheet's item list.
 function SheetItemRow({ item, right }: { item: WasteResolvedItem; right?: string }) {
+  const { t } = useTranslation();
+  const monthNames = useMonthNames(t);
   return (
     <View style={styles.sheetRow}>
       <View style={styles.sheetRowMain}>
@@ -213,12 +194,14 @@ function SheetItemRow({ item, right }: { item: WasteResolvedItem; right?: string
           {item.name}
         </Text>
         <Text style={styles.sheetRowSub}>
-          {item.quantity} {item.unit} · {shortDate(item.resolvedAt)}
+          {item.quantity} {item.unit} · {shortDate(item.resolvedAt, monthNames)}
         </Text>
       </View>
       {item.rescued ? (
         <View style={[styles.badge, { backgroundColor: colors.heroMint }]}>
-          <Text style={[styles.badgeText, { color: colors.forestGreen }]}>Rescue</Text>
+          <Text style={[styles.badgeText, { color: colors.forestGreen }]}>
+            {t('waste.detail.rescue')}
+          </Text>
         </View>
       ) : null}
       {right ? <Text style={styles.sheetRowRight}>{right}</Text> : null}
@@ -307,9 +290,9 @@ export default function MoodScreen() {
   if (waste.isError || !waste.data) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorTitle}>Could not check on Trashy</Text>
+        <Text style={styles.errorTitle}>{t('waste.couldNotCheck')}</Text>
         <TouchableOpacity style={styles.button} onPress={() => waste.refetch()}>
-          <Text style={styles.buttonText}>Retry</Text>
+          <Text style={styles.buttonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -353,24 +336,27 @@ export default function MoodScreen() {
           ) : null}
         </View>
         <BouncingTrashy mood={mood} />
-        <Text style={styles.heroTitle}>{MOOD_FEELING[mood]}</Text>
+        <Text style={styles.heroTitle}>{t(`waste.feelings.${mood}`)}</Text>
         {counts.total > 0 ? (
           <Text style={styles.heroCounts}>
-            Last 30 days: {counts.consumed} used · {counts.discarded} thrown out · {counts.expired}{' '}
-            expired
+            {t('waste.last30Full', {
+              used: counts.consumed,
+              discarded: counts.discarded,
+              expired: counts.expired,
+            })}
           </Text>
         ) : (
-          <Text style={styles.heroCounts}>
-            No items resolved yet. Mark what you use or toss to see your level move.
-          </Text>
+          <Text style={styles.heroCounts}>{t('waste.noneResolved')}</Text>
         )}
       </View>
 
       {/* Waste level meter: the five moods, current one highlighted */}
       <View style={styles.card}>
         <View style={styles.meterHeader}>
-          <Text style={styles.meterLabel}>Waste Level</Text>
-          <Text style={styles.meterScore}>{Math.round(score)}/100</Text>
+          <Text style={styles.meterLabel}>{t('waste.gaugeLabel')}</Text>
+          <Text style={styles.meterScore}>
+            {t('waste.history.score100', { score: Math.round(score) })}
+          </Text>
         </View>
         <View style={styles.meterRow}>
           {MOOD_STEPS.map((step) => {
@@ -405,9 +391,10 @@ export default function MoodScreen() {
               <Text style={styles.nextMoodText}>{t('waste.pantryBlockedHint')}</Text>
             ) : (
               <Text style={styles.nextMoodText}>
-                Use <Text style={styles.nextMoodStrong}>~{itemsToNextMood} more items</Text> and
-                Trashy feels{' '}
-                <Text style={styles.nextMoodStrong}>{t(`waste.moods.${nextMood}`)}</Text>
+                {t('waste.useMoreItems', {
+                  count: itemsToNextMood,
+                  mood: t(`waste.moods.${nextMood}`),
+                })}
               </Text>
             )}
             <View style={styles.nextMoodTrack}>
@@ -431,37 +418,37 @@ export default function MoodScreen() {
           style={styles.statCard}
           onPress={() => setSheet('used')}
           accessibilityRole="button"
-          accessibilityLabel={`${counts.consumed} items used, tap for details`}
+          accessibilityLabel={t('waste.stats.usedA11y', { count: counts.consumed })}
         >
           <View style={[styles.statIcon, { backgroundColor: colors.heroMint }]}>
             <Ionicons name="checkmark-circle-outline" size={20} color={colors.forestGreen} />
           </View>
           <Text style={styles.statValue}>{counts.consumed}</Text>
-          <Text style={styles.statLabel}>items used</Text>
+          <Text style={styles.statLabel}>{t('waste.stats.itemsUsed')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.statCard}
           onPress={() => setSheet('tossed')}
           accessibilityRole="button"
-          accessibilityLabel={`${counts.discarded} items thrown out, tap for details`}
+          accessibilityLabel={t('waste.stats.tossedA11y', { count: counts.discarded })}
         >
           <View style={[styles.statIcon, { backgroundColor: colors.paleYellow }]}>
             <Ionicons name="trash-outline" size={20} color={colors.amberText} />
           </View>
           <Text style={styles.statValue}>{counts.discarded}</Text>
-          <Text style={styles.statLabel}>thrown out</Text>
+          <Text style={styles.statLabel}>{t('waste.stats.thrownOut')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.statCard}
           onPress={() => setSheet('co2')}
           accessibilityRole="button"
-          accessibilityLabel={`${co2AvoidedKg} kilograms of CO2 avoided, tap for details`}
+          accessibilityLabel={t('waste.stats.co2A11y', { count: co2AvoidedKg })}
         >
           <View style={[styles.statIcon, { backgroundColor: colors.redTint }]}>
             <Ionicons name="cloud-outline" size={20} color={colors.redText} />
           </View>
           <Text style={styles.statValue}>{co2AvoidedKg} kg</Text>
-          <Text style={styles.statLabel}>CO2 avoided</Text>
+          <Text style={styles.statLabel}>{t('waste.stats.co2Avoided')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -469,9 +456,9 @@ export default function MoodScreen() {
       <View style={styles.card}>
         <View style={styles.meterHeader}>
           <Text style={styles.meterLabel}>
-            {historyTab === 'weeks' ? 'Last 4 weeks' : 'All time'}
+            {historyTab === 'weeks' ? t('waste.history.last4weeks') : t('waste.history.allTime')}
           </Text>
-          <Text style={styles.meterScore}>score /100</Text>
+          <Text style={styles.meterScore}>{t('waste.history.scoreOutOf')}</Text>
         </View>
         <View style={styles.segmented}>
           <TouchableOpacity
@@ -481,7 +468,7 @@ export default function MoodScreen() {
             accessibilityState={{ selected: historyTab === 'weeks' }}
           >
             <Text style={[styles.segmentText, historyTab === 'weeks' && styles.segmentTextActive]}>
-              4 weeks
+              {t('waste.history.weeks4')}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -491,7 +478,7 @@ export default function MoodScreen() {
             accessibilityState={{ selected: historyTab === 'all' }}
           >
             <Text style={[styles.segmentText, historyTab === 'all' && styles.segmentTextActive]}>
-              All time
+              {t('waste.history.allTime')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -509,11 +496,11 @@ export default function MoodScreen() {
       <View style={styles.card}>
         <View style={styles.actionHeader}>
           <Ionicons name="bulb-outline" size={20} color={colors.forestGreen} />
-          <Text style={styles.actionTitle}>Keep Trashy small</Text>
+          <Text style={styles.actionTitle}>{t('waste.keepSmall.title')}</Text>
         </View>
         {expiringItems.length > 0 ? (
           <>
-            <Text style={styles.actionSub}>Use these items before they expire:</Text>
+            <Text style={styles.actionSub}>{t('waste.keepSmall.useBeforeExpire')}</Text>
             <View style={styles.expiringList}>
               {expiringItems.slice(0, EXPIRING_PREVIEW).map((item) => {
                 const days = daysUntil(item.expirationDate);
@@ -539,7 +526,7 @@ export default function MoodScreen() {
             </View>
           </>
         ) : (
-          <Text style={styles.actionSub}>Nothing expiring soon. Trashy stays tiny!</Text>
+          <Text style={styles.actionSub}>{t('waste.keepSmall.nothingExpiring')}</Text>
         )}
         <View style={styles.actionButtons}>
           <TouchableOpacity
@@ -547,14 +534,14 @@ export default function MoodScreen() {
             onPress={() => router.push('/(tabs)/recipes')}
             accessibilityRole="button"
           >
-            <Text style={styles.primaryBtnText}>Find recipes</Text>
+            <Text style={styles.primaryBtnText}>{t('waste.keepSmall.findRecipes')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.secondaryBtn}
             onPress={() => router.push('/(tabs)/inventory')}
             accessibilityRole="button"
           >
-            <Text style={styles.secondaryBtnText}>View inventory</Text>
+            <Text style={styles.secondaryBtnText}>{t('waste.keepSmall.viewInventory')}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -581,46 +568,43 @@ export default function MoodScreen() {
       {/* Detail sheet for whichever stat card was tapped */}
       <BottomSheet
         visible={sheet !== null}
-        title={sheet ? SHEET_TITLES[sheet] : ''}
+        title={sheet ? t(SHEET_TITLE_KEYS[sheet]) : ''}
         onClose={() => setSheet(null)}
       >
         {details.isLoading ? (
           <ActivityIndicator color={colors.leafGreen} />
         ) : sheet === 'used' ? (
           <>
-            <Text style={styles.sheetExplain}>
-              Everything you marked as used in the last 30 days. Rescues (items eaten with 3 days or
-              less left before expiry) count extra toward Trashy&apos;s mood.
-            </Text>
+            <Text style={styles.sheetExplain}>{t('waste.detail.usedIntro')}</Text>
             {rescuedCount > 0 ? (
               <Text style={styles.sheetHighlight}>
-                {rescuedCount} of them {rescuedCount === 1 ? 'was a rescue' : 'were rescues'}. Nice
-                save!
+                {t('waste.detail.rescueLine', { count: rescuedCount })}
               </Text>
             ) : null}
             {usedItems.length === 0 ? (
-              <Text style={styles.actionSub}>Nothing used yet.</Text>
+              <Text style={styles.actionSub}>{t('waste.detail.nothingUsed')}</Text>
             ) : (
               usedItems.map((item) => <SheetItemRow key={item.id} item={item} />)
             )}
           </>
         ) : sheet === 'tossed' ? (
           <>
-            <Text style={styles.sheetExplain}>
-              Items that got thrown out or expired in the last 30 days. Both count as waste and pull
-              the score down, and fresher waste weighs more than old waste.
-            </Text>
+            <Text style={styles.sheetExplain}>{t('waste.detail.tossedIntro')}</Text>
             <Text style={styles.sheetHighlight}>
-              {counts.discarded} thrown out · {counts.expired} expired
+              {t('waste.tossedCount', { discarded: counts.discarded, expired: counts.expired })}
             </Text>
             {tossedItems.length === 0 ? (
-              <Text style={styles.actionSub}>Nothing wasted. Trashy approves!</Text>
+              <Text style={styles.actionSub}>{t('waste.detail.nothingWasted')}</Text>
             ) : (
               tossedItems.map((item) => (
                 <SheetItemRow
                   key={item.id}
                   item={item}
-                  right={item.disposition === 'EXPIRED' ? 'expired' : 'tossed'}
+                  right={
+                    item.disposition === 'EXPIRED'
+                      ? t('waste.detail.expiredTag')
+                      : t('waste.detail.tossedTag')
+                  }
                 />
               ))
             )}
@@ -628,29 +612,32 @@ export default function MoodScreen() {
         ) : sheet === 'co2' ? (
           <>
             <Text style={styles.sheetExplain}>
-              Producing food costs CO2, so every item you eat instead of tossing is production CO2
-              that wasn&apos;t wasted. We turn each item into kilograms (a piece counts as{' '}
-              {details.data ? details.data.co2Info.pieceWeightKg * 1000 : 250} g) and multiply by
-              its category&apos;s factor.
+              {t('waste.detail.co2Intro', {
+                grams: details.data ? details.data.co2Info.pieceWeightKg * 1000 : 250,
+              })}
             </Text>
             {usedItems.length === 0 ? (
-              <Text style={styles.actionSub}>Use some items to start saving CO2.</Text>
+              <Text style={styles.actionSub}>{t('waste.detail.co2Empty')}</Text>
             ) : (
               usedItems.map((item) => (
-                <SheetItemRow key={item.id} item={item} right={`${item.co2Kg ?? 0} kg`} />
+                <SheetItemRow
+                  key={item.id}
+                  item={item}
+                  right={t('waste.detail.kg', { count: item.co2Kg ?? 0 })}
+                />
               ))
             )}
             {details.data ? (
               <View style={styles.factorTable}>
-                <Text style={styles.sheetHighlight}>Factors (kg CO2 per kg of food)</Text>
+                <Text style={styles.sheetHighlight}>{t('waste.detail.factorsTitle')}</Text>
                 {Object.entries(details.data.co2Info.perKgByCategory).map(([key, factor]) => (
                   <View key={key} style={styles.factorRow}>
-                    <Text style={styles.factorName}>{CATEGORY_LABELS[key] ?? key}</Text>
+                    <Text style={styles.factorName}>{t(`waste.co2Categories.${key}`)}</Text>
                     <Text style={styles.factorValue}>{factor}</Text>
                   </View>
                 ))}
                 <View style={styles.factorRow}>
-                  <Text style={styles.factorName}>Anything else</Text>
+                  <Text style={styles.factorName}>{t('waste.detail.anythingElse')}</Text>
                   <Text style={styles.factorValue}>{details.data.co2Info.perKgDefault}</Text>
                 </View>
               </View>
