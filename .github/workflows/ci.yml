@@ -1,0 +1,149 @@
+name: CI
+
+# Runs on every push (lint + type-check + unit tests + build) and adds the
+# integration suite on pull requests, where we spin up real Postgres + Redis
+# service containers (mirroring docker-compose.test.yml).
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+# Cancel an in-progress run if a newer commit lands on the same ref.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Turbo is happy with these even when there's no remote cache configured.
+  TURBO_TELEMETRY_DISABLED: 1
+
+jobs:
+  quality:
+    name: Lint, type-check, unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The api and web packages type-check against shared/dist, so build it first.
+      - name: Build shared package
+        run: pnpm --filter @pantryai/shared build
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Type-check
+        run: pnpm run typecheck
+
+      - name: Unit tests (api)
+        run: pnpm --filter @pantryai/api test:unit
+
+  integration:
+    name: Integration tests (Postgres + Redis)
+    runs-on: ubuntu-latest
+    # Integration flows hit a real DB, so only run them on PRs to keep pushes fast.
+    if: github.event_name == 'pull_request'
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: pantryai_test
+          POSTGRES_USER: pantryai
+          POSTGRES_PASSWORD: pantryai
+        ports:
+          # Same port the test setup expects (docker-compose.test.yml).
+          - 5433:5432
+        options: >-
+          --health-cmd "pg_isready -U pantryai -d pantryai_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6380:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      # Both the migrate step and the test app point at the throwaway test DB.
+      DATABASE_TEST_URL: postgresql://pantryai:pantryai@localhost:5433/pantryai_test
+      DATABASE_DIRECT_URL: postgresql://pantryai:pantryai@localhost:5433/pantryai_test
+      DATABASE_TRANSACTION_POOLER_URL: postgresql://pantryai:pantryai@localhost:5433/pantryai_test
+      REDIS_HOST: localhost
+      REDIS_PORT: '6380'
+      # Placeholder secrets so env validation passes at boot. The integration
+      # tests stub the real Mistral/R2 calls, so these never leave the runner.
+      JWT_SECRET: ci-test-jwt-secret
+      JWT_REFRESH_SECRET: ci-test-jwt-refresh-secret
+      MISTRAL_API_KEY: ci-test-mistral-key
+      R2_ENDPOINT: https://ci.test.r2
+      R2_ACCESS_KEY_ID: ci-test-access-key
+      R2_SECRET_ACCESS_KEY: ci-test-secret-key
+      R2_BUCKET_NAME: ci-test-bucket
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shared package
+        run: pnpm --filter @pantryai/shared build
+
+      - name: Generate Prisma client
+        run: pnpm --filter @pantryai/api exec prisma generate
+
+      - name: Apply migrations to the test DB
+        run: pnpm --filter @pantryai/api exec prisma migrate deploy
+
+      - name: Integration tests (api)
+        run: pnpm --filter @pantryai/api test:integration
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    env:
+      # next build needs this at build time; a placeholder is fine here.
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm --filter @pantryai/api exec prisma generate
+
+      - name: Turbo build
+        run: pnpm run build
