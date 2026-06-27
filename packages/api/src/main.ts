@@ -1,3 +1,4 @@
+import './instrument.js';
 import fastifyHelmet from '@fastify/helmet';
 import fastifyMultipart from '@fastify/multipart';
 import { ValidationPipe } from '@nestjs/common';
@@ -7,6 +8,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import 'dotenv/config';
 import 'reflect-metadata';
 import { AppModule } from './app.module.js';
+import { setupBullBoard } from './common/bull-board.js';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter.js';
 import { TransformResponseInterceptor } from './common/interceptors/transform-response.interceptor.js';
 
@@ -51,6 +53,8 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new TransformResponseInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter(app.get(HttpAdapterHost)));
+
+  await setupBullBoard(app);
 
   const port = process.env['PORT'] ?? 3001;
   await app.listen(port, '0.0.0.0');

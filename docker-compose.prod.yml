@@ -1,8 +1,8 @@
 # Production stack for the PantryAI API, meant to run on the Hetzner host.
 #
 # Postgres is NOT here on purpose: in production the database is Supabase, so we
-# only run the API, Redis (queue), Nginx (SSL termination), and optionally a
-# separate OCR worker.
+# only run the API, a dedicated OCR worker, Redis (queue), and Nginx (SSL
+# termination).
 #
 # Bring it up with:   docker compose -f docker-compose.prod.yml up -d --build
 # Migrations run from the deploy pipeline before this (see docs/deployment.md).
@@ -35,35 +35,36 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: '6379'
       PORT: '3001'
+      # The API serves HTTP only. The OCR processor and the cron jobs run in the
+      # worker container below, so the API opts out here (deviation D2 split).
+      RUN_OCR_WORKER: 'false'
     depends_on:
       redis:
         condition: service_healthy
     expose:
       - '3001'
     healthcheck:
-      # No dedicated /health route yet, so we hit the always-on Swagger page.
-      test: ['CMD', 'wget', '-qO-', 'http://localhost:3001/api/docs']
+      # Hits the readiness route, which also pings Postgres and Redis.
+      test: ['CMD', 'wget', '-qO-', 'http://localhost:3001/health']
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 20s
 
-  # Optional dedicated OCR worker. The API already runs the OCR processor
-  # in-process (single-process MVP), so enabling this WITHOUT turning the
-  # in-process one off would double-process jobs. It's behind a profile until
-  # we split them cleanly (deviation D2). Enable with:
-  #   docker compose -f docker-compose.prod.yml --profile worker up -d
+  # Dedicated OCR worker: same image, no HTTP server. It's the only process with
+  # RUN_OCR_WORKER=true, so it owns the OCR queue and the scheduled cron jobs
+  # while the API stays free to serve requests (matches the deployment diagram).
   worker:
     image: pantryai-api:latest
     container_name: pantryai_worker
     restart: unless-stopped
-    profiles: ['worker']
     command: ['node', 'dist/worker']
     env_file:
       - packages/api/.env
     environment:
       REDIS_HOST: redis
       REDIS_PORT: '6379'
+      RUN_OCR_WORKER: 'true'
     depends_on:
       redis:
         condition: service_healthy

@@ -7,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
+import { Sentry } from '../../instrument.js';
 
 interface ErrorEnvelope {
   success: false;
@@ -46,6 +47,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       this.logger.error(
         exception instanceof Error ? (exception.stack ?? exception.message) : String(exception),
       );
+      // Only unexpected (non-HttpException) failures go to Sentry. No-op when
+      // SENTRY_DSN is unset.
+      Sentry.captureException(exception);
     }
 
     const body: ErrorEnvelope = { success: false, error: { code, message } };

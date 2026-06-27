@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { runsBackgroundJobs } from '../common/background-jobs.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { R2StorageService } from './r2-storage.service.js';
 
@@ -21,7 +22,14 @@ export class R2SweeperService {
     private readonly prisma: PrismaService,
   ) {}
 
+  // The schedule only fires in the background-job process; the actual sweep lives
+  // in sweepOrphans so tests can call it directly.
   @Cron(CronExpression.EVERY_DAY_AT_3AM)
+  async scheduledSweep(): Promise<void> {
+    if (!runsBackgroundJobs()) return;
+    await this.sweepOrphans();
+  }
+
   async sweepOrphans(): Promise<void> {
     const cutoff = Date.now() - MAX_AGE_MS;
     let objects;

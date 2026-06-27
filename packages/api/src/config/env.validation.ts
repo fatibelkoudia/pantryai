@@ -16,6 +16,16 @@ const envSchema = z.object({
   R2_BUCKET_NAME: z.string().min(1, 'R2_BUCKET_NAME is required'),
   REDIS_HOST: z.string().min(1).default('localhost'),
   REDIS_PORT: z.string().regex(/^\d+$/, 'REDIS_PORT must be a number').default('6379'),
+  // Error monitoring. Optional: when SENTRY_DSN is unset, Sentry stays a no-op,
+  // so local and dev runs don't send anything.
+  SENTRY_DSN: z.string().optional(),
+  // Set on the worker container so it picks up OCR jobs. The API container leaves
+  // this off (or 'false') so the two don't process the same job twice.
+  RUN_OCR_WORKER: z.string().optional(),
+  // Basic-auth credentials for the BullMQ dashboard at /admin/queues. If either
+  // is missing the dashboard is not mounted (so it's never open by accident).
+  BULLBOARD_USER: z.string().optional(),
+  BULLBOARD_PASSWORD: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

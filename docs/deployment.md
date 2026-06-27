@@ -4,13 +4,16 @@ This explains how PantryAI gets to production and what runs where.
 
 ## The shape of it
 
-There are three moving parts in production:
+There are four moving parts in production:
 
 - The **web app** runs on Vercel.
 - The **API** runs in a Docker container on a Hetzner server, behind Nginx which
   terminates SSL.
+- A separate **OCR worker** container runs the BullMQ queue processor and the
+  scheduled jobs, so heavy OCR work never shares an event loop with the API.
 - The **database** is PostgreSQL on Supabase, and **Redis** runs as a container
-  next to the API for the OCR queue.
+  that both the API and the worker reach over the compose network (it is not
+  published to the host).
 
 Receipt images live in Cloudflare R2 and are deleted within 24 hours.
 
@@ -18,15 +21,15 @@ Receipt images live in Cloudflare R2 and are deleted within 24 hours.
         Browser / phone
               │  HTTPS
               v
-        ┌───────────┐         ┌──────────────┐
-        │  Vercel   │         │   Hetzner    │
-        │  (web)    │──────▶  │   Nginx :443 │  SSL termination
-        └───────────┘         │      │       │
-                              │      v       │
-                              │  API :3001   │
-                              │      │       │
-                              │   Redis      │
-                              └──────────────┘
+        ┌───────────┐         ┌────────────────────┐
+        │  Vercel   │         │      Hetzner       │
+        │  (web)    │──────▶  │   Nginx :443       │  SSL termination
+        └───────────┘         │      │             │
+                              │      v             │
+                              │  API :3001         │
+                              │      │             │
+                              │   Redis ◀── Worker │  OCR + cron jobs
+                              └────────────────────┘
                                      │
                                      v
                               Supabase (Postgres)
@@ -147,21 +150,74 @@ git checkout v1.2.2
 docker compose -f docker-compose.prod.yml up -d --build
 ```
 
-## A note on the OCR worker
+## The OCR worker
 
-Right now the OCR worker runs inside the API process. That is the simplest thing
-to deploy and it is fine for the expected load. The work still goes through a real
-Redis queue, so nothing blocks the HTTP request itself.
+In production the OCR work runs in its own container (`node dist/worker`), next to
+the API and sharing the same Redis. This matches the deployment diagram from the
+design: a heavy OCR job runs in the worker and never ties up the API event loop.
 
-The image can also run as a worker-only process (`node dist/worker`), and the
-production compose file has a `worker` service behind a profile for that. We do
-not enable it yet, because the API already does the OCR work in-process, and
-running both at once would process each job twice. Splitting them cleanly is
-tracked as a known divergence from the original design (see
-[CONCEPTION_DIVERGENCES.md](./CONCEPTION_DIVERGENCES.md)).
+Which process does the background work is decided by one env var, `RUN_OCR_WORKER`:
 
-## Monitoring (next step)
+- The **API** container sets `RUN_OCR_WORKER=false`. It enqueues OCR jobs but does
+  not consume them, and it does not run the daily cron jobs.
+- The **worker** container sets `RUN_OCR_WORKER=true`. It owns the OCR queue
+  processor and the scheduled jobs (R2 sweep, expiration push).
 
-Monitoring is not wired up yet. The plan is error tracking with Sentry, uptime
-checks with Uptime Robot, and the BullMQ dashboard for the queue, all on their
-free tiers. This lands with the validation and deployment phase.
+That split is what stops a job, or a daily push, from firing twice. Both values
+are already set in `docker-compose.prod.yml`, so `up -d` brings both containers up
+correctly.
+
+For a single-process setup (local dev or a minimal deploy), leave `RUN_OCR_WORKER`
+unset: it defaults to on, so one process does both the HTTP and the OCR work, just
+like before.
+
+## Monitoring
+
+Error tracking (Sentry), uptime (Uptime Robot), and the OCR queue dashboard
+(BullMQ) are wired up. The full setup, the env vars, and the RGPD note on scrubbing
+personal data live in [monitoring.md](./monitoring.md). The short version:
+
+- `GET /health` pings Postgres and Redis. The Docker healthcheck and Uptime Robot
+  both use it.
+- Sentry is off unless `SENTRY_DSN` is set, and it strips PII before sending.
+- The queue dashboard is at `/admin/queues`, behind basic auth, only mounted when
+  `BULLBOARD_USER` and `BULLBOARD_PASSWORD` are set.
+
+## Go-live runbook
+
+The first production stand-up, in order. After this, releases are automatic from
+Git tags.
+
+1. **Provision the server.** Create a Hetzner CX11 (or the cheapest tier), Ubuntu
+   LTS. Install Docker and the Compose plugin.
+2. **DNS.** Point an A record for your API domain (for example `api.pantryai.app`)
+   at the server's IP.
+3. **Get the code.** Clone the repo to `/opt/pantryai`.
+4. **Secrets.** Create `packages/api/.env` on the server with the production
+   values: database URLs (Supabase), JWT secrets, Mistral key, R2 keys, and the
+   monitoring vars (`SENTRY_DSN`, `BULLBOARD_USER`, `BULLBOARD_PASSWORD`). Leave
+   `RUN_OCR_WORKER` out of the file; compose sets it per container.
+5. **SSL.** Issue a certificate with certbot for the API domain. Update
+   `server_name` and the certificate paths in `deploy/nginx/pantryai.conf` to match
+   your domain.
+6. **Migrate.** Run `pnpm --filter @pantryai/api exec prisma migrate deploy`
+   against `DATABASE_DIRECT_URL` (this also happens in the deploy workflow).
+7. **Bring up the stack.** From `/opt/pantryai`:
+
+   ```bash
+   docker compose -f docker-compose.prod.yml up -d --build
+   ```
+
+   This starts Redis, the API, the worker, and Nginx.
+
+8. **Check it.** `curl https://<your-domain>/health` returns
+   `{"status":"ok","db":"up","redis":"up"}`. Open `/api/docs` and
+   `/admin/queues` (the dashboard should ask for the basic-auth login).
+9. **Web app.** Deploy the web app to Vercel (the deploy workflow does this on a
+   tag, or run it once by hand). Point its API base URL at your domain.
+10. **Monitoring.** Add the Uptime Robot monitor on `/health`, and confirm Sentry
+    receives a test error with no personal data. See
+    [monitoring.md](./monitoring.md).
+
+Acceptance for the deployment phase: the site is reachable over HTTPS, `/health` is
+green, and the three monitors are live.

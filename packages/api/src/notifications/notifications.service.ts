@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
+import { runsBackgroundJobs } from '../common/background-jobs.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ExpoPushMessage, sendExpoPushMessages } from './expo-push.js';
 
@@ -15,6 +16,9 @@ export class NotificationsService {
   // directly from tests without waiting for the schedule to fire.
   @Cron('0 8 * * *')
   async handleExpirationAlerts(): Promise<void> {
+    // Only the background-job process runs the daily push, so the API and worker
+    // don't both notify the same user.
+    if (!runsBackgroundJobs()) return;
     await this.checkExpiringItems();
   }
 
