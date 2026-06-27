@@ -48,5 +48,5 @@ Solo-developer project for RNCP39583 certification (Expert en Développement Log
 
 ## Future Improvements
 
-Out-of-scope ideas and v2 features live in `FUTURE.md` at the repo root.
+Out-of-scope ideas and v2 features live in `help/FUTURE.md`.
 Check it before proposing improvements; add new out-of-scope ideas there instead of implementing them unsolicited.
