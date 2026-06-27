@@ -10,6 +10,7 @@ import { Stack, useRootNavigationState, useRouter, useSegments } from 'expo-rout
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { syncPushRegistrationIfGranted } from '../src/lib/push';
 import { LocaleSync } from '../src/components/LocaleSync';
 import { useAuthStore } from '../src/store/auth';
@@ -89,33 +90,38 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthGate>
-        <LocaleSync />
-        <Stack>
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="onboarding" options={{ headerShown: false, gestureEnabled: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="add-stock"
-            options={{ title: t('stackTitles.addToStock'), presentation: 'modal' }}
-          />
-          <Stack.Screen
-            name="manual-entry"
-            options={{ title: t('stackTitles.addManually'), presentation: 'modal' }}
-          />
-          <Stack.Screen
-            name="scan-result"
-            options={{ title: t('stackTitles.receiptResult'), presentation: 'modal' }}
-          />
-          <Stack.Screen name="scan" options={{ title: t('stackTitles.scan') }} />
-          <Stack.Screen name="profile" options={{ title: t('stackTitles.profile') }} />
-          <Stack.Screen name="expiring" options={{ title: t('stackTitles.expiringSoon') }} />
-          <Stack.Screen name="mood" options={{ title: t('stackTitles.trashyMood') }} />
-          <Stack.Screen name="rewards" options={{ title: t('stackTitles.rewards') }} />
-        </Stack>
-      </AuthGate>
-    </QueryClientProvider>
+    <SafeAreaProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthGate>
+          <LocaleSync />
+          <Stack>
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="onboarding"
+              options={{ headerShown: false, gestureEnabled: false }}
+            />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="add-stock"
+              options={{ title: t('stackTitles.addToStock'), presentation: 'modal' }}
+            />
+            <Stack.Screen
+              name="manual-entry"
+              options={{ title: t('stackTitles.addManually'), presentation: 'modal' }}
+            />
+            <Stack.Screen
+              name="scan-result"
+              options={{ title: t('stackTitles.receiptResult'), presentation: 'modal' }}
+            />
+            <Stack.Screen name="scan" options={{ title: t('stackTitles.scan') }} />
+            <Stack.Screen name="profile" options={{ title: t('stackTitles.profile') }} />
+            <Stack.Screen name="expiring" options={{ title: t('stackTitles.expiringSoon') }} />
+            <Stack.Screen name="mood" options={{ title: t('stackTitles.trashyMood') }} />
+            <Stack.Screen name="rewards" options={{ title: t('stackTitles.rewards') }} />
+          </Stack>
+        </AuthGate>
+      </QueryClientProvider>
+    </SafeAreaProvider>
   );
 }
 

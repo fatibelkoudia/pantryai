@@ -4,7 +4,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { TFunction } from 'i18next';
 import {
   ActivityIndicator,
   FlatList,
@@ -15,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { apiClient } from '../../src/api/client';
 import { ConservationTipCard } from '../../src/components/ConservationTipCard';
 import { TrashyMood } from '../../src/components/TrashyMood';
@@ -50,6 +50,7 @@ function ExpirationBadge({ expirationDate }: { expirationDate?: string }) {
 export default function InventoryScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const [location, setLocation] = useState<StockLocation | 'ALL'>('ALL');
   const [freshness, setFreshness] = useState<Freshness | null>(null);
@@ -141,7 +142,7 @@ export default function InventoryScreen() {
   const usedCount = waste.data?.counts.consumed ?? 0;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <View>
           <Text style={styles.title}>{t('stock.inventory')}</Text>
@@ -151,7 +152,7 @@ export default function InventoryScreen() {
           style={styles.headerBtn}
           onPress={() => router.push('/scan')}
           accessibilityRole="button"
-          accessibilityLabel={t('home.scanReceiptA11y')}
+          accessibilityLabel={t('home.openScannerA11y')}
         >
           <Ionicons name="scan-outline" size={20} color={colors.forestGreen} />
         </TouchableOpacity>

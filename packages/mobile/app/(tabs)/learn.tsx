@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { apiClient } from '../../src/api/client';
 import { LessonSheet } from '../../src/components/LessonSheet';
 import { TrashyMood } from '../../src/components/TrashyMood';
@@ -32,6 +33,7 @@ type Filter = TipCategory | 'all';
 
 export default function LearnScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { t, i18n } = useTranslation();
   const locale: Locale = i18n.language.startsWith('fr') ? 'fr' : 'en';
 
@@ -80,7 +82,7 @@ export default function LearnScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <View>
           <Text style={styles.title}>{t('learn.title')}</Text>

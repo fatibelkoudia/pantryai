@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { apiClient } from '../../src/api/client';
 import { TrashyMood } from '../../src/components/TrashyMood';
 import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../../src/lib/expiry';
@@ -24,6 +25,7 @@ const EXPIRING_PREVIEW = 3;
 
 export default function HomeScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const user = useAuthStore((s) => s.user);
   const { t, i18n } = useTranslation();
   const locale: Locale = i18n.language.startsWith('fr') ? 'fr' : 'en';
@@ -65,8 +67,11 @@ export default function HomeScreen() {
   const mood = waste.data ? mascotMoodMeta[waste.data.mood] : null;
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Header: avatar -> profile, bell -> expiring alerts, plus a scan shortcut */}
+    <ScrollView
+      style={[styles.container, { paddingTop: insets.top }]}
+      contentContainerStyle={styles.content}
+    >
+      {/* Header: avatar -> profile, bell -> expiring alerts */}
       <View style={styles.header}>
         <TouchableOpacity
           style={[styles.avatar, avatar ? { backgroundColor: avatar.bg } : null]}
@@ -90,19 +95,35 @@ export default function HomeScreen() {
         </View>
         <TouchableOpacity
           style={styles.headerBtn}
-          onPress={() => router.push('/scan')}
-          accessibilityRole="button"
-          accessibilityLabel={t('home.scanReceiptA11y')}
-        >
-          <Ionicons name="scan-outline" size={20} color={colors.forestGreen} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.headerBtn}
           onPress={() => router.push('/expiring')}
           accessibilityRole="button"
           accessibilityLabel={t('home.seeExpiringA11y')}
         >
           <Ionicons name="notifications-outline" size={20} color={colors.forestGreen} />
+        </TouchableOpacity>
+      </View>
+
+      {/* Scan shortcuts: the two ways to add food, front and center */}
+      <View style={styles.scanRow}>
+        <TouchableOpacity
+          style={styles.scanPrimary}
+          onPress={() => router.push({ pathname: '/scan', params: { mode: 'receipt' } })}
+          accessibilityRole="button"
+        >
+          <View style={styles.scanIconOnBrand}>
+            <Ionicons name="receipt-outline" size={22} color={colors.onBrand} />
+          </View>
+          <Text style={styles.scanPrimaryText}>{t('home.scanReceipt')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.scanSecondary}
+          onPress={() => router.push({ pathname: '/scan', params: { mode: 'ean' } })}
+          accessibilityRole="button"
+        >
+          <View style={styles.scanIconTinted}>
+            <Ionicons name="barcode-outline" size={22} color={colors.forestGreen} />
+          </View>
+          <Text style={styles.scanSecondaryText}>{t('home.scanBarcode')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -282,6 +303,54 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  scanRow: { flexDirection: 'row', gap: 10 },
+  scanPrimary: {
+    ...buttonLip,
+    flex: 1,
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: colors.forestGreen,
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+  },
+  scanSecondary: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: colors.white,
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 10,
+  },
+  scanIconOnBrand: {
+    width: 40,
+    height: 40,
+    borderRadius: 999,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scanIconTinted: {
+    width: 40,
+    height: 40,
+    borderRadius: 999,
+    backgroundColor: colors.heroMint,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scanPrimaryText: {
+    color: colors.onBrand,
+    fontSize: 13,
+    fontFamily: font.bold,
+    textAlign: 'center',
+  },
+  scanSecondaryText: {
+    color: colors.charcoal,
+    fontSize: 13,
+    fontFamily: font.bold,
+    textAlign: 'center',
   },
   card: { backgroundColor: colors.white, borderRadius: 16, padding: 20 },
   moodCard: { alignItems: 'center', gap: 6 },

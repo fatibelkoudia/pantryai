@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { buttonLip, colors, font } from '../../src/theme';
 import type { IoniconName } from '../../src/lib/foodIcons';
 
@@ -31,6 +32,7 @@ function TabIcon({
 // so neither needs a tab.
 export default function TabLayout() {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   return (
     <Tabs
       screenOptions={{
@@ -40,8 +42,9 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: colors.white,
           borderTopColor: colors.border,
-          height: 62,
+          height: 62 + insets.bottom,
           paddingTop: 4,
+          paddingBottom: insets.bottom,
         },
         tabBarLabelStyle: {
           fontFamily: font.semibold,

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, font } from '../theme';
 
 interface BottomSheetProps {
@@ -22,11 +23,12 @@ interface BottomSheetProps {
 // the shopping add-item dialog. Slides up from the bottom, closes on the
 // backdrop, the X button, or the hardware back button.
 export function BottomSheet({ visible, title, onClose, children }: BottomSheetProps) {
+  const insets = useSafeAreaInsets();
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.backdropWrap}>
         <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel="Close" />
-        <View style={styles.sheet}>
+        <View style={[styles.sheet, { paddingBottom: Math.max(28, insets.bottom) }]}>
           <View style={styles.handle} />
           <View style={styles.header}>
             <Text style={styles.title}>{title}</Text>
@@ -53,7 +55,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
-    paddingBottom: 28,
     maxHeight: '75%',
   },
   handle: {
