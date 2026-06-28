@@ -76,27 +76,16 @@ Builds the Next.js app and deploys it to Vercel using the Vercel CLI.
 
 ### The rollback safety net
 
-Before the API job swaps in the new version, it records the image that is
-currently serving. After it starts the new container, it polls the API for up to
-a minute. If the API never answers, it puts the previous image back and fails the
-job so we get notified. So a broken release does not leave the API down, it falls
-back to the last version that worked. This is the mitigation for risk R6 in the
-plan.
+If the new API container does not come up, the job puts the previous image back and
+fails so we get notified, so a broken release never leaves the API down (risk R6).
+The full mechanism is in [deployment.md](./deployment.md#rollback).
 
 ## Secrets
 
-The deploy workflow needs these set in the GitHub repository settings, under
-Actions secrets. CI does not need any of them (it uses placeholders).
-
-| Secret                | Used for                                           |
-| --------------------- | -------------------------------------------------- |
-| `VERCEL_TOKEN`        | Deploying the web app                              |
-| `VERCEL_ORG_ID`       | The Vercel org                                     |
-| `VERCEL_PROJECT_ID`   | The Vercel project                                 |
-| `DATABASE_DIRECT_URL` | Running migrations against the production database |
-| `HETZNER_HOST`        | The server address                                 |
-| `HETZNER_USER`        | The SSH user                                       |
-| `HETZNER_SSH_KEY`     | The private SSH key                                |
+The deploy workflow needs a set of GitHub Actions secrets (the Vercel tokens, the
+Hetzner SSH details, and `DATABASE_DIRECT_URL` for the migration step). CI does not
+need any of them, it uses placeholders. The full list is in
+[deployment.md](./deployment.md#secrets-the-workflows-need).
 
 ## Running the same checks locally
 

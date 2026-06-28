@@ -51,7 +51,7 @@ below describe the `data` or `error` part.
 
 ## 1. Authentication (Must)
 
-### CR-AUTH-01 — Register a new account
+### CR-AUTH-01: Register a new account
 
 - **Priorité:** Must
 - **Préconditions:** No account exists for `test-a@example.com`.
@@ -60,7 +60,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** 201. Response carries an `accessToken` and a
   `refreshToken`. The password is never returned.
 
-### CR-AUTH-02 — Reject a duplicate email
+### CR-AUTH-02: Reject a duplicate email
 
 - **Priorité:** Must
 - **Préconditions:** CR-AUTH-01 has run (the email exists).
@@ -69,7 +69,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** 409 Conflict, error message says the email is taken. No
   second account is created.
 
-### CR-AUTH-03 — Reject a weak or malformed payload
+### CR-AUTH-03: Reject a weak or malformed payload
 
 - **Priorité:** Must
 - **Préconditions:** None.
@@ -78,7 +78,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** 400 Bad Request from the validation pipe, listing the
   fields that failed.
 
-### CR-AUTH-04 — Log in with valid credentials
+### CR-AUTH-04: Log in with valid credentials
 
 - **Priorité:** Must
 - **Préconditions:** The account from CR-AUTH-01 exists.
@@ -86,7 +86,7 @@ below describe the `data` or `error` part.
   1. `POST /auth/login` with the correct email and password.
 - **Résultat attendu:** 200 with a fresh `accessToken` and `refreshToken`.
 
-### CR-AUTH-05 — Reject wrong credentials
+### CR-AUTH-05: Reject wrong credentials
 
 - **Priorité:** Must
 - **Préconditions:** The account exists.
@@ -95,7 +95,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** 401 Unauthorized. The message does not reveal whether the
   email exists.
 
-### CR-AUTH-06 — Refresh an access token
+### CR-AUTH-06: Refresh an access token
 
 - **Priorité:** Must
 - **Préconditions:** We have a valid `refreshToken` from login.
@@ -103,7 +103,7 @@ below describe the `data` or `error` part.
   1. `POST /auth/refresh` with the refresh token.
 - **Résultat attendu:** 200 with a new access token.
 
-### CR-AUTH-07 — A guarded route needs a token
+### CR-AUTH-07: A guarded route needs a token
 
 - **Priorité:** Must
 - **Préconditions:** None.
@@ -111,7 +111,7 @@ below describe the `data` or `error` part.
   1. Call `GET /stocks` with no `Authorization` header.
 - **Résultat attendu:** 401 Unauthorized. No data leaks.
 
-### CR-AUTH-08 — Read the current profile
+### CR-AUTH-08: Read the current profile
 
 - **Priorité:** Must
 - **Préconditions:** Logged in as User A.
@@ -123,7 +123,7 @@ below describe the `data` or `error` part.
 
 ## 2. Products and stock (Must)
 
-### CR-STOCK-01 — Create a product by hand
+### CR-STOCK-01: Create a product by hand
 
 - **Priorité:** Must
 - **Préconditions:** Logged in.
@@ -132,7 +132,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** 201 with the new product id. This is the universal
   fallback for items not in any catalogue (risk F3).
 
-### CR-STOCK-02 — Look a product up by barcode (Open Food Facts)
+### CR-STOCK-02: Look a product up by barcode (Open Food Facts)
 
 - **Priorité:** Must
 - **Préconditions:** Logged in. The EAN exists in Open Food Facts.
@@ -141,7 +141,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** 200 with the product name and brand pulled from Open Food
   Facts. A second call for the same EAN is served from the Redis cache.
 
-### CR-STOCK-03 — Add a stock item
+### CR-STOCK-03: Add a stock item
 
 - **Priorité:** Must
 - **Préconditions:** A product exists (CR-STOCK-01).
@@ -150,7 +150,7 @@ below describe the `data` or `error` part.
      location (`FRIDGE`, `FREEZER`, or `PANTRY`).
 - **Résultat attendu:** 201 with the stock item, scoped to the current user.
 
-### CR-STOCK-04 — List stock and filter by location
+### CR-STOCK-04: List stock and filter by location
 
 - **Priorité:** Must
 - **Préconditions:** Several stock items in different locations.
@@ -158,7 +158,7 @@ below describe the `data` or `error` part.
   1. `GET /stocks?location=FRIDGE`.
 - **Résultat attendu:** 200 with only the fridge items.
 
-### CR-STOCK-05 — Filter for items expiring soon
+### CR-STOCK-05: Filter for items expiring soon
 
 - **Priorité:** Must
 - **Préconditions:** One item expiring within 3 days, one far in the future.
@@ -166,7 +166,7 @@ below describe the `data` or `error` part.
   1. `GET /stocks?expiringSoon=true` (or the documented filter).
 - **Résultat attendu:** 200 with only the soon-to-expire item.
 
-### CR-STOCK-06 — Search stock by name
+### CR-STOCK-06: Search stock by name
 
 - **Priorité:** Must
 - **Préconditions:** A stock item whose product name contains "lait".
@@ -174,7 +174,7 @@ below describe the `data` or `error` part.
   1. `GET /stocks?search=lait`.
 - **Résultat attendu:** 200 with the matching item(s) only.
 
-### CR-STOCK-07 — Update and delete a stock item
+### CR-STOCK-07: Update and delete a stock item
 
 - **Priorité:** Must
 - **Préconditions:** A stock item exists.
@@ -184,7 +184,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** The patch returns the new quantity. The delete returns
   success and the item no longer shows in `GET /stocks`.
 
-### CR-STOCK-08 — Users cannot see each other's stock (isolation)
+### CR-STOCK-08: Users cannot see each other's stock (isolation)
 
 - **Priorité:** Must
 - **Préconditions:** User A has a stock item. We have User B's token.
@@ -197,7 +197,7 @@ below describe the `data` or `error` part.
 
 ## 3. Receipt OCR pipeline (Must)
 
-### CR-OCR-01 — Upload a receipt and get a job back
+### CR-OCR-01: Upload a receipt and get a job back
 
 - **Priorité:** Must
 - **Préconditions:** Logged in. A sample receipt image or PDF on disk.
@@ -206,7 +206,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** 202 Accepted with a `jobId` and status `PENDING`. The
   call returns straight away (the work is queued, never synchronous).
 
-### CR-OCR-02 — Poll the job to completion
+### CR-OCR-02: Poll the job to completion
 
 - **Priorité:** Must
 - **Préconditions:** A job id from CR-OCR-01.
@@ -215,7 +215,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** The status moves `PENDING` → `PROCESSING` → `COMPLETED`,
   and the completed job carries the parsed line items.
 
-### CR-OCR-03 — Confirm the parsed items into stock
+### CR-OCR-03: Confirm the parsed items into stock
 
 - **Priorité:** Must
 - **Préconditions:** A `COMPLETED` job with parsed items.
@@ -224,7 +224,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** 201/200. New stock items appear in `GET /stocks` for the
   user. Manual corrections take under 2 minutes (KPI).
 
-### CR-OCR-04 — Native PDF parses without calling Mistral
+### CR-OCR-04: Native PDF parses without calling Mistral
 
 - **Priorité:** Must
 - **Préconditions:** A native (text-layer) Carrefour or Grand Frais PDF.
@@ -234,7 +234,7 @@ below describe the `data` or `error` part.
   fast path was used (zero Mistral OCR calls). Covered automatically by
   `pdf-text.spec.ts`.
 
-### CR-OCR-05 — Scanned image falls back to Mistral
+### CR-OCR-05: Scanned image falls back to Mistral
 
 - **Priorité:** Must
 - **Préconditions:** A photographed (image-only) receipt.
@@ -243,7 +243,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** Mistral OCR runs and the lines are parsed. If Mistral is
   unavailable the Tesseract fallback handles it (risk R4).
 
-### CR-OCR-06 — The receipt image is deleted within 24h (RGPD)
+### CR-OCR-06: The receipt image is deleted within 24h (RGPD)
 
 - **Priorité:** Must
 - **Préconditions:** A completed OCR job whose image went to R2.
@@ -254,7 +254,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** No receipt image survives past 24 hours in R2. The DB row
   no longer points at a deleted file.
 
-### CR-OCR-07 — Retailer parsers read their format
+### CR-OCR-07: Retailer parsers read their format
 
 - **Priorité:** Must
 - **Préconditions:** Sample receipts for Carrefour, Leclerc, Lidl, Auchan, and
@@ -268,7 +268,7 @@ below describe the `data` or `error` part.
 
 ## 4. QR e-ticket import (Must)
 
-### CR-QR-01 — Import a dematerialized receipt by URL
+### CR-QR-01: Import a dematerialized receipt by URL
 
 - **Priorité:** Must
 - **Préconditions:** Logged in. A receipt URL (loi AGEC e-ticket).
@@ -282,7 +282,7 @@ below describe the `data` or `error` part.
 
 ## 5. Expiration alerts (Must)
 
-### CR-ALERT-01 — Register a push device
+### CR-ALERT-01: Register a push device
 
 - **Priorité:** Must
 - **Préconditions:** Logged in on mobile.
@@ -290,7 +290,7 @@ below describe the `data` or `error` part.
   1. `POST /devices/register` with the Expo push token.
 - **Résultat attendu:** 201/200. The token is stored against the user.
 
-### CR-ALERT-02 — The daily job flags items expiring within 3 days
+### CR-ALERT-02: The daily job flags items expiring within 3 days
 
 - **Priorité:** Must
 - **Préconditions:** A registered device and a stock item expiring within 3 days
@@ -306,7 +306,7 @@ below describe the `data` or `error` part.
 
 ## 6. Web frontend (Must)
 
-### CR-WEB-01 — Register and log in from the web
+### CR-WEB-01: Register and log in from the web
 
 - **Priorité:** Must
 - **Préconditions:** Web app running.
@@ -315,7 +315,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** After login we land on the dashboard. Protected pages
   redirect to `/login` when we are signed out.
 
-### CR-WEB-02 — Dashboard and inventory render
+### CR-WEB-02: Dashboard and inventory render
 
 - **Priorité:** Must
 - **Préconditions:** Logged in with a few stock items.
@@ -324,7 +324,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** The dashboard shows Trashy's mood and the inventory lists
   items with an expiration badge (green / yellow / red).
 
-### CR-WEB-03 — Stock detail and receipt upload
+### CR-WEB-03: Stock detail and receipt upload
 
 - **Priorité:** Must
 - **Préconditions:** Logged in.
@@ -334,7 +334,7 @@ below describe the `data` or `error` part.
 - **Résultat attendu:** The detail page shows the item and a conservation tip. The
   uploader shows progress and then the parsed items to confirm.
 
-### CR-WEB-04 — Accessibility baseline (RGAA)
+### CR-WEB-04: Accessibility baseline (RGAA)
 
 - **Priorité:** Must
 - **Préconditions:** Web app running.
@@ -348,7 +348,7 @@ below describe the `data` or `error` part.
 
 ## 7. Manual entry (Must)
 
-### CR-MANUAL-01 — Add a product in under 10 seconds
+### CR-MANUAL-01: Add a product in under 10 seconds
 
 - **Priorité:** Must
 - **Préconditions:** Logged in on web or mobile.
@@ -362,7 +362,7 @@ below describe the `data` or `error` part.
 
 ## 8. Recipes (Should)
 
-### CR-RECIPE-01 — Suggest recipes from what is in stock
+### CR-RECIPE-01: Suggest recipes from what is in stock
 
 - **Priorité:** Should
 - **Préconditions:** Logged in with several stock items.
@@ -377,7 +377,7 @@ ingredients_required`, only returning those at or above the 70% threshold. The
 
 ## 9. Shopping list (Should)
 
-### CR-SHOP-01 — Generate a list from low and expiring stock
+### CR-SHOP-01: Generate a list from low and expiring stock
 
 - **Priorité:** Should
 - **Préconditions:** Logged in with some low or expiring items.
@@ -386,7 +386,7 @@ ingredients_required`, only returning those at or above the 70% threshold. The
 - **Résultat attendu:** 200 with suggested items from low stock and missing recipe
   ingredients.
 
-### CR-SHOP-02 — Add, edit, and remove items by hand
+### CR-SHOP-02: Add, edit, and remove items by hand
 
 - **Priorité:** Should
 - **Préconditions:** A shopping list exists.
@@ -399,7 +399,7 @@ ingredients_required`, only returning those at or above the 70% threshold. The
 
 ## 10. Conservation tips (Should)
 
-### CR-LEARN-01 — Get tips for a category
+### CR-LEARN-01: Get tips for a category
 
 - **Priorité:** Should
 - **Préconditions:** None (tips are public static content).
@@ -412,7 +412,7 @@ ingredients_required`, only returning those at or above the 70% threshold. The
 
 ## 11. Trashy waste layer (delivered V1)
 
-### CR-TRASHY-01 — Waste level score and mood
+### CR-TRASHY-01: Waste level score and mood
 
 - **Priorité:** Should
 - **Préconditions:** Logged in. Some items resolved as consumed, discarded, or
@@ -424,7 +424,7 @@ discarded + expired)` over the trailing 30 days, plus a mood band
   (EXCELLENT ≥ 90, GOOD ≥ 70, OKAY ≥ 50, BAD ≥ 30, AWFUL < 30). A brand-new user
   with nothing resolved scores 100 / EXCELLENT.
 
-### CR-TRASHY-02 — Challenges list
+### CR-TRASHY-02: Challenges list
 
 - **Priorité:** Should
 - **Préconditions:** Logged in.
@@ -437,7 +437,7 @@ discarded + expired)` over the trailing 30 days, plus a mood band
 
 ## 12. Security and RGPD (Must)
 
-### CR-RGPD-01 — Export my data (RGPD Article 20)
+### CR-RGPD-01: Export my data (RGPD Article 20)
 
 - **Priorité:** Must
 - **Préconditions:** Logged in with some data.
@@ -446,7 +446,7 @@ discarded + expired)` over the trailing 30 days, plus a mood band
 - **Résultat attendu:** 200 with a structured dump of the user's account, stock,
   jobs, and lists in a portable format.
 
-### CR-RGPD-02 — Delete my account (RGPD Article 17)
+### CR-RGPD-02: Delete my account (RGPD Article 17)
 
 - **Priorité:** Must
 - **Préconditions:** Logged in.
@@ -456,7 +456,7 @@ discarded + expired)` over the trailing 30 days, plus a mood band
 - **Résultat attendu:** The account and its data are removed. The follow-up login
   fails.
 
-### CR-SEC-01 — Rate limiting returns 429
+### CR-SEC-01: Rate limiting returns 429
 
 - **Priorité:** Must
 - **Préconditions:** None.
@@ -464,7 +464,7 @@ discarded + expired)` over the trailing 30 days, plus a mood band
   1. Hammer an endpoint past the throttler limit (100 requests / minute).
 - **Résultat attendu:** Once over the limit the API answers 429 Too Many Requests.
 
-### CR-SEC-02 — Security headers and CORS
+### CR-SEC-02: Security headers and CORS
 
 - **Priorité:** Must
 - **Préconditions:** API running.
@@ -474,7 +474,7 @@ discarded + expired)` over the trailing 30 days, plus a mood band
 - **Résultat attendu:** Helmet headers are present and the disallowed origin is
   rejected by CORS.
 
-### CR-SEC-03 — No PII in logs
+### CR-SEC-03: No PII in logs
 
 - **Priorité:** Must
 - **Préconditions:** Run a scan and an alert through the system.
@@ -489,7 +489,7 @@ discarded + expired)` over the trailing 30 days, plus a mood band
 We measure with a warm stack (run each call a few times first), then take a sample
 and compute the 95th percentile.
 
-### CR-PERF-01 — OCR p95 under 5 seconds
+### CR-PERF-01: OCR p95 under 5 seconds
 
 - **Priorité:** Must
 - **Préconditions:** A representative receipt (native PDF and a photo).
@@ -500,7 +500,7 @@ and compute the 95th percentile.
 - **Résultat attendu:** p95 ≤ 5 s. Native PDFs land well under this because they
   skip Mistral (text-layer fast path).
 
-### CR-PERF-02 — Add a product in 10 seconds or less
+### CR-PERF-02: Add a product in 10 seconds or less
 
 - **Priorité:** Must
 - **Préconditions:** Logged in on web.
@@ -509,7 +509,7 @@ and compute the 95th percentile.
      list, 10 times. Take the p95.
 - **Résultat attendu:** p95 ≤ 10 s.
 
-### CR-PERF-03 — Barcode scan in one gesture under 2 seconds
+### CR-PERF-03: Barcode scan in one gesture under 2 seconds
 
 - **Priorité:** Must
 - **Préconditions:** Mobile app, a product barcode.
@@ -519,7 +519,7 @@ and compute the 95th percentile.
 - **Résultat attendu:** Under 2 seconds for an item found locally or in Open Food
   Facts (risk F1).
 
-### CR-PERF-04 — Uptime and health
+### CR-PERF-04: Uptime and health
 
 - **Priorité:** Must
 - **Préconditions:** Production stack running.

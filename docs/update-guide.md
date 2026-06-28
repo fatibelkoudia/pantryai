@@ -102,22 +102,20 @@ version:
 
 ## The two API containers
 
-The same image runs as two containers in production: the `api` (HTTP) and the
-`worker` (OCR queue and cron jobs). They are told apart by `RUN_OCR_WORKER`, which
-compose sets to `false` on the API and `true` on the worker. After a deploy, check
-that both came up (`docker compose -f docker-compose.prod.yml ps`). If you ever run
-a single process instead, leave `RUN_OCR_WORKER` unset so it does both.
+In production the same image runs as two containers, the `api` and the `worker`,
+told apart by `RUN_OCR_WORKER`. After a deploy, check both came up:
+
+```bash
+docker compose -f docker-compose.prod.yml ps
+```
+
+Why it is split and how the flag works is in
+[deployment.md](./deployment.md#the-ocr-worker).
 
 ## When a deploy goes wrong
 
-The deploy rolls back on its own if the API fails to start. If you need to go back
-to an older version by hand, check that tag out on the server and rebuild:
-
-```bash
-cd /opt/pantryai
-git checkout v1.2.2
-docker compose -f docker-compose.prod.yml up -d --build
-```
+The deploy rolls back on its own if the API fails to start; the manual rollback
+steps are in [deployment.md](./deployment.md#rollback).
 
 If a migration is the problem, fix it forward with a new migration rather than
 editing one that already ran. Editing an applied migration puts the database and
