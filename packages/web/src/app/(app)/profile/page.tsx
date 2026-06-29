@@ -13,6 +13,7 @@ import {
   SUPPORTED_LOCALES,
 } from '@pantryai/shared';
 import type { StockLocation, UpdateUserSettingsDto } from '@pantryai/shared';
+import { AvatarImage } from '@/components/AvatarImage';
 import { apiClient } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
 
@@ -110,10 +111,10 @@ function ProfileCard() {
       <div className="flex items-center gap-4">
         <span
           aria-hidden
-          className="flex h-16 w-16 items-center justify-center rounded-full text-3xl"
+          className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-full"
           style={{ backgroundColor: avatar.bg }}
         >
-          {avatar.emoji}
+          <AvatarImage id={avatar.id} size={64} />
         </span>
         {editing ? null : (
           <div>
@@ -144,18 +145,27 @@ function ProfileCard() {
             <span className="text-sm font-medium">{t('profile.chooseAvatar')}</span>
             <div className="flex flex-wrap gap-2">
               {avatarPresets.map((preset) => (
-                <button
-                  key={preset.id}
-                  type="button"
-                  onClick={() => setAvatarId(preset.id)}
-                  aria-pressed={avatarId === preset.id}
-                  className={`flex h-12 w-12 items-center justify-center rounded-full text-2xl ${
-                    avatarId === preset.id ? 'ring-2 ring-brand' : ''
-                  }`}
-                  style={{ backgroundColor: preset.bg }}
-                >
-                  {preset.emoji}
-                </button>
+                <div key={preset.id} className="flex w-12 flex-col items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setAvatarId(preset.id)}
+                    aria-pressed={avatarId === preset.id}
+                    aria-label={preset.name}
+                    className={`flex h-12 w-12 items-center justify-center overflow-hidden rounded-full ${
+                      avatarId === preset.id ? 'ring-2 ring-brand' : ''
+                    }`}
+                    style={{ backgroundColor: preset.bg }}
+                  >
+                    <AvatarImage id={preset.id} size={48} />
+                  </button>
+                  <span
+                    className={`text-[10px] font-semibold ${
+                      avatarId === preset.id ? 'text-brand' : 'text-slate-500'
+                    }`}
+                  >
+                    {preset.name}
+                  </span>
+                </div>
               ))}
             </div>
           </div>

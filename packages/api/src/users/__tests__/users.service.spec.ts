@@ -56,20 +56,20 @@ describe('UsersService', () => {
       mockPrismaService.user.update.mockResolvedValue({
         ...mockUser,
         name: 'Fatima',
-        avatarId: 'tomato',
+        avatarId: 'chef',
       });
 
       const result = await service.updateProfile('user-uuid-1', {
         name: 'Fatima',
-        avatarId: 'tomato',
+        avatarId: 'chef',
       });
 
       expect(mockPrismaService.user.update).toHaveBeenCalledWith({
         where: { id: 'user-uuid-1' },
-        data: { name: 'Fatima', avatarId: 'tomato' },
+        data: { name: 'Fatima', avatarId: 'chef' },
       });
       expect(result.name).toBe('Fatima');
-      expect(result.avatarId).toBe('tomato');
+      expect(result.avatarId).toBe('chef');
       // never leak the hash in the response
       expect(result).not.toHaveProperty('passwordHash');
     });

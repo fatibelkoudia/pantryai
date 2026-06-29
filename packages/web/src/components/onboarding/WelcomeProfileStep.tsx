@@ -6,6 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 import { avatarPresets, getAvatarPreset } from '@pantryai/shared';
 import { apiClient } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
+import { AvatarImage } from '@/components/AvatarImage';
 import { StepShell } from './StepShell';
 
 interface StepProps {
@@ -54,18 +55,29 @@ export function WelcomeProfileStep({ stepIndex, totalSteps, onAdvance }: StepPro
       <span className="text-sm font-bold">{t('profile.chooseAvatar')}</span>
       <div className="flex flex-wrap gap-3">
         {avatarPresets.map((preset) => (
-          <button
-            key={preset.id}
-            type="button"
-            onClick={() => setAvatarId(preset.id)}
-            aria-pressed={selected.id === preset.id}
-            style={{ backgroundColor: preset.bg }}
-            className={`flex h-14 w-14 items-center justify-center rounded-full text-2xl transition-all duration-150 ${
-              selected.id === preset.id ? 'scale-105 ring-2 ring-brand-deep shadow-glow-brand' : ''
-            }`}
-          >
-            {preset.emoji}
-          </button>
+          <div key={preset.id} className="flex w-14 flex-col items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setAvatarId(preset.id)}
+              aria-pressed={selected.id === preset.id}
+              aria-label={preset.name}
+              style={{ backgroundColor: preset.bg }}
+              className={`flex h-14 w-14 items-center justify-center overflow-hidden rounded-full transition-all duration-150 ${
+                selected.id === preset.id
+                  ? 'scale-105 ring-2 ring-brand-deep shadow-glow-brand'
+                  : ''
+              }`}
+            >
+              <AvatarImage id={preset.id} size={56} />
+            </button>
+            <span
+              className={`text-[11px] font-semibold ${
+                selected.id === preset.id ? 'text-brand-deep' : 'text-slate-500'
+              }`}
+            >
+              {preset.name}
+            </span>
+          </div>
         ))}
       </div>
 

@@ -22,6 +22,7 @@ import {
   View,
 } from 'react-native';
 import { apiClient } from '../src/api/client';
+import { AvatarImage } from '../src/components/AvatarImage';
 import { BottomSheet } from '../src/components/BottomSheet';
 import { useAuthStore } from '../src/store/auth';
 import { buttonLip, colors, font } from '../src/theme';
@@ -189,7 +190,7 @@ function ProfileCard() {
     <View style={styles.card}>
       <View style={styles.profileRow}>
         <View style={[styles.avatar, { backgroundColor: avatar.bg }]}>
-          <Text style={styles.avatarEmoji}>{avatar.emoji}</Text>
+          <AvatarImage id={avatar.id} size={56} />
         </View>
         <View style={styles.profileInfo}>
           <Text style={styles.cardValue}>{user.name ?? user.email}</Text>
@@ -204,18 +205,30 @@ function ProfileCard() {
         <Text style={styles.fieldLabel}>{t('profile.chooseAvatar')}</Text>
         <View style={styles.avatarGrid}>
           {avatarPresets.map((preset) => (
-            <TouchableOpacity
-              key={preset.id}
-              onPress={() => setAvatarId(preset.id)}
-              accessibilityRole="button"
-              style={[
-                styles.avatarChoice,
-                { backgroundColor: preset.bg },
-                draftAvatar.id === preset.id && styles.avatarChoiceSelected,
-              ]}
-            >
-              <Text style={styles.avatarEmoji}>{preset.emoji}</Text>
-            </TouchableOpacity>
+            <View key={preset.id} style={styles.avatarItem}>
+              <TouchableOpacity
+                onPress={() => setAvatarId(preset.id)}
+                accessibilityRole="button"
+                accessibilityLabel={preset.name}
+                accessibilityState={{ selected: draftAvatar.id === preset.id }}
+                style={[
+                  styles.avatarChoice,
+                  { backgroundColor: preset.bg },
+                  draftAvatar.id === preset.id && styles.avatarChoiceSelected,
+                ]}
+              >
+                <AvatarImage id={preset.id} size={48} />
+              </TouchableOpacity>
+              <Text
+                style={[
+                  styles.avatarName,
+                  draftAvatar.id === preset.id && styles.avatarNameSelected,
+                ]}
+                numberOfLines={1}
+              >
+                {preset.name}
+              </Text>
+            </View>
           ))}
         </View>
 
@@ -621,8 +634,8 @@ const styles = StyleSheet.create({
     borderRadius: 999,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
-  avatarEmoji: { fontSize: 26 },
   editBtn: {
     borderWidth: 1,
     borderColor: colors.border,
@@ -632,14 +645,18 @@ const styles = StyleSheet.create({
   },
   editText: { fontSize: 13, fontFamily: font.semibold, color: colors.charcoal },
   avatarGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  avatarItem: { alignItems: 'center', gap: 4, width: 48 },
   avatarChoice: {
     width: 48,
     height: 48,
     borderRadius: 999,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   avatarChoiceSelected: { borderWidth: 2, borderColor: colors.forestGreen },
+  avatarName: { fontSize: 10, fontFamily: font.semibold, color: colors.textMuted },
+  avatarNameSelected: { color: colors.forestGreen, fontFamily: font.bold },
   fieldLabel: {
     fontSize: 13,
     fontFamily: font.semibold,
