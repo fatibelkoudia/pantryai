@@ -25,6 +25,7 @@ function ExpirationBadge({ expirationDate }: { expirationDate?: string }) {
 }
 
 export default function ExpiringScreen() {
+  const { t } = useTranslation();
   const { data, isLoading, isError, error, refetch, isRefetching } = useQuery({
     queryKey: ['stocks', 'expiring'],
     queryFn: () => apiClient.listStocks({ expiringSoon: true }),
@@ -39,7 +40,6 @@ export default function ExpiringScreen() {
   }
 
   if (isError) {
-    const { t } = useTranslation();
     return (
       <View style={styles.centered}>
         <Text style={styles.errorTitle}>{t('common.errorTitle')}</Text>
