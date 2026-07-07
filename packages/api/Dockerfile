@@ -34,9 +34,8 @@ RUN pnpm install --frozen-lockfile
 # Now bring in the sources and build.
 COPY packages/shared packages/shared
 COPY packages/api packages/api
-RUN pnpm --filter @pantryai/shared build \
-  && pnpm --filter @pantryai/api exec prisma generate \
-  && pnpm --filter @pantryai/api build
+# Generate Prisma client and build (Turborepo handles dependency order).
+RUN pnpm --filter @pantryai/api exec prisma generate && pnpm build
 
 # ---------- prod-deps ----------
 FROM base AS prod-deps
