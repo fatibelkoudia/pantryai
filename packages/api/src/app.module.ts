@@ -33,6 +33,10 @@ import { WasteModule } from './waste/waste.module.js';
       connection: {
         host: process.env['REDIS_HOST'] ?? 'localhost',
         port: parseInt(process.env['REDIS_PORT'] ?? '6379', 10),
+        // Managed Redis (Railway) needs a password; undefined locally = ignored.
+        password: process.env['REDIS_PASSWORD'],
+        // Dual-stack: Railway's private hostname resolves over IPv6.
+        family: 0,
       },
     }),
     PrismaModule,

@@ -16,6 +16,8 @@ const envSchema = z.object({
   R2_BUCKET_NAME: z.string().min(1, 'R2_BUCKET_NAME is required'),
   REDIS_HOST: z.string().min(1).default('localhost'),
   REDIS_PORT: z.string().regex(/^\d+$/, 'REDIS_PORT must be a number').default('6379'),
+  // Set by managed Redis (Railway); unset locally where Redis has no auth.
+  REDIS_PASSWORD: z.string().optional(),
   // Error monitoring. Optional: when SENTRY_DSN is unset, Sentry stays a no-op,
   // so local and dev runs don't send anything.
   SENTRY_DSN: z.string().optional(),
