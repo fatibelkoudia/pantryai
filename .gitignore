@@ -16,3 +16,5 @@ packages/api/src/ocr/__tests__/fixtures/**/*.jpg
 packages/api/src/ocr/__tests__/fixtures/**/*.pdf
 # macOS
 .DS_Store
+.vercel
+.env*
