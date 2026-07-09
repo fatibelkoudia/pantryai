@@ -3,9 +3,8 @@
   "build": {
     "builder": "DOCKERFILE",
     "dockerfilePath": "packages/api/Dockerfile"
-},
-"deploy": {
+  },
+  "deploy": {
     "startCommand": "node dist/main"
   }
-
 }

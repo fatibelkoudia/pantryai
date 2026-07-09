@@ -1,0 +1,11 @@
+# Exclude heavy directories from Vercel upload (build context only needs sources + package.json).
+**/node_modules
+**/dist
+**/.next
+**/.turbo
+.git
+.github
+docs
+help
+*.md
+.nvmrc
