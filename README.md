@@ -128,6 +128,17 @@ pnpm docker:up
 
 This gives you Postgres on port 5432 and Redis on port 6379.
 
+If one of those ports is already in use on your machine, set the host ports in
+the root `.env` before running `pnpm docker:up`:
+
+```bash
+PGHOST_PORT=5434
+REDIS_HOST_PORT=6381
+```
+
+Then set `packages/api/.env` to the same Redis host port (for example
+`REDIS_PORT=6381`) if you run the API directly on your host.
+
 ### 3. Set up the environment files
 
 Each package has a `.env.example`. Copy them and fill in the blanks:
