@@ -10,8 +10,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { apiClient } from '../src/api/client';
-import { colors } from '../src/theme';
+import { apiClient } from '../../src/api/client';
+import { colors } from '../../src/theme';
 
 const SOURCE_LABELS: Record<ShoppingItem['source'], string> = {
   LOW_STOCK: 'Low / expiring',
@@ -169,7 +169,7 @@ export default function ShoppingScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1, backgroundColor: colors.warmCream },
   centered: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24, gap: 10 },
   title: {
     fontSize: 22,

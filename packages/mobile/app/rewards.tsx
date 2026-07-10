@@ -105,13 +105,13 @@ function ChallengeRow({ challenge }: { challenge: ChallengeProgress }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.softMint },
+  container: { flex: 1, backgroundColor: colors.warmCream },
   content: { padding: 16, gap: 12 },
   centered: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.softMint,
+    backgroundColor: colors.warmCream,
     gap: 12,
   },
   xpCard: {

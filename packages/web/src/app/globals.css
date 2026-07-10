@@ -7,27 +7,35 @@
  */
 @theme {
   /* brand */
-  --color-brand: #4caf50; /* Leaf Green, primary/success/buttons */
+  --color-brand: #4caf50; /* Leaf Green, active states/success */
+  --color-brand-deep: #006e1c; /* Forest Green, titles/primary buttons */
   --color-brand-fg: #ffffff;
-  --color-mint: #ebf7ed; /* Soft Mint, app background */
-  --color-sunny: #ffd166; /* Sunny Yellow, rewards/gamification */
-  --color-coral: #ff7a59; /* Coral Orange, alerts */
+  --color-mint: #ebf7ed; /* Soft Mint, tinted boxes */
+  --color-mint-hero: #e8f7e0; /* tinted mission/tip cards */
+  --color-green-pale: #94f990; /* light green fills */
+  --color-sunny: #ffd166; /* Sunny Yellow, rewards + mid-urgency tints */
+  --color-sunny-pale: #ffdf9b; /* soft yellow cards (badges, achievements) */
+  --color-coral: #ff7a59; /* Coral Orange, soft alerts */
+  --color-brick: #ae3115; /* urgent actions */
   --color-charcoal: #202020; /* text + Trashy body */
 
   /* surfaces */
-  --color-surface: #ebf7ed; /* Soft Mint background */
+  --color-surface: #fff8ee; /* Warm Cream background */
   --color-surface-card: #ffffff; /* cards */
+  --color-surface-input: #f6f3f2; /* inputs / segmented tracks */
   --color-border: #d9e6dc; /* gentle green-tinted hairline */
 
-  /* Expiration badge palette (text colours are AA on their tinted backgrounds) */
-  --color-expiry-ok: #1f7a34;
-  --color-expiry-ok-bg: #e6f4ea;
-  --color-expiry-soon: #b23b17; /* leans on Coral Orange */
-  --color-expiry-soon-bg: #ffede6;
-  --color-expiry-expired: #b0201f;
-  --color-expiry-expired-bg: #fde7e7;
+  /* Expiration badge palette (mirrors the expiry tokens in shared) */
+  --color-expiry-ok: #005313;
+  --color-expiry-ok-bg: #94f990;
+  --color-expiry-soon: #765900;
+  --color-expiry-soon-bg: #ffd166;
+  --color-expiry-urgent: #8c1900;
+  --color-expiry-urgent-bg: #ffdad2;
+  --color-expiry-expired: #93000a;
+  --color-expiry-expired-bg: #ffdad6;
   --color-expiry-none: #5b6660;
-  --color-expiry-none-bg: #f2f2f2;
+  --color-expiry-none-bg: #eae7e7;
 
   /* Nunito, loaded via next/font in layout.tsx */
   --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;

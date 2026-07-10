@@ -107,7 +107,7 @@ export default function RecipesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.softMint,
+    backgroundColor: colors.warmCream,
   },
   centered: {
     flex: 1,
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     padding: 24,
     gap: 10,
-    backgroundColor: colors.softMint,
+    backgroundColor: colors.warmCream,
   },
   title: {
     fontSize: 22,

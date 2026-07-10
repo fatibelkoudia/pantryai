@@ -1,19 +1,45 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import { StyleSheet, View } from 'react-native';
 import { colors, font } from '../../src/theme';
+import type { IoniconName } from '../../src/lib/foodIcons';
 
-// The five Trashy pillars. Scan and Shopping aren't pillars, so they live as
-// standalone routes reachable from the Home/Inventory headers instead of a tab.
+// Active tab gets a little green pill behind a filled icon, like the mockups.
+function TabIcon({
+  focused,
+  outline,
+  filled,
+}: {
+  focused: boolean;
+  outline: IoniconName;
+  filled: IoniconName;
+}) {
+  return (
+    <View style={[styles.iconWrap, focused && styles.iconWrapActive]}>
+      <Ionicons
+        name={focused ? filled : outline}
+        size={20}
+        color={focused ? colors.onBrand : colors.textMuted}
+      />
+    </View>
+  );
+}
+
+// The five tabs from the dashboard design: Home, Inventory, Recipes, Shopping, Learn.
+// Profile lives behind the avatar in the Home header, and Scan behind the header buttons,
+// so neither needs a tab.
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.leafGreen,
+        tabBarActiveTintColor: colors.forestGreen,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
           backgroundColor: colors.white,
           borderTopColor: colors.border,
+          height: 62,
+          paddingTop: 4,
         },
         tabBarLabelStyle: {
           fontFamily: font.semibold,
@@ -25,8 +51,8 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" color={color} size={size} />
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} outline="home-outline" filled="home" />
           ),
         }}
       />
@@ -34,17 +60,30 @@ export default function TabLayout() {
         name="inventory"
         options={{
           title: 'Inventory',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="file-tray-stacked-outline" color={color} size={size} />
+          tabBarIcon: ({ focused }) => (
+            <TabIcon
+              focused={focused}
+              outline="file-tray-stacked-outline"
+              filled="file-tray-stacked"
+            />
           ),
         }}
       />
       <Tabs.Screen
         name="recipes"
         options={{
-          title: 'Meal Ideas',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="restaurant-outline" color={color} size={size} />
+          title: 'Recipes',
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} outline="restaurant-outline" filled="restaurant" />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="shopping"
+        options={{
+          title: 'Shopping',
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} outline="basket-outline" filled="basket" />
           ),
         }}
       />
@@ -52,20 +91,24 @@ export default function TabLayout() {
         name="learn"
         options={{
           title: 'Learn',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="bulb-outline" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" color={color} size={size} />
+          tabBarIcon: ({ focused }) => (
+            <TabIcon focused={focused} outline="school-outline" filled="school" />
           ),
         }}
       />
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  iconWrap: {
+    width: 48,
+    height: 28,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconWrapActive: {
+    backgroundColor: colors.leafGreen,
+  },
+});
