@@ -3,10 +3,11 @@ import { Pool } from 'pg';
 import { afterAll, beforeEach } from 'vitest';
 import { PrismaClient } from './generated/prisma/client.js';
 
+// This file is loaded before any test files, and sets up a shared Prisma client for integration tests.
 const pool = new Pool({
   connectionString:
     process.env['DATABASE_TEST_URL'] ??
-    'postgresql://postgres:postgres@localhost:5433/pantryai_test',
+    'postgresql://pantryai:pantryai@localhost:5433/pantryai_test',
 });
 
 export const testPrisma = new PrismaClient({ adapter: new PrismaPg(pool) });
