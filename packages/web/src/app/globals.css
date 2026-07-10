@@ -41,6 +41,9 @@
   --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
 
   --radius-card: 1rem;
+
+  /* "3D-lite" button lip (mirrors buttonLip in shared tokens) */
+  --shadow-btn-lip: 0 3px 0 rgb(0 0 0 / 0.15);
 }
 
 body {

@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import { apiClient } from '../src/api/client';
-import { colors, font } from '../src/theme';
+import { buttonLip, colors, font } from '../src/theme';
 
 // "Rewards" screen. Shows the XP total, the Trashy challenges with their progress,
 // and Today's Tip at the bottom. Loading GET /challenges also hands out XP for
@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
   tipSource: { fontSize: 11, color: colors.textMuted, marginTop: 4 },
   errorTitle: { fontSize: 16, fontFamily: font.bold, color: colors.charcoal, textAlign: 'center' },
   button: {
+    ...buttonLip,
     backgroundColor: colors.leafGreen,
     paddingHorizontal: 24,
     paddingVertical: 12,

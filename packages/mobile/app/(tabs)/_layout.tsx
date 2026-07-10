@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
-import { colors, font } from '../../src/theme';
+import { buttonLip, colors, font } from '../../src/theme';
 import type { IoniconName } from '../../src/lib/foodIcons';
 
 // Active tab gets a little green pill behind a filled icon, like the mockups.
@@ -109,6 +109,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   iconWrapActive: {
+    ...buttonLip,
     backgroundColor: colors.leafGreen,
   },
 });

@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { apiClient } from '../src/api/client';
 import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../src/lib/expiry';
-import { colors } from '../src/theme';
+import { buttonLip, colors } from '../src/theme';
 
 function ExpirationBadge({ expirationDate }: { expirationDate?: string }) {
   const days = daysUntil(expirationDate);
@@ -160,6 +160,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
+    ...buttonLip,
     backgroundColor: colors.leafGreen,
     paddingHorizontal: 24,
     paddingVertical: 12,

@@ -1,7 +1,16 @@
-import { MASCOT_SVG, mascotMoodMeta, type WasteMood } from '@pantryai/shared';
-import { StyleSheet, Text, View } from 'react-native';
-import { SvgXml } from 'react-native-svg';
+import { mascotMoodMeta, type WasteMood } from '@pantryai/shared';
+import { Image, StyleSheet, Text, View, type ImageSourcePropType } from 'react-native';
 import { font } from '../theme';
+
+// The mascot art is one PNG per mood in the shared package. Metro needs the
+// requires to be static, so we list them all out.
+const MASCOT_IMAGES: Record<WasteMood, ImageSourcePropType> = {
+  EXCELLENT: require('../../../shared/src/assets/mascot/trashy_excellent.png'),
+  GOOD: require('../../../shared/src/assets/mascot/trashy_good.png'),
+  OKAY: require('../../../shared/src/assets/mascot/trashy_okey.png'),
+  BAD: require('../../../shared/src/assets/mascot/trashy_bad.png'),
+  AWFUL: require('../../../shared/src/assets/mascot/trashy_awful.png'),
+};
 
 interface TrashyMoodProps {
   mood: WasteMood;
@@ -10,7 +19,7 @@ interface TrashyMoodProps {
   showLabel?: boolean;
 }
 
-// The Trashy mascot for a given mood, rendered from the shared SVG string.
+// The Trashy mascot for a given mood.
 export function TrashyMood({ mood, size = 120, showLabel = true }: TrashyMoodProps) {
   const meta = mascotMoodMeta[mood];
   return (
@@ -19,7 +28,11 @@ export function TrashyMood({ mood, size = 120, showLabel = true }: TrashyMoodPro
       accessibilityRole="image"
       accessibilityLabel={`Trashy looks ${meta.label.toLowerCase()}`}
     >
-      <SvgXml xml={MASCOT_SVG[mood]} width={size} height={size} />
+      <Image
+        source={MASCOT_IMAGES[mood]}
+        style={{ width: size, height: size }}
+        resizeMode="contain"
+      />
       {showLabel ? <Text style={[styles.label, { color: meta.accent }]}>{meta.label}</Text> : null}
     </View>
   );

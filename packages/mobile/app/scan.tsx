@@ -4,7 +4,7 @@ import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { apiClient } from '../src/api/client';
-import { colors, font } from '../src/theme';
+import { buttonLip, colors, font } from '../src/theme';
 
 type ScanMode = 'ean' | 'qr';
 
@@ -193,6 +193,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   button: {
+    ...buttonLip,
     backgroundColor: colors.leafGreen,
     paddingHorizontal: 24,
     paddingVertical: 12,

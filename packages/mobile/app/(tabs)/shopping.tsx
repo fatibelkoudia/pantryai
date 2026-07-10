@@ -11,7 +11,7 @@ import {
   View,
 } from 'react-native';
 import { apiClient } from '../../src/api/client';
-import { colors } from '../../src/theme';
+import { buttonLip, colors } from '../../src/theme';
 
 const SOURCE_LABELS: Record<ShoppingItem['source'], string> = {
   LOW_STOCK: 'Low / expiring',
@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
   },
   actions: { paddingHorizontal: 16, paddingBottom: 8 },
   generateButton: {
+    ...buttonLip,
     backgroundColor: colors.leafGreen,
     paddingVertical: 12,
     paddingHorizontal: 16,
@@ -200,6 +201,7 @@ const styles = StyleSheet.create({
     color: '#111',
   },
   addButton: {
+    ...buttonLip,
     backgroundColor: colors.leafGreen,
     paddingHorizontal: 18,
     borderRadius: 8,
