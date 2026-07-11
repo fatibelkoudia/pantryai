@@ -97,6 +97,18 @@ describe('ShoppingListService.generate', () => {
     expect(where.OR[0]).toEqual({ quantity: { lte: 3 } });
   });
 
+  it('skips recipe gaps when includeRecipes is false (stock only)', async () => {
+    await makeService().generate('user-1', { includeRecipes: false });
+
+    expect(mockRecipeService.suggest).not.toHaveBeenCalled();
+    const created = mockPrisma.shoppingItem.createMany.mock.calls[0]?.[0].data as Array<{
+      name: string;
+      source: string;
+    }>;
+    expect(created.map((item) => item.name)).toEqual(['Yaourt nature']);
+    expect(created[0]?.source).toBe('LOW_STOCK');
+  });
+
   it('uses chosen recipes (not suggestions) when recipeIds are given', async () => {
     mockPrisma.stockItem.findMany.mockResolvedValue([]); // nothing low, no stock
     mockPrisma.recipe.findMany.mockResolvedValue([
@@ -130,6 +142,16 @@ describe('ShoppingListService manual CRUD', () => {
     expect(mockPrisma.shoppingItem.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({ userId: 'user-1', name: 'Café', source: 'MANUAL' }),
+      }),
+    );
+  });
+
+  it('keeps the RECIPE source when the app adds a missing ingredient', async () => {
+    mockPrisma.shoppingItem.create.mockResolvedValue({ id: 's2' });
+    await makeService().create('user-1', { name: 'Beurre', source: 'RECIPE' });
+    expect(mockPrisma.shoppingItem.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({ name: 'Beurre', source: 'RECIPE' }),
       }),
     );
   });

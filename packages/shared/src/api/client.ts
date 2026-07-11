@@ -91,8 +91,10 @@ export class PantryApiClient {
   }
 
   private async performRequest<T>(path: string, init: RequestInit = {}): Promise<T> {
+    // Only claim a JSON body when we actually send one. Fastify rejects requests
+    // (like our DELETEs) that say application/json but have an empty body.
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      ...(init.body != null ? { 'Content-Type': 'application/json' } : {}),
       ...this.authHeaders(),
       ...(init.headers as Record<string, string> | undefined),
     };

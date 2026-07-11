@@ -7,12 +7,22 @@ const mockPrismaService = {
   },
 };
 
-// Build fake resolved rows: n of a given disposition.
+// Build fake resolved rows: n of a given disposition, with the quantity/unit/
+// product fields the CO2 estimate reads.
+function row(disposition: string) {
+  return {
+    disposition,
+    quantity: 1,
+    unit: 'pcs',
+    product: { name: 'Mystery item', category: null },
+  };
+}
+
 function rows(spec: { consumed?: number; discarded?: number; expired?: number }) {
-  const out: { disposition: string }[] = [];
-  for (let i = 0; i < (spec.consumed ?? 0); i++) out.push({ disposition: 'CONSUMED' });
-  for (let i = 0; i < (spec.discarded ?? 0); i++) out.push({ disposition: 'DISCARDED' });
-  for (let i = 0; i < (spec.expired ?? 0); i++) out.push({ disposition: 'EXPIRED' });
+  const out: ReturnType<typeof row>[] = [];
+  for (let i = 0; i < (spec.consumed ?? 0); i++) out.push(row('CONSUMED'));
+  for (let i = 0; i < (spec.discarded ?? 0); i++) out.push(row('DISCARDED'));
+  for (let i = 0; i < (spec.expired ?? 0); i++) out.push(row('EXPIRED'));
   return out;
 }
 
@@ -46,6 +56,30 @@ describe('WasteService', () => {
     expect(result.score).toBe(100);
     expect(result.mood).toBe('EXCELLENT');
     expect(result.counts).toEqual({ consumed: 0, discarded: 0, expired: 0, total: 0 });
+    expect(result.co2AvoidedKg).toBe(0);
+  });
+
+  it('estimates CO2 avoided from consumed items only', async () => {
+    mockPrismaService.stockItem.findMany.mockResolvedValue([
+      // 1 kg of beef eaten: 12 kg CO2e avoided
+      {
+        disposition: 'CONSUMED',
+        quantity: 1,
+        unit: 'kg',
+        product: { name: 'Boeuf haché', category: null },
+      },
+      // tossed items must not count
+      {
+        disposition: 'DISCARDED',
+        quantity: 5,
+        unit: 'kg',
+        product: { name: 'Poulet', category: null },
+      },
+    ]);
+
+    const result = await service.getLevel('user-1');
+
+    expect(result.co2AvoidedKg).toBe(12);
   });
 
   it('tallies counts and computes the score + mood', async () => {

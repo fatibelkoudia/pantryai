@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsOptional, IsString, Min } from 'class-validator';
 
 export class GenerateShoppingListDto {
   @ApiPropertyOptional({
@@ -21,4 +21,13 @@ export class GenerateShoppingListDto {
   @Min(0)
   @IsOptional()
   lowStockThreshold?: number;
+
+  @ApiPropertyOptional({
+    example: false,
+    description:
+      'Set to false to only add low/expiring stock and skip recipe ingredients. Defaults to true.',
+  })
+  @IsBoolean()
+  @IsOptional()
+  includeRecipes?: boolean;
 }

@@ -44,7 +44,9 @@ export class ShoppingListService {
     const threshold = dto.lowStockThreshold ?? DEFAULT_LOW_STOCK_THRESHOLD;
 
     const lowStock = await this.getLowStockNames(userId, threshold);
-    const recipeGaps = await this.getRecipeGaps(userId, dto.recipeIds);
+    // the caller can opt out of recipe ingredients and only restock the basics
+    const recipeGaps =
+      dto.includeRecipes === false ? [] : await this.getRecipeGaps(userId, dto.recipeIds);
 
     // LOW_STOCK before RECIPE so a name shared by both keeps the LOW_STOCK source.
     const candidates: Candidate[] = [
@@ -86,7 +88,8 @@ export class ShoppingListService {
         name: dto.name,
         quantity: dto.quantity ?? null,
         unit: dto.unit ?? null,
-        source: 'MANUAL',
+        // RECIPE when the app adds missing recipe ingredients, MANUAL otherwise
+        source: dto.source ?? 'MANUAL',
       },
     });
   }

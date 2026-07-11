@@ -149,8 +149,8 @@ const CATEGORY_KEYWORDS: Record<TipCategory, string[]> = {
 // We just look through the keywords and return the first one that matches. If
 // nothing matches we return null and the caller can show a random tip instead.
 export function resolveTipCategory(product: {
-  name?: string;
-  category?: string;
+  name?: string | undefined;
+  category?: string | undefined;
 }): TipCategory | null {
   const haystack = normalize(`${product.name ?? ''} ${product.category ?? ''}`);
   if (!haystack.trim()) return null;

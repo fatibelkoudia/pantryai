@@ -21,4 +21,7 @@ export interface WasteLevelResponse {
   mood: WasteMood;
   window: { days: number; from: string; to: string };
   counts: WasteCounts;
+  // Rough estimate of the production CO2 (kg) saved by eating items instead of
+  // tossing them. Agribalyse category averages; see the api waste/co2-estimate.
+  co2AvoidedKg: number;
 }
