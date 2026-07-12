@@ -9,6 +9,9 @@ export class AuthUserDto {
 
   @ApiProperty({ nullable: true })
   name!: string | null;
+
+  @ApiProperty({ nullable: true, description: 'Preset avatar id picked on the profile page' })
+  avatarId!: string | null;
 }
 
 export class AuthResponseDto {

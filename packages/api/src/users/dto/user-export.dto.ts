@@ -10,8 +10,31 @@ class ExportProfileDto {
   @ApiProperty({ nullable: true, type: String })
   name!: string | null;
 
+  @ApiProperty({ nullable: true, type: String })
+  avatarId!: string | null;
+
   @ApiProperty()
   createdAt!: Date;
+}
+
+class ExportSettingsDto {
+  @ApiProperty()
+  locale!: string;
+
+  @ApiProperty()
+  recipeMinMatchedItems!: number;
+
+  @ApiProperty()
+  recipeMatchThreshold!: number;
+
+  @ApiProperty()
+  expiringSoonDays!: number;
+
+  @ApiProperty()
+  lowStockThreshold!: number;
+
+  @ApiProperty()
+  defaultStockLocation!: string;
 }
 
 class ExportStockItemDto {
@@ -69,6 +92,9 @@ export class UserExportDto {
 
   @ApiProperty({ type: ExportProfileDto })
   profile!: ExportProfileDto;
+
+  @ApiProperty({ type: ExportSettingsDto, nullable: true })
+  settings!: ExportSettingsDto | null;
 
   @ApiProperty({ type: [ExportStockItemDto] })
   stockItems!: ExportStockItemDto[];

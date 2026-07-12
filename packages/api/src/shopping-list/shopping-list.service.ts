@@ -41,7 +41,10 @@ export class ShoppingListService {
   // (or the user's suggested recipes when none are chosen), drop duplicates, and
   // persist the new entries. Existing items are never duplicated.
   async generate(userId: string, dto: GenerateShoppingListDto) {
-    const threshold = dto.lowStockThreshold ?? DEFAULT_LOW_STOCK_THRESHOLD;
+    // request value wins, then the user's saved setting, then the old default
+    const settings = await this.prisma.userSettings.findUnique({ where: { userId } });
+    const threshold =
+      dto.lowStockThreshold ?? settings?.lowStockThreshold ?? DEFAULT_LOW_STOCK_THRESHOLD;
 
     const lowStock = await this.getLowStockNames(userId, threshold);
     // the caller can opt out of recipe ingredients and only restock the basics

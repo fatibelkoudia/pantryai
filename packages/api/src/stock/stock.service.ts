@@ -7,6 +7,9 @@ import { StockQueryDto } from './dto/stock-query.dto.js';
 import { UpdateStockItemDto } from './dto/update-stock-item.dto.js';
 import { STOCK_REMOVED, type StockRemovedEvent } from './stock.events.js';
 
+// Matches the default of UserSettings.expiringSoonDays for users without a settings row.
+const DEFAULT_EXPIRING_SOON_DAYS = 3;
+
 @Injectable()
 export class StockService {
   constructor(
@@ -19,15 +22,18 @@ export class StockService {
     const limit = query.limit ?? 20;
     const skip = (page - 1) * limit;
 
-    const now = new Date();
-    const sevenDaysFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+    // "expiring soon" used to be a fixed 7 days, now the user can set the window
+    // on their profile page. No settings row means they kept the default.
+    const settings = await this.prisma.userSettings.findUnique({ where: { userId } });
+    const soonDays = settings?.expiringSoonDays ?? DEFAULT_EXPIRING_SOON_DAYS;
+    const soonCutoff = new Date(Date.now() + soonDays * 24 * 60 * 60 * 1000);
 
     const where = {
       userId,
       deletedAt: null,
       ...(query.location !== undefined && { location: query.location }),
       ...(query.expiringSoon === true && {
-        expirationDate: { not: null, lte: sevenDaysFromNow },
+        expirationDate: { not: null, lte: soonCutoff },
       }),
       ...(query.search !== undefined && {
         product: { name: { contains: query.search, mode: 'insensitive' as const } },
@@ -64,6 +70,13 @@ export class StockService {
       throw new NotFoundException(`Product not found: ${dto.productId}`);
     }
 
+    // when the client doesn't say where the item goes, fall back to the default
+    // location the user picked in their settings (and PANTRY if they never did)
+    const settings = dto.location
+      ? null
+      : await this.prisma.userSettings.findUnique({ where: { userId } });
+    const location = dto.location ?? settings?.defaultStockLocation ?? 'PANTRY';
+
     return this.prisma.stockItem.create({
       data: {
         userId,
@@ -71,7 +84,7 @@ export class StockService {
         quantity: dto.quantity,
         unit: dto.unit,
         expirationDate: dto.expirationDate ?? null,
-        location: dto.location ?? 'PANTRY',
+        location,
       },
       include: { product: true },
     });

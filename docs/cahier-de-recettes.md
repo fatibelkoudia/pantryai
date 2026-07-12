@@ -419,10 +419,18 @@ ingredients_required`, only returning those at or above the 70% threshold. The
   expired over the last 30 days.
 - **Étapes:**
   1. `GET /waste/level`.
-- **Résultat attendu:** 200 with a score 0-100 = `consumed / (consumed +
-discarded + expired)` over the trailing 30 days, plus a mood band
-  (EXCELLENT ≥ 90, GOOD ≥ 70, OKAY ≥ 50, BAD ≥ 30, AWFUL < 30). A brand-new user
-  with nothing resolved scores 100 / EXCELLENT.
+- **Résultat attendu:** 200 with a score 0-100 mixing 70% outcome and 30% pantry.
+  Outcome = `consumed / (consumed + discarded + expired)` over the trailing 30
+  days, recency weighted (an item's weight halves every 14 days) with rescues
+  (eaten ≤ 3 days before expiry) counting 1.5x. Pantry = 100 minus the share of
+  in-stock items at risk (expired = 1, expiring ≤ 3 days = 0.5). Mood bands
+  unchanged (EXCELLENT ≥ 90, GOOD ≥ 70, OKAY ≥ 50, BAD ≥ 30, AWFUL < 30). The
+  response also carries `pantry` (counts + sub-score), `rescuedCount`, `trend`
+  (last 7 days vs the rest, null while one side is empty), `weeklyScores` (4 weeks
+  oldest first, null for a quiet week) and `nextMood`/`itemsToNextMood` (null when
+  already EXCELLENT, or null with `pantryBlocked: true` when eating alone cannot
+  reach the next band). A brand-new user with nothing resolved and an empty stock
+  scores 100 / EXCELLENT with all the extras null.
 
 ### CR-TRASHY-02: Challenges list
 
@@ -432,6 +440,28 @@ discarded + expired)` over the trailing 30 days, plus a mood band
   1. `GET /challenges`.
 - **Résultat attendu:** 200 with the challenge definitions and the user's progress
   and XP.
+
+### CR-TRASHY-03: Resolved item details
+
+- **Priorité:** Could
+- **Préconditions:** Logged in. Some items resolved over the last 30 days.
+- **Étapes:**
+  1. `GET /waste/items`.
+- **Résultat attendu:** 200 with the resolved items newest first (max 200): name,
+  quantity/unit, disposition, resolution date, expiry date, a `rescued` flag, and
+  a per-item `co2Kg` estimate on consumed items only. The response also carries
+  the CO2 factor table (`co2Info`) used by the estimate.
+
+### CR-TRASHY-04: All-time monthly history
+
+- **Priorité:** Could
+- **Préconditions:** Logged in. Items resolved in at least two different months.
+- **Étapes:**
+  1. `GET /waste/history`.
+- **Résultat attendu:** 200 with one entry per calendar month (UTC) from the first
+  resolved item to now, oldest first, capped at 24 months. Each entry has the
+  plain unweighted score plus the counts; months with nothing resolved have a
+  null score.
 
 ---
 
@@ -530,59 +560,125 @@ and compute the 95th percentile.
 
 ---
 
+## 14. Profile and settings (delivered V1)
+
+### CR-PROFILE-01: Update name, email, and avatar
+
+- **Priorité:** Should
+- **Préconditions:** Logged in.
+- **Étapes:**
+  1. `PATCH /users/me` with `{ "name": "New Name", "avatarId": "tomato" }`.
+  2. `GET /auth/me`.
+- **Résultat attendu:** 200 on both. The profile now carries the new name and
+  avatar. Changing `email` to an address used by another account returns 409
+  and changes nothing.
+
+### CR-PROFILE-02: Change password
+
+- **Priorité:** Should
+- **Préconditions:** Logged in, current password known.
+- **Étapes:**
+  1. `POST /users/me/password` with the wrong current password.
+  2. `POST /users/me/password` with the right current password and a new one.
+  3. `POST /auth/login` with the new password.
+- **Résultat attendu:** Step 1 returns 401 and the password stays the same.
+  Step 2 returns 204. Step 3 logs in fine, and the old password no longer works.
+
+### CR-PROFILE-03: Settings are created with defaults and update partially
+
+- **Priorité:** Should
+- **Préconditions:** Logged in with an account that never touched settings.
+- **Étapes:**
+  1. `GET /users/me/settings`.
+  2. `PATCH /users/me/settings` with `{ "recipeMinMatchedItems": 3 }`.
+  3. `PATCH /users/me/settings` with `{ "expiringSoonDays": 99 }`.
+- **Résultat attendu:** Step 1 returns the defaults (locale `en`, threshold
+  0.7, min items 1, 3 days, low stock 1, PANTRY). Step 2 returns 200 and only
+  that field moved. Step 3 returns 400 (out of range).
+
+### CR-PROFILE-04: The recipe settings actually change the suggestions
+
+- **Priorité:** Should
+- **Préconditions:** A stock that matches at least one recipe.
+- **Étapes:**
+  1. `GET /recipes/suggest`, note the results.
+  2. Set `recipeMinMatchedItems` to 10 and call suggest again.
+  3. Set it back to 1, set `recipeMatchThreshold` to 0.3, suggest again.
+- **Résultat attendu:** Step 2 returns fewer (probably zero) suggestions.
+  Step 3 returns at least as many as step 1. Every suggestion always respects
+  both knobs at once.
+
+### CR-PROFILE-05: Language switch
+
+- **Priorité:** Could
+- **Préconditions:** Logged in on the web or mobile app.
+- **Étapes:**
+  1. On the Profile screen, switch the language setting to French and save.
+  2. Reload the app.
+- **Résultat attendu:** The profile and settings screens render with the French
+  catalog (same texts as English until the translations land) and the choice
+  survives the reload because it is stored server side.
+
 ## Results matrix
 
 We fill this in on each test run. A release ships only when every Must scenario
 passes.
 
-| ID           | Feature               | Priorité | Résultat | Date | Bug |
-| ------------ | --------------------- | -------- | -------- | ---- | --- |
-| CR-AUTH-01   | Register              | Must     | ⬜       |      |     |
-| CR-AUTH-02   | Duplicate email       | Must     | ⬜       |      |     |
-| CR-AUTH-03   | Invalid payload       | Must     | ⬜       |      |     |
-| CR-AUTH-04   | Login                 | Must     | ⬜       |      |     |
-| CR-AUTH-05   | Wrong credentials     | Must     | ⬜       |      |     |
-| CR-AUTH-06   | Refresh token         | Must     | ⬜       |      |     |
-| CR-AUTH-07   | Guard blocks anon     | Must     | ⬜       |      |     |
-| CR-AUTH-08   | Read profile          | Must     | ⬜       |      |     |
-| CR-STOCK-01  | Create product        | Must     | ⬜       |      |     |
-| CR-STOCK-02  | OFF lookup            | Must     | ⬜       |      |     |
-| CR-STOCK-03  | Add stock             | Must     | ⬜       |      |     |
-| CR-STOCK-04  | Filter by location    | Must     | ⬜       |      |     |
-| CR-STOCK-05  | Expiring soon         | Must     | ⬜       |      |     |
-| CR-STOCK-06  | Search                | Must     | ⬜       |      |     |
-| CR-STOCK-07  | Update + delete       | Must     | ⬜       |      |     |
-| CR-STOCK-08  | User isolation        | Must     | ⬜       |      |     |
-| CR-OCR-01    | Upload returns job    | Must     | ⬜       |      |     |
-| CR-OCR-02    | Poll to completion    | Must     | ⬜       |      |     |
-| CR-OCR-03    | Confirm into stock    | Must     | ⬜       |      |     |
-| CR-OCR-04    | Native PDF, 0 Mistral | Must     | ⬜       |      |     |
-| CR-OCR-05    | Image falls back      | Must     | ⬜       |      |     |
-| CR-OCR-06    | Image deleted ≤ 24h   | Must     | ⬜       |      |     |
-| CR-OCR-07    | Retailer parsers      | Must     | ⬜       |      |     |
-| CR-QR-01     | QR e-ticket import    | Must     | ⬜       |      |     |
-| CR-ALERT-01  | Register device       | Must     | ⬜       |      |     |
-| CR-ALERT-02  | Daily expiry alert    | Must     | ⬜       |      |     |
-| CR-WEB-01    | Web auth              | Must     | ⬜       |      |     |
-| CR-WEB-02    | Dashboard + inventory | Must     | ⬜       |      |     |
-| CR-WEB-03    | Detail + upload       | Must     | ⬜       |      |     |
-| CR-WEB-04    | Accessibility         | Must     | ⬜       |      |     |
-| CR-MANUAL-01 | Manual add            | Must     | ⬜       |      |     |
-| CR-RECIPE-01 | Recipe suggest        | Should   | ⬜       |      |     |
-| CR-SHOP-01   | Generate list         | Should   | ⬜       |      |     |
-| CR-SHOP-02   | List CRUD             | Should   | ⬜       |      |     |
-| CR-LEARN-01  | Conservation tips     | Should   | ⬜       |      |     |
-| CR-TRASHY-01 | Waste level           | Should   | ⬜       |      |     |
-| CR-TRASHY-02 | Challenges            | Should   | ⬜       |      |     |
-| CR-RGPD-01   | Data export           | Must     | ⬜       |      |     |
-| CR-RGPD-02   | Account deletion      | Must     | ⬜       |      |     |
-| CR-SEC-01    | Rate limit            | Must     | ⬜       |      |     |
-| CR-SEC-02    | Headers + CORS        | Must     | ⬜       |      |     |
-| CR-SEC-03    | No PII in logs        | Must     | ⬜       |      |     |
-| CR-PERF-01   | OCR p95 ≤ 5s          | Must     | ⬜       |      |     |
-| CR-PERF-02   | Add ≤ 10s             | Must     | ⬜       |      |     |
-| CR-PERF-03   | Scan ≤ 2s             | Must     | ⬜       |      |     |
-| CR-PERF-04   | Uptime ≥ 99%          | Must     | ⬜       |      |     |
+| ID            | Feature                    | Priorité | Résultat | Date | Bug |
+| ------------- | -------------------------- | -------- | -------- | ---- | --- |
+| CR-AUTH-01    | Register                   | Must     | ⬜       |      |     |
+| CR-AUTH-02    | Duplicate email            | Must     | ⬜       |      |     |
+| CR-AUTH-03    | Invalid payload            | Must     | ⬜       |      |     |
+| CR-AUTH-04    | Login                      | Must     | ⬜       |      |     |
+| CR-AUTH-05    | Wrong credentials          | Must     | ⬜       |      |     |
+| CR-AUTH-06    | Refresh token              | Must     | ⬜       |      |     |
+| CR-AUTH-07    | Guard blocks anon          | Must     | ⬜       |      |     |
+| CR-AUTH-08    | Read profile               | Must     | ⬜       |      |     |
+| CR-STOCK-01   | Create product             | Must     | ⬜       |      |     |
+| CR-STOCK-02   | OFF lookup                 | Must     | ⬜       |      |     |
+| CR-STOCK-03   | Add stock                  | Must     | ⬜       |      |     |
+| CR-STOCK-04   | Filter by location         | Must     | ⬜       |      |     |
+| CR-STOCK-05   | Expiring soon              | Must     | ⬜       |      |     |
+| CR-STOCK-06   | Search                     | Must     | ⬜       |      |     |
+| CR-STOCK-07   | Update + delete            | Must     | ⬜       |      |     |
+| CR-STOCK-08   | User isolation             | Must     | ⬜       |      |     |
+| CR-OCR-01     | Upload returns job         | Must     | ⬜       |      |     |
+| CR-OCR-02     | Poll to completion         | Must     | ⬜       |      |     |
+| CR-OCR-03     | Confirm into stock         | Must     | ⬜       |      |     |
+| CR-OCR-04     | Native PDF, 0 Mistral      | Must     | ⬜       |      |     |
+| CR-OCR-05     | Image falls back           | Must     | ⬜       |      |     |
+| CR-OCR-06     | Image deleted ≤ 24h        | Must     | ⬜       |      |     |
+| CR-OCR-07     | Retailer parsers           | Must     | ⬜       |      |     |
+| CR-QR-01      | QR e-ticket import         | Must     | ⬜       |      |     |
+| CR-ALERT-01   | Register device            | Must     | ⬜       |      |     |
+| CR-ALERT-02   | Daily expiry alert         | Must     | ⬜       |      |     |
+| CR-WEB-01     | Web auth                   | Must     | ⬜       |      |     |
+| CR-WEB-02     | Dashboard + inventory      | Must     | ⬜       |      |     |
+| CR-WEB-03     | Detail + upload            | Must     | ⬜       |      |     |
+| CR-WEB-04     | Accessibility              | Must     | ⬜       |      |     |
+| CR-MANUAL-01  | Manual add                 | Must     | ⬜       |      |     |
+| CR-RECIPE-01  | Recipe suggest             | Should   | ⬜       |      |     |
+| CR-SHOP-01    | Generate list              | Should   | ⬜       |      |     |
+| CR-SHOP-02    | List CRUD                  | Should   | ⬜       |      |     |
+| CR-LEARN-01   | Conservation tips          | Should   | ⬜       |      |     |
+| CR-TRASHY-01  | Waste level                | Should   | ⬜       |      |     |
+| CR-TRASHY-02  | Challenges                 | Should   | ⬜       |      |     |
+| CR-TRASHY-03  | Item details               | Could    | ⬜       |      |     |
+| CR-TRASHY-04  | Monthly history            | Could    | ⬜       |      |     |
+| CR-PROFILE-01 | Profile update             | Should   | ⬜       |      |     |
+| CR-PROFILE-02 | Change password            | Should   | ⬜       |      |     |
+| CR-PROFILE-03 | Settings defaults          | Should   | ⬜       |      |     |
+| CR-PROFILE-04 | Settings drive suggestions | Should   | ⬜       |      |     |
+| CR-PROFILE-05 | Language switch            | Could    | ⬜       |      |     |
+| CR-RGPD-01    | Data export                | Must     | ⬜       |      |     |
+| CR-RGPD-02    | Account deletion           | Must     | ⬜       |      |     |
+| CR-SEC-01     | Rate limit                 | Must     | ⬜       |      |     |
+| CR-SEC-02     | Headers + CORS             | Must     | ⬜       |      |     |
+| CR-SEC-03     | No PII in logs             | Must     | ⬜       |      |     |
+| CR-PERF-01    | OCR p95 ≤ 5s               | Must     | ⬜       |      |     |
+| CR-PERF-02    | Add ≤ 10s                  | Must     | ⬜       |      |     |
+| CR-PERF-03    | Scan ≤ 2s                  | Must     | ⬜       |      |     |
+| CR-PERF-04    | Uptime ≥ 99%               | Must     | ⬜       |      |     |
 
 Legend: ⬜ not run · ✅ pass · ❌ fail (open a bug and link it).
 

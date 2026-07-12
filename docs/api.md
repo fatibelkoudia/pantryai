@@ -55,9 +55,28 @@ else shares a general limit of 100 requests per minute.
 
 ### Users (`/users`)
 
-| Method | Path               | Auth | What it does                                                                                  |
-| ------ | ------------------ | ---- | --------------------------------------------------------------------------------------------- |
-| GET    | `/users/me/export` | yes  | Export the user's data as JSON (RGPD Article 20): profile, stock, OCR job metadata, no images |
+| Method | Path                 | Auth | What it does                                                                                            |
+| ------ | -------------------- | ---- | ------------------------------------------------------------------------------------------------------- |
+| PATCH  | `/users/me`          | yes  | Update the profile: name, email, avatar. Returns 409 if the email is already taken by another account   |
+| POST   | `/users/me/password` | yes  | Change the password. Needs the current password, returns 401 when it is wrong                           |
+| GET    | `/users/me/settings` | yes  | The user's settings. The row is created with defaults the first time it is read                         |
+| PATCH  | `/users/me/settings` | yes  | Update one or more settings, values outside their allowed range get a 400                               |
+| GET    | `/users/me/export`   | yes  | Export the user's data as JSON (RGPD Article 20): profile, settings, stock, OCR job metadata, no images |
+
+A note on email changes: we do not run a mail server, so there is no confirmation
+email. The new address applies right away, we only check that no other account
+uses it.
+
+The settings and what they drive:
+
+| Setting                 | Default  | What it changes                                                                     |
+| ----------------------- | -------- | ----------------------------------------------------------------------------------- |
+| `locale`                | `en`     | The app language (`en` or `fr`)                                                     |
+| `recipeMinMatchedItems` | `1`      | A recipe must use at least this many items from the stock to be suggested (1 to 10) |
+| `recipeMatchThreshold`  | `0.7`    | The share of a recipe's ingredients the user must own (0.3 to 1)                    |
+| `expiringSoonDays`      | `3`      | Days before the date where a stock item counts as "expiring soon" (1 to 14)         |
+| `lowStockThreshold`     | `1`      | Quantity at or below this counts as low stock for the shopping list (0 to 20)       |
+| `defaultStockLocation`  | `PANTRY` | Where new stock items go when the request does not say                              |
 
 ### Products (`/products`)
 
@@ -77,13 +96,13 @@ lookups and manual entries.
 
 Everything here is scoped to the logged-in user.
 
-| Method | Path          | Auth | What it does                                                                                    |
-| ------ | ------------- | ---- | ----------------------------------------------------------------------------------------------- |
-| GET    | `/stocks`     | yes  | List the user's stock, supports filters (location, expiring soon, search)                       |
-| GET    | `/stocks/:id` | yes  | One stock item                                                                                  |
-| POST   | `/stocks`     | yes  | Add a stock item                                                                                |
-| PATCH  | `/stocks/:id` | yes  | Update a stock item                                                                             |
-| DELETE | `/stocks/:id` | yes  | Remove a stock item, optional `?disposition=CONSUMED\|DISCARDED\|EXPIRED` feeds the waste score |
+| Method | Path          | Auth | What it does                                                                                                                                   |
+| ------ | ------------- | ---- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/stocks`     | yes  | List the user's stock, supports filters (location, expiring soon, search). The "expiring soon" window is the user's `expiringSoonDays` setting |
+| GET    | `/stocks/:id` | yes  | One stock item                                                                                                                                 |
+| POST   | `/stocks`     | yes  | Add a stock item                                                                                                                               |
+| PATCH  | `/stocks/:id` | yes  | Update a stock item                                                                                                                            |
+| DELETE | `/stocks/:id` | yes  | Remove a stock item, optional `?disposition=CONSUMED\|DISCARDED\|EXPIRED` feeds the waste score                                                |
 
 ### OCR / receipts (`/ocr`)
 
@@ -98,9 +117,9 @@ Receipt scanning is asynchronous. You upload, you get a job id, you poll the job
 
 ### Recipes (`/recipes`)
 
-| Method | Path               | Auth | What it does                                                                                     |
-| ------ | ------------------ | ---- | ------------------------------------------------------------------------------------------------ |
-| GET    | `/recipes/suggest` | yes  | Recipes you can mostly make from your stock (score of 70% or more), with the missing ingredients |
+| Method | Path               | Auth | What it does                                                                                                                                                                                                        |
+| ------ | ------------------ | ---- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GET    | `/recipes/suggest` | yes  | Recipes you can mostly make from your stock, with the missing ingredients. The 70% match rule and the minimum number of stock items used are the user's `recipeMatchThreshold` and `recipeMinMatchedItems` settings |
 
 ### Shopping list (`/shopping-list`)
 
@@ -124,12 +143,28 @@ endpoints are public.
 
 ### Waste level (`/waste`)
 
-| Method | Path           | Auth | What it does                                                                                |
-| ------ | -------------- | ---- | ------------------------------------------------------------------------------------------- |
-| GET    | `/waste/level` | yes  | The waste score (0 to 100), the Trashy mood, and the counts behind it over the last 30 days |
+| Method | Path             | Auth | What it does                                                                                                      |
+| ------ | ---------------- | ---- | ----------------------------------------------------------------------------------------------------------------- |
+| GET    | `/waste/level`   | yes  | The waste score (0 to 100), the Trashy mood, the counts, the pantry state, the trend and the weekly scores        |
+| GET    | `/waste/items`   | yes  | The resolved items behind the counts (newest first, max 200) plus the CO2 factor table, for the stat card details |
+| GET    | `/waste/history` | yes  | All-time history: one score per calendar month (UTC) since the first resolved item, capped at the last 24 months  |
 
-The score is `consumed / (consumed + discarded + expired)`, as a percentage, over
-the trailing 30 days. A user with nothing resolved yet starts at 100.
+The score is a mix: 70% outcome and 30% pantry. The outcome part is
+`consumed / (consumed + discarded + expired)` as a percentage over the trailing 30
+days, recency weighted (each item's weight halves every 14 days) with rescues
+counting 1.5x (a rescue = eaten with 3 days or less left before expiry). The pantry
+part looks at the stock right now: expired items count as 1 risk each and items
+expiring within 3 days as 0.5, so a rotting fridge drags the score down no matter
+how much gets eaten. A user with nothing resolved and nothing at risk starts at
+100, and the counts in the response stay unweighted.
+
+The extra fields on `/waste/level`: `pantry` (in-stock totals and its sub-score),
+`rescuedCount`, `trend` (last 7 days vs the rest of the window, IMPROVING / STEADY
+/ WORSENING, null until both sides have items), `weeklyScores` (one score per week
+for the last 4 weeks oldest first, null for a quiet week), and `nextMood` /
+`itemsToNextMood` (how many more consumed items would reach the next mood band,
+null when already EXCELLENT, with `pantryBlocked` set when eating alone cannot get
+there).
 
 ### Gamification (`/challenges`)
 

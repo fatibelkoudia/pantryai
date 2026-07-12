@@ -91,12 +91,57 @@ off as you shop.
 ## Trashy, your waste score, and challenges
 
 Every time you remove an item and say whether you ate it or binned it, Trashy
-updates. Your waste score is the share of food you actually used over the last 30
-days. The more you use and the less you waste, the happier Trashy gets.
+updates. Your waste score is mostly the share of food you actually used over the
+last 30 days, but your fridge counts too: items that are expired or about to
+expire in your stock pull the score down until you deal with them. Eating an item
+just before it expires is a "rescue" and counts extra. The more you use, the less
+you waste, and the cleaner your fridge, the happier Trashy gets.
+
+Recent days matter more than old ones: waste from weeks ago slowly fades out of
+the score, so a bad week does not haunt you for a month. Trashy's mood screen also
+shows whether you are improving or slipping, your history as little bars (the last
+four weeks, or every month since you started), and a concrete tip like "use 3 more
+items and Trashy feels Good". When the problem is the fridge rather than the
+eating, the tip tells you to sort out the expiring items first.
+
+The three number cards (items used, thrown out, CO2 avoided) can be tapped: they
+open a panel with the actual items behind the number and a short explanation of
+how it is calculated.
 
 On top of that there are challenges (like eating three things from your fridge, or
 a weekend with nothing thrown away). Completing one earns you XP. The tone is
 meant to be encouraging, there is no guilt here.
+
+## Your profile and settings
+
+The Profile screen is where you make PantryAI yours. From there you can:
+
+- **Pick an avatar.** Choose one of the built-in avatars (little food characters).
+  There is no photo upload, on purpose: nothing to store, nothing to leak.
+- **Change your name and email.** The new email applies right away. If another
+  account already uses it, the app tells you.
+- **Change your password.** You need to type your current one first.
+- **Pick your language.** English or French. The switch applies immediately on
+  the screens that are already translated.
+
+Below that come the settings, each one changes how the app behaves:
+
+- **Minimum items from my stock.** Meal Ideas only suggests recipes that use at
+  least this many items you actually have. Raise it if you want suggestions that
+  really dig into your pantry instead of one-ingredient matches.
+- **Ingredient match.** The share of a recipe's ingredients you must already own
+  for it to be suggested (70% out of the box). Lower it to see more ideas, raise
+  it to only see recipes you can almost fully cook.
+- **Expiring soon window.** How many days before the expiry date an item starts
+  counting as "expiring soon" on the home screen and inventory.
+- **Low stock threshold.** The quantity at or below which an item is considered
+  running low when PantryAI builds your shopping list.
+- **Default storage location.** Where new items go (fridge, freezer, or pantry)
+  when you do not pick a place while adding them.
+
+Changes apply after you hit Save on the settings card. If you edit something
+and try to leave the screen without saving, the app shows a reminder and lets
+you choose between staying and leaving without saving.
 
 ## Learning
 
@@ -109,7 +154,8 @@ can turn the tip cards off if you do not want them.
 PantryAI is built to respect your privacy.
 
 - **Export your data.** From your Profile you can download everything we hold
-  about you as a file: your profile, your stock, and your receipt-scan history.
+  about you as a file: your profile, your settings, your stock, and your
+  receipt-scan history.
 - **Delete your account.** Also from your Profile. This removes your data and
   purges any receipt images still in storage. This cannot be undone.
 - **Receipt images are temporary.** Once a receipt has been read, its image is

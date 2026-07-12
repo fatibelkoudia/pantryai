@@ -20,6 +20,8 @@ interface AuthStore {
   login: (dto: LoginDto) => Promise<void>;
   register: (dto: RegisterDto) => Promise<void>;
   logout: () => Promise<void>;
+  // re-fetch the user after the profile screen saved a change
+  refreshUser: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -70,6 +72,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
     await deleteStoredRefreshToken();
     apiClient.setAccessToken(null);
     set({ accessToken: null, user: null, status: 'anon' });
+  },
+
+  refreshUser: async () => {
+    const user = await apiClient.getMe().catch(() => null);
+    if (user) set({ user });
   },
 }));
 

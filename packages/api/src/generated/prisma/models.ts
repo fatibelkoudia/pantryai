@@ -8,6 +8,7 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/User';
+export type * from './models/UserSettings';
 export type * from './models/UserDevice';
 export type * from './models/Product';
 export type * from './models/StockItem';
