@@ -46,8 +46,18 @@ jobs:
       - name: Type-check
         run: pnpm run typecheck
 
-      - name: Unit tests (api)
-        run: pnpm --filter @pantryai/api test:unit
+      # --coverage enforces the thresholds declared in vitest.config.ts
+      # (60% overall, 80% on services). Falling below fails the job.
+      - name: Unit tests + coverage (api)
+        run: pnpm --filter @pantryai/api test:unit:coverage
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-coverage
+          path: packages/api/coverage/
+          retention-days: 30
 
   integration:
     name: Integration tests (Postgres + Redis)
