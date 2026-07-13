@@ -38,6 +38,7 @@ export type UserChallengeMinAggregateOutputType = {
   id: string | null;
   userId: string | null;
   challengeId: string | null;
+  weekKey: string | null;
   progress: number | null;
   completedAt: Date | null;
   createdAt: Date | null;
@@ -48,6 +49,7 @@ export type UserChallengeMaxAggregateOutputType = {
   id: string | null;
   userId: string | null;
   challengeId: string | null;
+  weekKey: string | null;
   progress: number | null;
   completedAt: Date | null;
   createdAt: Date | null;
@@ -58,6 +60,7 @@ export type UserChallengeCountAggregateOutputType = {
   id: number;
   userId: number;
   challengeId: number;
+  weekKey: number;
   progress: number;
   completedAt: number;
   createdAt: number;
@@ -77,6 +80,7 @@ export type UserChallengeMinAggregateInputType = {
   id?: true;
   userId?: true;
   challengeId?: true;
+  weekKey?: true;
   progress?: true;
   completedAt?: true;
   createdAt?: true;
@@ -87,6 +91,7 @@ export type UserChallengeMaxAggregateInputType = {
   id?: true;
   userId?: true;
   challengeId?: true;
+  weekKey?: true;
   progress?: true;
   completedAt?: true;
   createdAt?: true;
@@ -97,6 +102,7 @@ export type UserChallengeCountAggregateInputType = {
   id?: true;
   userId?: true;
   challengeId?: true;
+  weekKey?: true;
   progress?: true;
   completedAt?: true;
   createdAt?: true;
@@ -199,6 +205,7 @@ export type UserChallengeGroupByOutputType = {
   id: string;
   userId: string;
   challengeId: string;
+  weekKey: string;
   progress: number;
   completedAt: Date | null;
   createdAt: Date;
@@ -230,6 +237,7 @@ export type UserChallengeWhereInput = {
   id?: Prisma.StringFilter<'UserChallenge'> | string;
   userId?: Prisma.StringFilter<'UserChallenge'> | string;
   challengeId?: Prisma.StringFilter<'UserChallenge'> | string;
+  weekKey?: Prisma.StringFilter<'UserChallenge'> | string;
   progress?: Prisma.IntFilter<'UserChallenge'> | number;
   completedAt?: Prisma.DateTimeNullableFilter<'UserChallenge'> | Date | string | null;
   createdAt?: Prisma.DateTimeFilter<'UserChallenge'> | Date | string;
@@ -242,6 +250,7 @@ export type UserChallengeOrderByWithRelationInput = {
   id?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
   challengeId?: Prisma.SortOrder;
+  weekKey?: Prisma.SortOrder;
   progress?: Prisma.SortOrder;
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
@@ -253,12 +262,13 @@ export type UserChallengeOrderByWithRelationInput = {
 export type UserChallengeWhereUniqueInput = Prisma.AtLeast<
   {
     id?: string;
-    userId_challengeId?: Prisma.UserChallengeUserIdChallengeIdCompoundUniqueInput;
+    userId_challengeId_weekKey?: Prisma.UserChallengeUserIdChallengeIdWeekKeyCompoundUniqueInput;
     AND?: Prisma.UserChallengeWhereInput | Prisma.UserChallengeWhereInput[];
     OR?: Prisma.UserChallengeWhereInput[];
     NOT?: Prisma.UserChallengeWhereInput | Prisma.UserChallengeWhereInput[];
     userId?: Prisma.StringFilter<'UserChallenge'> | string;
     challengeId?: Prisma.StringFilter<'UserChallenge'> | string;
+    weekKey?: Prisma.StringFilter<'UserChallenge'> | string;
     progress?: Prisma.IntFilter<'UserChallenge'> | number;
     completedAt?: Prisma.DateTimeNullableFilter<'UserChallenge'> | Date | string | null;
     createdAt?: Prisma.DateTimeFilter<'UserChallenge'> | Date | string;
@@ -266,13 +276,14 @@ export type UserChallengeWhereUniqueInput = Prisma.AtLeast<
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
     challenge?: Prisma.XOR<Prisma.ChallengeScalarRelationFilter, Prisma.ChallengeWhereInput>;
   },
-  'id' | 'userId_challengeId'
+  'id' | 'userId_challengeId_weekKey'
 >;
 
 export type UserChallengeOrderByWithAggregationInput = {
   id?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
   challengeId?: Prisma.SortOrder;
+  weekKey?: Prisma.SortOrder;
   progress?: Prisma.SortOrder;
   completedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
@@ -295,6 +306,7 @@ export type UserChallengeScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<'UserChallenge'> | string;
   userId?: Prisma.StringWithAggregatesFilter<'UserChallenge'> | string;
   challengeId?: Prisma.StringWithAggregatesFilter<'UserChallenge'> | string;
+  weekKey?: Prisma.StringWithAggregatesFilter<'UserChallenge'> | string;
   progress?: Prisma.IntWithAggregatesFilter<'UserChallenge'> | number;
   completedAt?: Prisma.DateTimeNullableWithAggregatesFilter<'UserChallenge'> | Date | string | null;
   createdAt?: Prisma.DateTimeWithAggregatesFilter<'UserChallenge'> | Date | string;
@@ -303,6 +315,7 @@ export type UserChallengeScalarWhereWithAggregatesInput = {
 
 export type UserChallengeCreateInput = {
   id?: string;
+  weekKey?: string;
   progress?: number;
   completedAt?: Date | string | null;
   createdAt?: Date | string;
@@ -315,6 +328,7 @@ export type UserChallengeUncheckedCreateInput = {
   id?: string;
   userId: string;
   challengeId: string;
+  weekKey?: string;
   progress?: number;
   completedAt?: Date | string | null;
   createdAt?: Date | string;
@@ -323,6 +337,7 @@ export type UserChallengeUncheckedCreateInput = {
 
 export type UserChallengeUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
+  weekKey?: Prisma.StringFieldUpdateOperationsInput | string;
   progress?: Prisma.IntFieldUpdateOperationsInput | number;
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -335,6 +350,7 @@ export type UserChallengeUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   userId?: Prisma.StringFieldUpdateOperationsInput | string;
   challengeId?: Prisma.StringFieldUpdateOperationsInput | string;
+  weekKey?: Prisma.StringFieldUpdateOperationsInput | string;
   progress?: Prisma.IntFieldUpdateOperationsInput | number;
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -345,6 +361,7 @@ export type UserChallengeCreateManyInput = {
   id?: string;
   userId: string;
   challengeId: string;
+  weekKey?: string;
   progress?: number;
   completedAt?: Date | string | null;
   createdAt?: Date | string;
@@ -353,6 +370,7 @@ export type UserChallengeCreateManyInput = {
 
 export type UserChallengeUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
+  weekKey?: Prisma.StringFieldUpdateOperationsInput | string;
   progress?: Prisma.IntFieldUpdateOperationsInput | number;
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -363,6 +381,7 @@ export type UserChallengeUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   userId?: Prisma.StringFieldUpdateOperationsInput | string;
   challengeId?: Prisma.StringFieldUpdateOperationsInput | string;
+  weekKey?: Prisma.StringFieldUpdateOperationsInput | string;
   progress?: Prisma.IntFieldUpdateOperationsInput | number;
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -379,15 +398,17 @@ export type UserChallengeOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder;
 };
 
-export type UserChallengeUserIdChallengeIdCompoundUniqueInput = {
+export type UserChallengeUserIdChallengeIdWeekKeyCompoundUniqueInput = {
   userId: string;
   challengeId: string;
+  weekKey: string;
 };
 
 export type UserChallengeCountOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
   challengeId?: Prisma.SortOrder;
+  weekKey?: Prisma.SortOrder;
   progress?: Prisma.SortOrder;
   completedAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
@@ -402,6 +423,7 @@ export type UserChallengeMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
   challengeId?: Prisma.SortOrder;
+  weekKey?: Prisma.SortOrder;
   progress?: Prisma.SortOrder;
   completedAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
@@ -412,6 +434,7 @@ export type UserChallengeMinOrderByAggregateInput = {
   id?: Prisma.SortOrder;
   userId?: Prisma.SortOrder;
   challengeId?: Prisma.SortOrder;
+  weekKey?: Prisma.SortOrder;
   progress?: Prisma.SortOrder;
   completedAt?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
@@ -596,6 +619,7 @@ export type UserChallengeUncheckedUpdateManyWithoutChallengeNestedInput = {
 
 export type UserChallengeCreateWithoutUserInput = {
   id?: string;
+  weekKey?: string;
   progress?: number;
   completedAt?: Date | string | null;
   createdAt?: Date | string;
@@ -606,6 +630,7 @@ export type UserChallengeCreateWithoutUserInput = {
 export type UserChallengeUncheckedCreateWithoutUserInput = {
   id?: string;
   challengeId: string;
+  weekKey?: string;
   progress?: number;
   completedAt?: Date | string | null;
   createdAt?: Date | string;
@@ -660,6 +685,7 @@ export type UserChallengeScalarWhereInput = {
   id?: Prisma.StringFilter<'UserChallenge'> | string;
   userId?: Prisma.StringFilter<'UserChallenge'> | string;
   challengeId?: Prisma.StringFilter<'UserChallenge'> | string;
+  weekKey?: Prisma.StringFilter<'UserChallenge'> | string;
   progress?: Prisma.IntFilter<'UserChallenge'> | number;
   completedAt?: Prisma.DateTimeNullableFilter<'UserChallenge'> | Date | string | null;
   createdAt?: Prisma.DateTimeFilter<'UserChallenge'> | Date | string;
@@ -668,6 +694,7 @@ export type UserChallengeScalarWhereInput = {
 
 export type UserChallengeCreateWithoutChallengeInput = {
   id?: string;
+  weekKey?: string;
   progress?: number;
   completedAt?: Date | string | null;
   createdAt?: Date | string;
@@ -678,6 +705,7 @@ export type UserChallengeCreateWithoutChallengeInput = {
 export type UserChallengeUncheckedCreateWithoutChallengeInput = {
   id?: string;
   userId: string;
+  weekKey?: string;
   progress?: number;
   completedAt?: Date | string | null;
   createdAt?: Date | string;
@@ -730,6 +758,7 @@ export type UserChallengeUpdateManyWithWhereWithoutChallengeInput = {
 export type UserChallengeCreateManyUserInput = {
   id?: string;
   challengeId: string;
+  weekKey?: string;
   progress?: number;
   completedAt?: Date | string | null;
   createdAt?: Date | string;
@@ -738,6 +767,7 @@ export type UserChallengeCreateManyUserInput = {
 
 export type UserChallengeUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
+  weekKey?: Prisma.StringFieldUpdateOperationsInput | string;
   progress?: Prisma.IntFieldUpdateOperationsInput | number;
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -748,6 +778,7 @@ export type UserChallengeUpdateWithoutUserInput = {
 export type UserChallengeUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   challengeId?: Prisma.StringFieldUpdateOperationsInput | string;
+  weekKey?: Prisma.StringFieldUpdateOperationsInput | string;
   progress?: Prisma.IntFieldUpdateOperationsInput | number;
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -757,6 +788,7 @@ export type UserChallengeUncheckedUpdateWithoutUserInput = {
 export type UserChallengeUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   challengeId?: Prisma.StringFieldUpdateOperationsInput | string;
+  weekKey?: Prisma.StringFieldUpdateOperationsInput | string;
   progress?: Prisma.IntFieldUpdateOperationsInput | number;
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -766,6 +798,7 @@ export type UserChallengeUncheckedUpdateManyWithoutUserInput = {
 export type UserChallengeCreateManyChallengeInput = {
   id?: string;
   userId: string;
+  weekKey?: string;
   progress?: number;
   completedAt?: Date | string | null;
   createdAt?: Date | string;
@@ -774,6 +807,7 @@ export type UserChallengeCreateManyChallengeInput = {
 
 export type UserChallengeUpdateWithoutChallengeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
+  weekKey?: Prisma.StringFieldUpdateOperationsInput | string;
   progress?: Prisma.IntFieldUpdateOperationsInput | number;
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -784,6 +818,7 @@ export type UserChallengeUpdateWithoutChallengeInput = {
 export type UserChallengeUncheckedUpdateWithoutChallengeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   userId?: Prisma.StringFieldUpdateOperationsInput | string;
+  weekKey?: Prisma.StringFieldUpdateOperationsInput | string;
   progress?: Prisma.IntFieldUpdateOperationsInput | number;
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -793,6 +828,7 @@ export type UserChallengeUncheckedUpdateWithoutChallengeInput = {
 export type UserChallengeUncheckedUpdateManyWithoutChallengeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string;
   userId?: Prisma.StringFieldUpdateOperationsInput | string;
+  weekKey?: Prisma.StringFieldUpdateOperationsInput | string;
   progress?: Prisma.IntFieldUpdateOperationsInput | number;
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
@@ -806,6 +842,7 @@ export type UserChallengeSelect<
     id?: boolean;
     userId?: boolean;
     challengeId?: boolean;
+    weekKey?: boolean;
     progress?: boolean;
     completedAt?: boolean;
     createdAt?: boolean;
@@ -823,6 +860,7 @@ export type UserChallengeSelectCreateManyAndReturn<
     id?: boolean;
     userId?: boolean;
     challengeId?: boolean;
+    weekKey?: boolean;
     progress?: boolean;
     completedAt?: boolean;
     createdAt?: boolean;
@@ -840,6 +878,7 @@ export type UserChallengeSelectUpdateManyAndReturn<
     id?: boolean;
     userId?: boolean;
     challengeId?: boolean;
+    weekKey?: boolean;
     progress?: boolean;
     completedAt?: boolean;
     createdAt?: boolean;
@@ -854,6 +893,7 @@ export type UserChallengeSelectScalar = {
   id?: boolean;
   userId?: boolean;
   challengeId?: boolean;
+  weekKey?: boolean;
   progress?: boolean;
   completedAt?: boolean;
   createdAt?: boolean;
@@ -863,7 +903,14 @@ export type UserChallengeSelectScalar = {
 export type UserChallengeOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  'id' | 'userId' | 'challengeId' | 'progress' | 'completedAt' | 'createdAt' | 'updatedAt',
+  | 'id'
+  | 'userId'
+  | 'challengeId'
+  | 'weekKey'
+  | 'progress'
+  | 'completedAt'
+  | 'createdAt'
+  | 'updatedAt',
   ExtArgs['result']['userChallenge']
 >;
 export type UserChallengeInclude<
@@ -898,6 +945,7 @@ export type $UserChallengePayload<
       id: string;
       userId: string;
       challengeId: string;
+      weekKey: string;
       progress: number;
       completedAt: Date | null;
       createdAt: Date;
@@ -1503,6 +1551,7 @@ export interface UserChallengeFieldRefs {
   readonly id: Prisma.FieldRef<'UserChallenge', 'String'>;
   readonly userId: Prisma.FieldRef<'UserChallenge', 'String'>;
   readonly challengeId: Prisma.FieldRef<'UserChallenge', 'String'>;
+  readonly weekKey: Prisma.FieldRef<'UserChallenge', 'String'>;
   readonly progress: Prisma.FieldRef<'UserChallenge', 'Int'>;
   readonly completedAt: Prisma.FieldRef<'UserChallenge', 'DateTime'>;
   readonly createdAt: Prisma.FieldRef<'UserChallenge', 'DateTime'>;

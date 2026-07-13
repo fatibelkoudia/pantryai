@@ -60,6 +60,7 @@ export const ModelName = {
   UserXp: 'UserXp',
   Challenge: 'Challenge',
   UserChallenge: 'UserChallenge',
+  LessonCompletion: 'LessonCompletion',
 } as const;
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
@@ -199,6 +200,7 @@ export const ShoppingItemScalarFieldEnum = {
   quantity: 'quantity',
   unit: 'unit',
   checked: 'checked',
+  checkedAt: 'checkedAt',
   source: 'source',
   createdAt: 'createdAt',
 } as const;
@@ -232,6 +234,7 @@ export const UserChallengeScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   challengeId: 'challengeId',
+  weekKey: 'weekKey',
   progress: 'progress',
   completedAt: 'completedAt',
   createdAt: 'createdAt',
@@ -240,6 +243,16 @@ export const UserChallengeScalarFieldEnum = {
 
 export type UserChallengeScalarFieldEnum =
   (typeof UserChallengeScalarFieldEnum)[keyof typeof UserChallengeScalarFieldEnum];
+
+export const LessonCompletionScalarFieldEnum = {
+  userId: 'userId',
+  tipId: 'tipId',
+  correct: 'correct',
+  completedAt: 'completedAt',
+} as const;
+
+export type LessonCompletionScalarFieldEnum =
+  (typeof LessonCompletionScalarFieldEnum)[keyof typeof LessonCompletionScalarFieldEnum];
 
 export const SortOrder = {
   asc: 'asc',

@@ -19,4 +19,5 @@ export type * from './models/ShoppingItem';
 export type * from './models/UserXp';
 export type * from './models/Challenge';
 export type * from './models/UserChallenge';
+export type * from './models/LessonCompletion';
 export type * from './commonInputTypes';

@@ -2,7 +2,15 @@ import type { ApiMeta, ApiResponse } from '../types/api.js';
 import type { AuthResponse, LoginDto, RegisterDto } from '../types/auth.js';
 import type { RegisterDeviceDto } from '../types/device.js';
 import type { ChallengesResponse } from '../types/gamification.js';
-import type { RandomTipResponse, TipCategory, TipsResponse } from '../types/learning.js';
+import type {
+  CompleteLessonResponse,
+  LessonDetailResponse,
+  LessonsResponse,
+  RandomTipResponse,
+  TipCategory,
+  TipsResponse,
+} from '../types/learning.js';
+import type { Locale } from '../types/settings.js';
 import type { OcrJob } from '../types/ocr.js';
 import type { CreateProductDto, Product, ProductQuery } from '../types/product.js';
 import type { RecipeSuggestionsResponse } from '../types/recipe.js';
@@ -309,16 +317,64 @@ export class PantryApiClient {
   }
 
   // Learning / conservation tips
-  /** Conservation tips, optionally filtered to a single category. */
-  getTips(category?: TipCategory): Promise<TipsResponse> {
-    const qs = category ? `?category=${encodeURIComponent(category)}` : '';
-    return this.request<TipsResponse>(`/learning/tips${qs}`);
+  private learningQuery(category?: TipCategory, locale?: Locale): string {
+    const params = new URLSearchParams();
+    if (category) params.set('category', category);
+    if (locale) params.set('locale', locale);
+    const qs = params.toString();
+    return qs ? `?${qs}` : '';
+  }
+
+  /** Conservation tips in the given language, optionally filtered to a single category. */
+  getTips(category?: TipCategory, locale?: Locale): Promise<TipsResponse> {
+    return this.request<TipsResponse>(`/learning/tips${this.learningQuery(category, locale)}`);
   }
 
   /** One random conservation tip, optionally within a category. `tip` is null if none match. */
-  getRandomTip(category?: TipCategory): Promise<RandomTipResponse> {
-    const qs = category ? `?category=${encodeURIComponent(category)}` : '';
-    return this.request<RandomTipResponse>(`/learning/tips/random${qs}`);
+  getRandomTip(category?: TipCategory, locale?: Locale): Promise<RandomTipResponse> {
+    return this.request<RandomTipResponse>(
+      `/learning/tips/random${this.learningQuery(category, locale)}`,
+    );
+  }
+
+  /** The tip of the day. Deterministic: everyone gets the same tip all day long. */
+  getDailyTip(locale?: Locale): Promise<RandomTipResponse> {
+    return this.request<RandomTipResponse>(
+      `/learning/tips/daily${this.learningQuery(undefined, locale)}`,
+    );
+  }
+
+  /** The lessons list with the caller's completion state on each one. */
+  getLessons(category?: TipCategory, locale?: Locale): Promise<LessonsResponse> {
+    return this.request<LessonsResponse>(
+      `/learning/lessons${this.learningQuery(category, locale)}`,
+    );
+  }
+
+  /** One full lesson with its quiz. The first request per language may take a few seconds. */
+  getLesson(tipId: string, locale?: Locale): Promise<LessonDetailResponse> {
+    return this.request<LessonDetailResponse>(
+      `/learning/lessons/${encodeURIComponent(tipId)}${this.learningQuery(undefined, locale)}`,
+    );
+  }
+
+  /**
+   * Finish a lesson. Sends the picked answer when there was a quiz; XP is only paid
+   * once. The locale must match the one the quiz was fetched with, the answer is
+   * judged against that language's question.
+   */
+  completeLesson(
+    tipId: string,
+    answerIndex?: number,
+    locale?: Locale,
+  ): Promise<CompleteLessonResponse> {
+    return this.request<CompleteLessonResponse>(
+      `/learning/lessons/${encodeURIComponent(tipId)}/complete${this.learningQuery(undefined, locale)}`,
+      {
+        method: 'POST',
+        body: JSON.stringify(answerIndex === undefined ? {} : { answerIndex }),
+      },
+    );
   }
 
   // Shopping list

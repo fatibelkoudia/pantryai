@@ -32,4 +32,11 @@ export interface ChallengesResponse {
   // The user's current XP total.
   xp: number;
   challenges: ChallengeProgress[];
+  // How many days in a row the user did something anti-waste (finished a lesson
+  // or used up a stock item). Yesterday's run still counts until the day is over.
+  streak: number;
+  // Whether today already counts, so the app knows to show the flame lit or dim.
+  streakActiveToday: boolean;
+  // When the current challenge week ends and everything resets (ISO date string).
+  weekEndsAt: string;
 }

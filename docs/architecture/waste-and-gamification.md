@@ -107,9 +107,10 @@ is one of the places we filled in a blank, written up in
 
 ## Challenges and XP
 
-Challenges are small goals like "eat 10 items from the fridge" or "no waste for a
-week". Each one is worth some XP and only ever pays out once. The user has a single
-running XP total.
+Challenges are small weekly goals like "eat 10 items this week" or "no waste this
+week". Each one is worth some XP and pays out once per week: on Monday everything
+resets and the XP can be earned again. The user has a single running XP total that
+never resets.
 
 The pieces:
 
@@ -120,6 +121,9 @@ The pieces:
   no database calls in here, which is exactly why it is easy to unit test.
 - `gamification/gamification.service.ts` does the database side: it loads the signals,
   calls `evaluateProgress`, and awards XP.
+- `gamification/week.ts` has the day and week helpers. Days and weeks follow the
+  Paris clock no matter where the server runs, since that is where our users are.
+- `gamification/streak.ts` has `computeStreak`, another pure function (see below).
 
 ### How a rule is scored
 
@@ -131,18 +135,28 @@ The pieces:
   wasted in that window, progress drops back to 0, because the clean streak is broken.
 - `shopping_checked`: how many shopping-list items the user has ticked off.
 
-### When it runs and how XP is only paid once
+### The weekly reset
+
+Progress is stored per user, per challenge and per ISO week: the `UserChallenge` row
+carries a `weekKey` like `2026-W28` and the unique key is
+`(userId, challengeId, weekKey)`. When we recheck, we only count signals from the
+start of the current Paris week (consumptions by their `deletedAt`, shopping ticks by
+a `checkedAt` stamp the shopping list writes when an item is ticked). So on Monday a
+fresh row starts at 0 for everyone and last week's rows just stay behind as history.
+Rows from before challenges became weekly have an empty `weekKey` and are left alone.
+
+### When it runs and how XP is only paid once per week
 
 The recheck is event-driven. When a stock item gets used up or thrown out, the stock
 module emits a `STOCK_REMOVED` event, and the gamification service listens for it
 (`@OnEvent`) and re-evaluates the challenges for that user. So we only do the work
 when something actually changed, instead of recomputing all the time.
 
-To make sure a challenge's XP is only ever added once, the award uses a guarded
-`updateMany` inside a transaction: it only flips the challenge to done if it was not
-already done, and only the call that actually changes a row goes on to add the XP. If
-two events fire at nearly the same time, only one of them wins, so the XP can't be
-double-counted.
+To make sure a challenge's XP is only added once per week, the award uses a guarded
+`updateMany` inside a transaction on the current week's row: it only flips the row to
+done if it was not already done, and only the call that actually changes a row goes
+on to add the XP. If two events fire at nearly the same time, only one of them wins,
+so the XP can't be double-counted.
 
 ```mermaid
 flowchart TD
@@ -158,3 +172,37 @@ flowchart TD
 The challenge definitions are seeded into the database on startup (`onModuleInit`
 upserts them by `key`), because we do not have a separate Prisma seed script. Running
 it again just updates the existing rows instead of creating duplicates.
+
+## Lessons and the daily streak
+
+The Learn tab turns the conservation tips into small interactive lessons. Opening a
+lesson shows a one-question quiz about the tip; answering it (right or wrong) or
+confirming a quiz-less lesson completes it and pays 20 XP, once per lesson. The
+completion lives in `lesson_completions`, whose primary key `(userId, tipId)` is the
+guard against paying twice.
+
+The quiz itself is not hand-written, but it is not made at runtime either. It sits in
+the data files next to the tips (`src/learning/data/tips.fr.json` and `tips.en.json`,
+each tip has a `quiz` field). A one-off script, `scripts/generate-lessons.ts`, is what
+fills those in: it asks Mistral (the same EU provider we already use for OCR, so no
+new RGPD worry; the tips are public content, no user data is sent) for one question
+per tip and, for English, a translation of the tip too, then writes the result
+straight into the JSON. You run it once with `pnpm --filter @pantryai/api
+generate-lessons` and commit the files. So the running app never calls Mistral, every
+lesson is ready instantly, and we never pay for the same quiz twice. The check that a
+quiz is well formed lives in `src/learning/quiz.ts` so the script and the tests share
+it. If a tip has no quiz yet (or a translation is missing), the lesson still opens: it
+falls back to a plain read-and-confirm card, and English falls back to the French
+text, so nothing is ever blank.
+
+The daily streak is how many days in a row the user did something anti-waste: at
+least one finished lesson or one consumed stock item that day (Paris days). Nothing
+is stored for it; `computeStreak` in `gamification/streak.ts` recomputes it from the
+completion and consumption timestamps on every read. A run that ended yesterday
+still counts today, so the flame does not drop to zero first thing in the morning,
+and the response says whether today has counted yet so the app can show the flame
+lit or dim.
+
+XP also maps to levels now. The thresholds and the `getLevel` helper live in the
+shared package (`gamification/levels.ts`) so mobile and web show the same "Level 2,
+Food Saver" everywhere; the level titles come from the i18n catalogs.

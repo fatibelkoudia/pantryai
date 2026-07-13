@@ -23,6 +23,7 @@ model User {
   shoppingItems ShoppingItem[]
   xp           UserXp?
   challenges   UserChallenge[]
+  lessons      LessonCompletion[]
   settings     UserSettings?
 
   @@index([email])
@@ -190,6 +191,8 @@ model ShoppingItem {
   quantity  Float?
   unit      String?
   checked   Boolean            @default(false)
+  // when the item was last ticked off, so weekly challenges can count only this week
+  checkedAt DateTime?
   source    ShoppingItemSource @default(MANUAL)
   createdAt DateTime           @default(now())
   user      User               @relation(fields: [userId], references: [id])
@@ -225,12 +228,16 @@ model Challenge {
   @@map("challenges")
 }
 
-// How far one user has got on one challenge. `completedAt` starts null and we set
-// it once when they finish. We use that to make sure we only ever give the XP once.
+// How far one user has got on one challenge, for one week. Challenges reset every
+// week, so there is one row per user + challenge + week (`weekKey` looks like
+// "2026-W28"). `completedAt` starts null and we set it once when they finish that
+// week's run. We use that to make sure we only ever give the XP once per week.
+// Rows with an empty weekKey are from before challenges became weekly.
 model UserChallenge {
   id          String    @id @default(uuid())
   userId      String
   challengeId String
+  weekKey     String    @default("")
   progress    Int       @default(0)
   completedAt DateTime?
   createdAt   DateTime  @default(now())
@@ -238,7 +245,21 @@ model UserChallenge {
   user        User      @relation(fields: [userId], references: [id])
   challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, challengeId])
+  @@unique([userId, challengeId, weekKey])
   @@index([userId])
   @@map("user_challenges")
+}
+
+// One row per lesson a user finished. The primary key is what guarantees the XP
+// for a lesson is only paid once, and the completedAt dates feed the daily streak.
+model LessonCompletion {
+  userId      String
+  tipId       String
+  correct     Boolean?
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+
+  @@id([userId, tipId])
+  @@index([userId, completedAt])
+  @@map("lesson_completions")
 }

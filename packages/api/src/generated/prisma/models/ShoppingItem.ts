@@ -40,6 +40,7 @@ export type ShoppingItemMinAggregateOutputType = {
   quantity: number | null;
   unit: string | null;
   checked: boolean | null;
+  checkedAt: Date | null;
   source: $Enums.ShoppingItemSource | null;
   createdAt: Date | null;
 };
@@ -51,6 +52,7 @@ export type ShoppingItemMaxAggregateOutputType = {
   quantity: number | null;
   unit: string | null;
   checked: boolean | null;
+  checkedAt: Date | null;
   source: $Enums.ShoppingItemSource | null;
   createdAt: Date | null;
 };
@@ -62,6 +64,7 @@ export type ShoppingItemCountAggregateOutputType = {
   quantity: number;
   unit: number;
   checked: number;
+  checkedAt: number;
   source: number;
   createdAt: number;
   _all: number;
@@ -82,6 +85,7 @@ export type ShoppingItemMinAggregateInputType = {
   quantity?: true;
   unit?: true;
   checked?: true;
+  checkedAt?: true;
   source?: true;
   createdAt?: true;
 };
@@ -93,6 +97,7 @@ export type ShoppingItemMaxAggregateInputType = {
   quantity?: true;
   unit?: true;
   checked?: true;
+  checkedAt?: true;
   source?: true;
   createdAt?: true;
 };
@@ -104,6 +109,7 @@ export type ShoppingItemCountAggregateInputType = {
   quantity?: true;
   unit?: true;
   checked?: true;
+  checkedAt?: true;
   source?: true;
   createdAt?: true;
   _all?: true;
@@ -207,6 +213,7 @@ export type ShoppingItemGroupByOutputType = {
   quantity: number | null;
   unit: string | null;
   checked: boolean;
+  checkedAt: Date | null;
   source: $Enums.ShoppingItemSource;
   createdAt: Date;
   _count: ShoppingItemCountAggregateOutputType | null;
@@ -238,6 +245,7 @@ export type ShoppingItemWhereInput = {
   quantity?: Prisma.FloatNullableFilter<'ShoppingItem'> | number | null;
   unit?: Prisma.StringNullableFilter<'ShoppingItem'> | string | null;
   checked?: Prisma.BoolFilter<'ShoppingItem'> | boolean;
+  checkedAt?: Prisma.DateTimeNullableFilter<'ShoppingItem'> | Date | string | null;
   source?: Prisma.EnumShoppingItemSourceFilter<'ShoppingItem'> | $Enums.ShoppingItemSource;
   createdAt?: Prisma.DateTimeFilter<'ShoppingItem'> | Date | string;
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
@@ -250,6 +258,7 @@ export type ShoppingItemOrderByWithRelationInput = {
   quantity?: Prisma.SortOrderInput | Prisma.SortOrder;
   unit?: Prisma.SortOrderInput | Prisma.SortOrder;
   checked?: Prisma.SortOrder;
+  checkedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   source?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   user?: Prisma.UserOrderByWithRelationInput;
@@ -266,6 +275,7 @@ export type ShoppingItemWhereUniqueInput = Prisma.AtLeast<
     quantity?: Prisma.FloatNullableFilter<'ShoppingItem'> | number | null;
     unit?: Prisma.StringNullableFilter<'ShoppingItem'> | string | null;
     checked?: Prisma.BoolFilter<'ShoppingItem'> | boolean;
+    checkedAt?: Prisma.DateTimeNullableFilter<'ShoppingItem'> | Date | string | null;
     source?: Prisma.EnumShoppingItemSourceFilter<'ShoppingItem'> | $Enums.ShoppingItemSource;
     createdAt?: Prisma.DateTimeFilter<'ShoppingItem'> | Date | string;
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
@@ -280,6 +290,7 @@ export type ShoppingItemOrderByWithAggregationInput = {
   quantity?: Prisma.SortOrderInput | Prisma.SortOrder;
   unit?: Prisma.SortOrderInput | Prisma.SortOrder;
   checked?: Prisma.SortOrder;
+  checkedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
   source?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
   _count?: Prisma.ShoppingItemCountOrderByAggregateInput;
@@ -303,6 +314,7 @@ export type ShoppingItemScalarWhereWithAggregatesInput = {
   quantity?: Prisma.FloatNullableWithAggregatesFilter<'ShoppingItem'> | number | null;
   unit?: Prisma.StringNullableWithAggregatesFilter<'ShoppingItem'> | string | null;
   checked?: Prisma.BoolWithAggregatesFilter<'ShoppingItem'> | boolean;
+  checkedAt?: Prisma.DateTimeNullableWithAggregatesFilter<'ShoppingItem'> | Date | string | null;
   source?:
     | Prisma.EnumShoppingItemSourceWithAggregatesFilter<'ShoppingItem'>
     | $Enums.ShoppingItemSource;
@@ -315,6 +327,7 @@ export type ShoppingItemCreateInput = {
   quantity?: number | null;
   unit?: string | null;
   checked?: boolean;
+  checkedAt?: Date | string | null;
   source?: $Enums.ShoppingItemSource;
   createdAt?: Date | string;
   user: Prisma.UserCreateNestedOneWithoutShoppingItemsInput;
@@ -327,6 +340,7 @@ export type ShoppingItemUncheckedCreateInput = {
   quantity?: number | null;
   unit?: string | null;
   checked?: boolean;
+  checkedAt?: Date | string | null;
   source?: $Enums.ShoppingItemSource;
   createdAt?: Date | string;
 };
@@ -337,6 +351,7 @@ export type ShoppingItemUpdateInput = {
   quantity?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   checked?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   source?: Prisma.EnumShoppingItemSourceFieldUpdateOperationsInput | $Enums.ShoppingItemSource;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
   user?: Prisma.UserUpdateOneRequiredWithoutShoppingItemsNestedInput;
@@ -349,6 +364,7 @@ export type ShoppingItemUncheckedUpdateInput = {
   quantity?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   checked?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   source?: Prisma.EnumShoppingItemSourceFieldUpdateOperationsInput | $Enums.ShoppingItemSource;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -360,6 +376,7 @@ export type ShoppingItemCreateManyInput = {
   quantity?: number | null;
   unit?: string | null;
   checked?: boolean;
+  checkedAt?: Date | string | null;
   source?: $Enums.ShoppingItemSource;
   createdAt?: Date | string;
 };
@@ -370,6 +387,7 @@ export type ShoppingItemUpdateManyMutationInput = {
   quantity?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   checked?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   source?: Prisma.EnumShoppingItemSourceFieldUpdateOperationsInput | $Enums.ShoppingItemSource;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -381,6 +399,7 @@ export type ShoppingItemUncheckedUpdateManyInput = {
   quantity?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   checked?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   source?: Prisma.EnumShoppingItemSourceFieldUpdateOperationsInput | $Enums.ShoppingItemSource;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -402,6 +421,7 @@ export type ShoppingItemCountOrderByAggregateInput = {
   quantity?: Prisma.SortOrder;
   unit?: Prisma.SortOrder;
   checked?: Prisma.SortOrder;
+  checkedAt?: Prisma.SortOrder;
   source?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
 };
@@ -417,6 +437,7 @@ export type ShoppingItemMaxOrderByAggregateInput = {
   quantity?: Prisma.SortOrder;
   unit?: Prisma.SortOrder;
   checked?: Prisma.SortOrder;
+  checkedAt?: Prisma.SortOrder;
   source?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
 };
@@ -428,6 +449,7 @@ export type ShoppingItemMinOrderByAggregateInput = {
   quantity?: Prisma.SortOrder;
   unit?: Prisma.SortOrder;
   checked?: Prisma.SortOrder;
+  checkedAt?: Prisma.SortOrder;
   source?: Prisma.SortOrder;
   createdAt?: Prisma.SortOrder;
 };
@@ -544,6 +566,7 @@ export type ShoppingItemCreateWithoutUserInput = {
   quantity?: number | null;
   unit?: string | null;
   checked?: boolean;
+  checkedAt?: Date | string | null;
   source?: $Enums.ShoppingItemSource;
   createdAt?: Date | string;
 };
@@ -554,6 +577,7 @@ export type ShoppingItemUncheckedCreateWithoutUserInput = {
   quantity?: number | null;
   unit?: string | null;
   checked?: boolean;
+  checkedAt?: Date | string | null;
   source?: $Enums.ShoppingItemSource;
   createdAt?: Date | string;
 };
@@ -609,6 +633,7 @@ export type ShoppingItemScalarWhereInput = {
   quantity?: Prisma.FloatNullableFilter<'ShoppingItem'> | number | null;
   unit?: Prisma.StringNullableFilter<'ShoppingItem'> | string | null;
   checked?: Prisma.BoolFilter<'ShoppingItem'> | boolean;
+  checkedAt?: Prisma.DateTimeNullableFilter<'ShoppingItem'> | Date | string | null;
   source?: Prisma.EnumShoppingItemSourceFilter<'ShoppingItem'> | $Enums.ShoppingItemSource;
   createdAt?: Prisma.DateTimeFilter<'ShoppingItem'> | Date | string;
 };
@@ -619,6 +644,7 @@ export type ShoppingItemCreateManyUserInput = {
   quantity?: number | null;
   unit?: string | null;
   checked?: boolean;
+  checkedAt?: Date | string | null;
   source?: $Enums.ShoppingItemSource;
   createdAt?: Date | string;
 };
@@ -629,6 +655,7 @@ export type ShoppingItemUpdateWithoutUserInput = {
   quantity?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   checked?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   source?: Prisma.EnumShoppingItemSourceFieldUpdateOperationsInput | $Enums.ShoppingItemSource;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -639,6 +666,7 @@ export type ShoppingItemUncheckedUpdateWithoutUserInput = {
   quantity?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   checked?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   source?: Prisma.EnumShoppingItemSourceFieldUpdateOperationsInput | $Enums.ShoppingItemSource;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -649,6 +677,7 @@ export type ShoppingItemUncheckedUpdateManyWithoutUserInput = {
   quantity?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null;
   unit?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
   checked?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+  checkedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
   source?: Prisma.EnumShoppingItemSourceFieldUpdateOperationsInput | $Enums.ShoppingItemSource;
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -663,6 +692,7 @@ export type ShoppingItemSelect<
     quantity?: boolean;
     unit?: boolean;
     checked?: boolean;
+    checkedAt?: boolean;
     source?: boolean;
     createdAt?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -680,6 +710,7 @@ export type ShoppingItemSelectCreateManyAndReturn<
     quantity?: boolean;
     unit?: boolean;
     checked?: boolean;
+    checkedAt?: boolean;
     source?: boolean;
     createdAt?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -697,6 +728,7 @@ export type ShoppingItemSelectUpdateManyAndReturn<
     quantity?: boolean;
     unit?: boolean;
     checked?: boolean;
+    checkedAt?: boolean;
     source?: boolean;
     createdAt?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -711,6 +743,7 @@ export type ShoppingItemSelectScalar = {
   quantity?: boolean;
   unit?: boolean;
   checked?: boolean;
+  checkedAt?: boolean;
   source?: boolean;
   createdAt?: boolean;
 };
@@ -718,7 +751,7 @@ export type ShoppingItemSelectScalar = {
 export type ShoppingItemOmit<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetOmit<
-  'id' | 'userId' | 'name' | 'quantity' | 'unit' | 'checked' | 'source' | 'createdAt',
+  'id' | 'userId' | 'name' | 'quantity' | 'unit' | 'checked' | 'checkedAt' | 'source' | 'createdAt',
   ExtArgs['result']['shoppingItem']
 >;
 export type ShoppingItemInclude<
@@ -752,6 +785,7 @@ export type $ShoppingItemPayload<
       quantity: number | null;
       unit: string | null;
       checked: boolean;
+      checkedAt: Date | null;
       source: $Enums.ShoppingItemSource;
       createdAt: Date;
     },
@@ -1343,6 +1377,7 @@ export interface ShoppingItemFieldRefs {
   readonly quantity: Prisma.FieldRef<'ShoppingItem', 'Float'>;
   readonly unit: Prisma.FieldRef<'ShoppingItem', 'String'>;
   readonly checked: Prisma.FieldRef<'ShoppingItem', 'Boolean'>;
+  readonly checkedAt: Prisma.FieldRef<'ShoppingItem', 'DateTime'>;
   readonly source: Prisma.FieldRef<'ShoppingItem', 'ShoppingItemSource'>;
   readonly createdAt: Prisma.FieldRef<'ShoppingItem', 'DateTime'>;
 }

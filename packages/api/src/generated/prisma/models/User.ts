@@ -208,6 +208,7 @@ export type UserWhereInput = {
   shoppingItems?: Prisma.ShoppingItemListRelationFilter;
   xp?: Prisma.XOR<Prisma.UserXpNullableScalarRelationFilter, Prisma.UserXpWhereInput> | null;
   challenges?: Prisma.UserChallengeListRelationFilter;
+  lessons?: Prisma.LessonCompletionListRelationFilter;
   settings?: Prisma.XOR<
     Prisma.UserSettingsNullableScalarRelationFilter,
     Prisma.UserSettingsWhereInput
@@ -229,6 +230,7 @@ export type UserOrderByWithRelationInput = {
   shoppingItems?: Prisma.ShoppingItemOrderByRelationAggregateInput;
   xp?: Prisma.UserXpOrderByWithRelationInput;
   challenges?: Prisma.UserChallengeOrderByRelationAggregateInput;
+  lessons?: Prisma.LessonCompletionOrderByRelationAggregateInput;
   settings?: Prisma.UserSettingsOrderByWithRelationInput;
 };
 
@@ -251,6 +253,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<
     shoppingItems?: Prisma.ShoppingItemListRelationFilter;
     xp?: Prisma.XOR<Prisma.UserXpNullableScalarRelationFilter, Prisma.UserXpWhereInput> | null;
     challenges?: Prisma.UserChallengeListRelationFilter;
+    lessons?: Prisma.LessonCompletionListRelationFilter;
     settings?: Prisma.XOR<
       Prisma.UserSettingsNullableScalarRelationFilter,
       Prisma.UserSettingsWhereInput
@@ -302,6 +305,7 @@ export type UserCreateInput = {
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpCreateNestedOneWithoutUserInput;
   challenges?: Prisma.UserChallengeCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
 };
 
@@ -320,6 +324,7 @@ export type UserUncheckedCreateInput = {
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpUncheckedCreateNestedOneWithoutUserInput;
   challenges?: Prisma.UserChallengeUncheckedCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionUncheckedCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
 };
 
@@ -338,6 +343,7 @@ export type UserUpdateInput = {
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUpdateOneWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
 };
 
@@ -356,6 +362,7 @@ export type UserUncheckedUpdateInput = {
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUncheckedUpdateOneWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUncheckedUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUncheckedUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
 };
 
@@ -619,6 +626,32 @@ export type UserUpdateOneRequiredWithoutChallengesNestedInput = {
   >;
 };
 
+export type UserCreateNestedOneWithoutLessonsInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutLessonsInput,
+    Prisma.UserUncheckedCreateWithoutLessonsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLessonsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+};
+
+export type UserUpdateOneRequiredWithoutLessonsNestedInput = {
+  create?: Prisma.XOR<
+    Prisma.UserCreateWithoutLessonsInput,
+    Prisma.UserUncheckedCreateWithoutLessonsInput
+  >;
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutLessonsInput;
+  upsert?: Prisma.UserUpsertWithoutLessonsInput;
+  connect?: Prisma.UserWhereUniqueInput;
+  update?: Prisma.XOR<
+    Prisma.XOR<
+      Prisma.UserUpdateToOneWithWhereWithoutLessonsInput,
+      Prisma.UserUpdateWithoutLessonsInput
+    >,
+    Prisma.UserUncheckedUpdateWithoutLessonsInput
+  >;
+};
+
 export type UserCreateWithoutSettingsInput = {
   id?: string;
   email: string;
@@ -634,6 +667,7 @@ export type UserCreateWithoutSettingsInput = {
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpCreateNestedOneWithoutUserInput;
   challenges?: Prisma.UserChallengeCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionCreateNestedManyWithoutUserInput;
 };
 
 export type UserUncheckedCreateWithoutSettingsInput = {
@@ -651,6 +685,7 @@ export type UserUncheckedCreateWithoutSettingsInput = {
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpUncheckedCreateNestedOneWithoutUserInput;
   challenges?: Prisma.UserChallengeUncheckedCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionUncheckedCreateNestedManyWithoutUserInput;
 };
 
 export type UserCreateOrConnectWithoutSettingsInput = {
@@ -696,6 +731,7 @@ export type UserUpdateWithoutSettingsInput = {
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUpdateOneWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUpdateManyWithoutUserNestedInput;
 };
 
 export type UserUncheckedUpdateWithoutSettingsInput = {
@@ -713,6 +749,7 @@ export type UserUncheckedUpdateWithoutSettingsInput = {
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUncheckedUpdateOneWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUncheckedUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUncheckedUpdateManyWithoutUserNestedInput;
 };
 
 export type UserCreateWithoutDevicesInput = {
@@ -729,6 +766,7 @@ export type UserCreateWithoutDevicesInput = {
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpCreateNestedOneWithoutUserInput;
   challenges?: Prisma.UserChallengeCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
 };
 
@@ -746,6 +784,7 @@ export type UserUncheckedCreateWithoutDevicesInput = {
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpUncheckedCreateNestedOneWithoutUserInput;
   challenges?: Prisma.UserChallengeUncheckedCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionUncheckedCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
 };
 
@@ -791,6 +830,7 @@ export type UserUpdateWithoutDevicesInput = {
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUpdateOneWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
 };
 
@@ -808,6 +848,7 @@ export type UserUncheckedUpdateWithoutDevicesInput = {
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUncheckedUpdateOneWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUncheckedUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUncheckedUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
 };
 
@@ -825,6 +866,7 @@ export type UserCreateWithoutStockItemsInput = {
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpCreateNestedOneWithoutUserInput;
   challenges?: Prisma.UserChallengeCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
 };
 
@@ -842,6 +884,7 @@ export type UserUncheckedCreateWithoutStockItemsInput = {
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpUncheckedCreateNestedOneWithoutUserInput;
   challenges?: Prisma.UserChallengeUncheckedCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionUncheckedCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
 };
 
@@ -887,6 +930,7 @@ export type UserUpdateWithoutStockItemsInput = {
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUpdateOneWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
 };
 
@@ -904,6 +948,7 @@ export type UserUncheckedUpdateWithoutStockItemsInput = {
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUncheckedUpdateOneWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUncheckedUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUncheckedUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
 };
 
@@ -921,6 +966,7 @@ export type UserCreateWithoutOcrJobsInput = {
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpCreateNestedOneWithoutUserInput;
   challenges?: Prisma.UserChallengeCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
 };
 
@@ -938,6 +984,7 @@ export type UserUncheckedCreateWithoutOcrJobsInput = {
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpUncheckedCreateNestedOneWithoutUserInput;
   challenges?: Prisma.UserChallengeUncheckedCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionUncheckedCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
 };
 
@@ -983,6 +1030,7 @@ export type UserUpdateWithoutOcrJobsInput = {
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUpdateOneWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
 };
 
@@ -1000,6 +1048,7 @@ export type UserUncheckedUpdateWithoutOcrJobsInput = {
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUncheckedUpdateOneWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUncheckedUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUncheckedUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
 };
 
@@ -1017,6 +1066,7 @@ export type UserCreateWithoutShoppingItemsInput = {
   devices?: Prisma.UserDeviceCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpCreateNestedOneWithoutUserInput;
   challenges?: Prisma.UserChallengeCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
 };
 
@@ -1034,6 +1084,7 @@ export type UserUncheckedCreateWithoutShoppingItemsInput = {
   devices?: Prisma.UserDeviceUncheckedCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpUncheckedCreateNestedOneWithoutUserInput;
   challenges?: Prisma.UserChallengeUncheckedCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionUncheckedCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
 };
 
@@ -1079,6 +1130,7 @@ export type UserUpdateWithoutShoppingItemsInput = {
   devices?: Prisma.UserDeviceUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUpdateOneWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
 };
 
@@ -1096,6 +1148,7 @@ export type UserUncheckedUpdateWithoutShoppingItemsInput = {
   devices?: Prisma.UserDeviceUncheckedUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUncheckedUpdateOneWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUncheckedUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUncheckedUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
 };
 
@@ -1113,6 +1166,7 @@ export type UserCreateWithoutXpInput = {
   devices?: Prisma.UserDeviceCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
   challenges?: Prisma.UserChallengeCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
 };
 
@@ -1130,6 +1184,7 @@ export type UserUncheckedCreateWithoutXpInput = {
   devices?: Prisma.UserDeviceUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
   challenges?: Prisma.UserChallengeUncheckedCreateNestedManyWithoutUserInput;
+  lessons?: Prisma.LessonCompletionUncheckedCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
 };
 
@@ -1163,6 +1218,7 @@ export type UserUpdateWithoutXpInput = {
   devices?: Prisma.UserDeviceUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
 };
 
@@ -1180,6 +1236,7 @@ export type UserUncheckedUpdateWithoutXpInput = {
   devices?: Prisma.UserDeviceUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
   challenges?: Prisma.UserChallengeUncheckedUpdateManyWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUncheckedUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
 };
 
@@ -1197,6 +1254,7 @@ export type UserCreateWithoutChallengesInput = {
   devices?: Prisma.UserDeviceCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpCreateNestedOneWithoutUserInput;
+  lessons?: Prisma.LessonCompletionCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
 };
 
@@ -1214,6 +1272,7 @@ export type UserUncheckedCreateWithoutChallengesInput = {
   devices?: Prisma.UserDeviceUncheckedCreateNestedManyWithoutUserInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
   xp?: Prisma.UserXpUncheckedCreateNestedOneWithoutUserInput;
+  lessons?: Prisma.LessonCompletionUncheckedCreateNestedManyWithoutUserInput;
   settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
 };
 
@@ -1259,6 +1318,7 @@ export type UserUpdateWithoutChallengesInput = {
   devices?: Prisma.UserDeviceUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUpdateOneWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
 };
 
@@ -1276,6 +1336,107 @@ export type UserUncheckedUpdateWithoutChallengesInput = {
   devices?: Prisma.UserDeviceUncheckedUpdateManyWithoutUserNestedInput;
   shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
   xp?: Prisma.UserXpUncheckedUpdateOneWithoutUserNestedInput;
+  lessons?: Prisma.LessonCompletionUncheckedUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
+};
+
+export type UserCreateWithoutLessonsInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  avatarId?: string | null;
+  passwordHash: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
+  stockItems?: Prisma.StockItemCreateNestedManyWithoutUserInput;
+  ocrJobs?: Prisma.OcrJobCreateNestedManyWithoutUserInput;
+  devices?: Prisma.UserDeviceCreateNestedManyWithoutUserInput;
+  shoppingItems?: Prisma.ShoppingItemCreateNestedManyWithoutUserInput;
+  xp?: Prisma.UserXpCreateNestedOneWithoutUserInput;
+  challenges?: Prisma.UserChallengeCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsCreateNestedOneWithoutUserInput;
+};
+
+export type UserUncheckedCreateWithoutLessonsInput = {
+  id?: string;
+  email: string;
+  name?: string | null;
+  avatarId?: string | null;
+  passwordHash: string;
+  createdAt?: Date | string;
+  updatedAt?: Date | string;
+  deletedAt?: Date | string | null;
+  stockItems?: Prisma.StockItemUncheckedCreateNestedManyWithoutUserInput;
+  ocrJobs?: Prisma.OcrJobUncheckedCreateNestedManyWithoutUserInput;
+  devices?: Prisma.UserDeviceUncheckedCreateNestedManyWithoutUserInput;
+  shoppingItems?: Prisma.ShoppingItemUncheckedCreateNestedManyWithoutUserInput;
+  xp?: Prisma.UserXpUncheckedCreateNestedOneWithoutUserInput;
+  challenges?: Prisma.UserChallengeUncheckedCreateNestedManyWithoutUserInput;
+  settings?: Prisma.UserSettingsUncheckedCreateNestedOneWithoutUserInput;
+};
+
+export type UserCreateOrConnectWithoutLessonsInput = {
+  where: Prisma.UserWhereUniqueInput;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutLessonsInput,
+    Prisma.UserUncheckedCreateWithoutLessonsInput
+  >;
+};
+
+export type UserUpsertWithoutLessonsInput = {
+  update: Prisma.XOR<
+    Prisma.UserUpdateWithoutLessonsInput,
+    Prisma.UserUncheckedUpdateWithoutLessonsInput
+  >;
+  create: Prisma.XOR<
+    Prisma.UserCreateWithoutLessonsInput,
+    Prisma.UserUncheckedCreateWithoutLessonsInput
+  >;
+  where?: Prisma.UserWhereInput;
+};
+
+export type UserUpdateToOneWithWhereWithoutLessonsInput = {
+  where?: Prisma.UserWhereInput;
+  data: Prisma.XOR<
+    Prisma.UserUpdateWithoutLessonsInput,
+    Prisma.UserUncheckedUpdateWithoutLessonsInput
+  >;
+};
+
+export type UserUpdateWithoutLessonsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  stockItems?: Prisma.StockItemUpdateManyWithoutUserNestedInput;
+  ocrJobs?: Prisma.OcrJobUpdateManyWithoutUserNestedInput;
+  devices?: Prisma.UserDeviceUpdateManyWithoutUserNestedInput;
+  shoppingItems?: Prisma.ShoppingItemUpdateManyWithoutUserNestedInput;
+  xp?: Prisma.UserXpUpdateOneWithoutUserNestedInput;
+  challenges?: Prisma.UserChallengeUpdateManyWithoutUserNestedInput;
+  settings?: Prisma.UserSettingsUpdateOneWithoutUserNestedInput;
+};
+
+export type UserUncheckedUpdateWithoutLessonsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string;
+  email?: Prisma.StringFieldUpdateOperationsInput | string;
+  name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  avatarId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+  passwordHash?: Prisma.StringFieldUpdateOperationsInput | string;
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
+  stockItems?: Prisma.StockItemUncheckedUpdateManyWithoutUserNestedInput;
+  ocrJobs?: Prisma.OcrJobUncheckedUpdateManyWithoutUserNestedInput;
+  devices?: Prisma.UserDeviceUncheckedUpdateManyWithoutUserNestedInput;
+  shoppingItems?: Prisma.ShoppingItemUncheckedUpdateManyWithoutUserNestedInput;
+  xp?: Prisma.UserXpUncheckedUpdateOneWithoutUserNestedInput;
+  challenges?: Prisma.UserChallengeUncheckedUpdateManyWithoutUserNestedInput;
   settings?: Prisma.UserSettingsUncheckedUpdateOneWithoutUserNestedInput;
 };
 
@@ -1289,6 +1450,7 @@ export type UserCountOutputType = {
   devices: number;
   shoppingItems: number;
   challenges: number;
+  lessons: number;
 };
 
 export type UserCountOutputTypeSelect<
@@ -1299,6 +1461,7 @@ export type UserCountOutputTypeSelect<
   devices?: boolean | UserCountOutputTypeCountDevicesArgs;
   shoppingItems?: boolean | UserCountOutputTypeCountShoppingItemsArgs;
   challenges?: boolean | UserCountOutputTypeCountChallengesArgs;
+  lessons?: boolean | UserCountOutputTypeCountLessonsArgs;
 };
 
 /**
@@ -1358,6 +1521,15 @@ export type UserCountOutputTypeCountChallengesArgs<
   where?: Prisma.UserChallengeWhereInput;
 };
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountLessonsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  where?: Prisma.LessonCompletionWhereInput;
+};
+
 export type UserSelect<
   ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
 > = runtime.Types.Extensions.GetSelect<
@@ -1376,6 +1548,7 @@ export type UserSelect<
     shoppingItems?: boolean | Prisma.User$shoppingItemsArgs<ExtArgs>;
     xp?: boolean | Prisma.User$xpArgs<ExtArgs>;
     challenges?: boolean | Prisma.User$challengesArgs<ExtArgs>;
+    lessons?: boolean | Prisma.User$lessonsArgs<ExtArgs>;
     settings?: boolean | Prisma.User$settingsArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
   },
@@ -1440,6 +1613,7 @@ export type UserInclude<
   shoppingItems?: boolean | Prisma.User$shoppingItemsArgs<ExtArgs>;
   xp?: boolean | Prisma.User$xpArgs<ExtArgs>;
   challenges?: boolean | Prisma.User$challengesArgs<ExtArgs>;
+  lessons?: boolean | Prisma.User$lessonsArgs<ExtArgs>;
   settings?: boolean | Prisma.User$settingsArgs<ExtArgs>;
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
@@ -1461,6 +1635,7 @@ export type $UserPayload<
     shoppingItems: Prisma.$ShoppingItemPayload<ExtArgs>[];
     xp: Prisma.$UserXpPayload<ExtArgs> | null;
     challenges: Prisma.$UserChallengePayload<ExtArgs>[];
+    lessons: Prisma.$LessonCompletionPayload<ExtArgs>[];
     settings: Prisma.$UserSettingsPayload<ExtArgs> | null;
   };
   scalars: runtime.Types.Extensions.GetPayloadResult<
@@ -2045,6 +2220,17 @@ export interface Prisma__UserClient<
   ): Prisma.PrismaPromise<
     | runtime.Types.Result.GetResult<
         Prisma.$UserChallengePayload<ExtArgs>,
+        T,
+        'findMany',
+        GlobalOmitOptions
+      >
+    | Null
+  >;
+  lessons<T extends Prisma.User$lessonsArgs<ExtArgs> = {}>(
+    args?: Prisma.Subset<T, Prisma.User$lessonsArgs<ExtArgs>>,
+  ): Prisma.PrismaPromise<
+    | runtime.Types.Result.GetResult<
+        Prisma.$LessonCompletionPayload<ExtArgs>,
         T,
         'findMany',
         GlobalOmitOptions
@@ -2675,6 +2861,34 @@ export type User$challengesArgs<
   take?: number;
   skip?: number;
   distinct?: Prisma.UserChallengeScalarFieldEnum | Prisma.UserChallengeScalarFieldEnum[];
+};
+
+/**
+ * User.lessons
+ */
+export type User$lessonsArgs<
+  ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs,
+> = {
+  /**
+   * Select specific fields to fetch from the LessonCompletion
+   */
+  select?: Prisma.LessonCompletionSelect<ExtArgs> | null;
+  /**
+   * Omit specific fields from the LessonCompletion
+   */
+  omit?: Prisma.LessonCompletionOmit<ExtArgs> | null;
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.LessonCompletionInclude<ExtArgs> | null;
+  where?: Prisma.LessonCompletionWhereInput;
+  orderBy?:
+    | Prisma.LessonCompletionOrderByWithRelationInput
+    | Prisma.LessonCompletionOrderByWithRelationInput[];
+  cursor?: Prisma.LessonCompletionWhereUniqueInput;
+  take?: number;
+  skip?: number;
+  distinct?: Prisma.LessonCompletionScalarFieldEnum | Prisma.LessonCompletionScalarFieldEnum[];
 };
 
 /**

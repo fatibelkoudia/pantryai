@@ -2,6 +2,7 @@ import {
   ApiClientError,
   avatarPresets,
   getAvatarPreset,
+  getLevel,
   LOCALE_FLAGS,
   SETTINGS_LIMITS,
   SUPPORTED_LOCALES,
@@ -92,6 +93,12 @@ export default function ProfileScreen() {
         <Text style={styles.star}>⭐</Text>
         <View>
           <Text style={styles.xp}>{t('profile.xp', { count: xp })}</Text>
+          <Text style={styles.xpSub}>
+            {t('learn.levelTitle', {
+              level: getLevel(xp).level,
+              title: t(getLevel(xp).titleKey),
+            })}
+          </Text>
           <Text style={styles.xpSub}>
             {t('profile.challengesDone', { done: completed, total: list.length })}
           </Text>
