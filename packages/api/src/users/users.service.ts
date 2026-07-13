@@ -41,14 +41,22 @@ export class UsersService {
       },
     });
 
-    return {
-      id: updated.id,
-      email: updated.email,
-      name: updated.name,
-      avatarId: updated.avatarId,
-      createdAt: updated.createdAt,
-      updatedAt: updated.updatedAt,
-    };
+    return this.toProfile(updated);
+  }
+
+  // Called when the user finishes or skips the first-run onboarding, both count as
+  // done. Calling it twice never moves the original date, so the flow can retry
+  // this safely.
+  async completeOnboarding(userId: string): Promise<ProfileResponseDto> {
+    const user = await this.findActiveUser(userId);
+    if (user.onboardingCompletedAt) {
+      return this.toProfile(user);
+    }
+    const updated = await this.prisma.user.update({
+      where: { id: userId },
+      data: { onboardingCompletedAt: new Date() },
+    });
+    return this.toProfile(updated);
   }
 
   // The user proves they know the current password, then we store a hash of the
@@ -92,6 +100,28 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
     return user;
+  }
+
+  // Shape a user row into the profile the clients expect. Keeps updateProfile and
+  // completeOnboarding returning exactly the same fields.
+  private toProfile(user: {
+    id: string;
+    email: string;
+    name: string | null;
+    avatarId: string | null;
+    onboardingCompletedAt: Date | null;
+    createdAt: Date;
+    updatedAt: Date;
+  }): ProfileResponseDto {
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      avatarId: user.avatarId,
+      onboardingCompletedAt: user.onboardingCompletedAt,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    };
   }
 
   // RGPD Article 20: build a copy of everything we store about this user so they can take it.

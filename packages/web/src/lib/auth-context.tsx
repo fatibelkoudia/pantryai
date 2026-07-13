@@ -120,7 +120,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       lastRefreshRef.current = Date.now();
       setUser(res.user);
       setStatus('authed');
-      router.push('/home');
+      // new accounts still need the welcome flow; backfilled ones go straight in
+      router.push(res.user.onboardingCompletedAt ? '/home' : '/welcome');
     },
     [router],
   );
@@ -140,7 +141,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       lastRefreshRef.current = Date.now();
       setUser(res.user);
       setStatus('authed');
-      router.push('/home');
+      // a brand new account always needs onboarding
+      router.push(res.user.onboardingCompletedAt ? '/home' : '/welcome');
     },
     [router],
   );

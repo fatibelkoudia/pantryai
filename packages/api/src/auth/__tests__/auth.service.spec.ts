@@ -9,6 +9,7 @@ const mockUser = {
   email: 'tima@example.com',
   name: 'Tima',
   avatarId: null,
+  onboardingCompletedAt: null,
   passwordHash: '$2b$12$hashedpassword',
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -93,6 +94,7 @@ describe('AuthService', () => {
         email: mockUser.email,
         name: mockUser.name,
         avatarId: null,
+        onboardingCompletedAt: null,
       });
     });
 
@@ -203,6 +205,7 @@ describe('AuthService', () => {
         email: 'tima@example.com',
         name: 'Tima',
         avatarId: null,
+        onboardingCompletedAt: null,
       });
       expect(result).not.toHaveProperty('passwordHash');
     });

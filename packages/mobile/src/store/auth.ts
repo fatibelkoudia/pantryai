@@ -15,6 +15,9 @@ interface AuthStore {
   user: User | null;
   // keep the token in the store and the api client the same
   setAccessToken: (token: string | null) => void;
+  // replace the cached user after a screen already has a fresh copy (onboarding
+  // steps do this so the auth gate re-routes without another /auth/me call)
+  setUser: (user: User) => void;
   // when the app starts, try to log back in with the saved refresh token
   hydrate: () => Promise<void>;
   login: (dto: LoginDto) => Promise<void>;
@@ -33,6 +36,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
     apiClient.setAccessToken(token);
     set({ accessToken: token });
   },
+
+  setUser: (user) => set({ user }),
 
   hydrate: async () => {
     const refreshToken = await getStoredRefreshToken();

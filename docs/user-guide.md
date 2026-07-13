@@ -18,6 +18,12 @@ how well you are doing.
 Open the app and register with your email and a password. You stay logged in
 after that, including when you close and reopen the app.
 
+The first time, you get a quick welcome: a few slides about what the app does,
+then a short setup where you pick your language, an avatar and name, your pantry
+defaults, and (on the phone) whether you want expiry reminders. Every step is
+optional, you can skip any of them or skip the whole thing and change it later
+from your Profile.
+
 ### The home screen
 
 When you open the app you land on the Home screen. It shows:

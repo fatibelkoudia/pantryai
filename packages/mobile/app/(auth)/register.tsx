@@ -1,21 +1,16 @@
 import { ApiClientError } from '@pantryai/shared';
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { PrimaryButton } from '../../src/components/PrimaryButton';
+import { TextField } from '../../src/components/TextField';
+import { TrashyMood } from '../../src/components/TrashyMood';
 import { useAuthStore } from '../../src/store/auth';
-import { colors } from '../../src/theme';
+import { colors, font, radii, spacing } from '../../src/theme';
 
 export default function RegisterScreen() {
+  const { t } = useTranslation();
   const register = useAuthStore((s) => s.register);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -25,11 +20,11 @@ export default function RegisterScreen() {
 
   const handleSubmit = async () => {
     if (!email || !password) {
-      setError('Please enter your email and password.');
+      setError(t('auth.missingFields'));
       return;
     }
     if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
+      setError(t('auth.passwordTooShort'));
       return;
     }
     setSubmitting(true);
@@ -40,11 +35,9 @@ export default function RegisterScreen() {
         password,
         ...(name.trim() ? { name: name.trim() } : {}),
       });
-      // once the account is made the auth gate in _layout sends us to the tabs
+      // once the account is made the auth gate in _layout routes us into onboarding
     } catch (err) {
-      setError(
-        err instanceof ApiClientError ? err.message : 'Could not create your account. Try again.',
-      );
+      setError(err instanceof ApiClientError ? err.message : t('auth.registerFailed'));
       setSubmitting(false);
     }
   };
@@ -55,69 +48,59 @@ export default function RegisterScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-        <Text style={styles.title}>Create your account</Text>
-        <Text style={styles.subtitle}>Start tracking your pantry and reducing waste</Text>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>Name (optional)</Text>
-          <TextInput
-            style={styles.input}
-            value={name}
-            onChangeText={setName}
-            autoComplete="name"
-            placeholder="Your name"
-            placeholderTextColor="#aaa"
-            editable={!submitting}
-          />
+        <View style={styles.hero}>
+          <TrashyMood mood="EXCELLENT" size={110} showLabel={false} />
+          <Text style={styles.title}>{t('auth.registerTitle')}</Text>
+          <Text style={styles.subtitle}>{t('auth.registerSubtitle')}</Text>
         </View>
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={styles.input}
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            autoComplete="email"
-            keyboardType="email-address"
-            placeholder="you@example.com"
-            placeholderTextColor="#aaa"
-            editable={!submitting}
-          />
-        </View>
+        <TextField
+          label={t('auth.name')}
+          value={name}
+          onChangeText={setName}
+          placeholder={t('auth.namePlaceholder')}
+          autoComplete="name"
+          editable={!submitting}
+        />
 
-        <View style={styles.field}>
-          <Text style={styles.label}>Password</Text>
-          <TextInput
-            style={styles.input}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-            autoComplete="new-password"
-            placeholder="At least 8 characters"
-            placeholderTextColor="#aaa"
-            editable={!submitting}
-          />
-        </View>
+        <TextField
+          label={t('auth.email')}
+          value={email}
+          onChangeText={setEmail}
+          placeholder={t('auth.emailPlaceholder')}
+          autoCapitalize="none"
+          autoComplete="email"
+          keyboardType="email-address"
+          editable={!submitting}
+        />
 
-        {error ? <Text style={styles.error}>{error}</Text> : null}
+        <TextField
+          label={t('auth.password')}
+          value={password}
+          onChangeText={setPassword}
+          placeholder={t('auth.passwordPlaceholder')}
+          secureTextEntry
+          autoComplete="new-password"
+          editable={!submitting}
+        />
 
-        <TouchableOpacity
-          style={[styles.button, submitting && styles.buttonDisabled]}
+        {error ? (
+          <View style={styles.errorBanner}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View>
+        ) : null}
+
+        <PrimaryButton
+          label={t('auth.registerCta')}
           onPress={handleSubmit}
-          disabled={submitting}
-        >
-          {submitting ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>Create account</Text>
-          )}
-        </TouchableOpacity>
+          loading={submitting}
+          style={styles.submit}
+        />
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Already have an account? </Text>
+          <Text style={styles.footerText}>{t('auth.haveAccount')} </Text>
           <Link href="/(auth)/login" style={styles.footerLink}>
-            Log in
+            {t('auth.logIn')}
           </Link>
         </View>
       </ScrollView>
@@ -126,70 +109,29 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-  flex: { flex: 1, backgroundColor: '#fff' },
+  flex: { flex: 1, backgroundColor: colors.warmCream },
   container: {
     flexGrow: 1,
     justifyContent: 'center',
-    padding: 24,
-    gap: 16,
+    padding: spacing.lg,
+    gap: spacing.md,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#111',
-  },
+  hero: { alignItems: 'center', gap: spacing.xs, marginBottom: spacing.sm },
+  title: { fontSize: 28, fontFamily: font.black, color: colors.forestGreen, textAlign: 'center' },
   subtitle: {
     fontSize: 15,
-    color: '#666',
-    marginBottom: 8,
+    fontFamily: font.regular,
+    color: colors.textMuted,
+    textAlign: 'center',
   },
-  field: { gap: 6 },
-  label: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#444',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+  errorBanner: {
+    backgroundColor: colors.redTint,
+    borderRadius: radii.sm,
+    padding: spacing.md,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#111',
-    backgroundColor: '#fafafa',
-  },
-  error: {
-    color: '#c62828',
-    fontSize: 14,
-  },
-  button: {
-    backgroundColor: colors.leafGreen,
-    paddingVertical: 16,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  buttonDisabled: { opacity: 0.6 },
-  buttonText: {
-    color: '#fff',
-    fontSize: 17,
-    fontWeight: '700',
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 8,
-  },
-  footerText: {
-    fontSize: 14,
-    color: '#666',
-  },
-  footerLink: {
-    fontSize: 14,
-    color: colors.leafGreen,
-    fontWeight: '700',
-  },
+  errorText: { fontSize: 14, fontFamily: font.semibold, color: colors.redText },
+  submit: { marginTop: spacing.xs },
+  footer: { flexDirection: 'row', justifyContent: 'center', marginTop: spacing.xs },
+  footerText: { fontSize: 14, fontFamily: font.regular, color: colors.textMuted },
+  footerLink: { fontSize: 14, fontFamily: font.bold, color: colors.forestGreen },
 });

@@ -13,6 +13,10 @@ model User {
   name         String?
   // id of one of the built-in avatars (see shared/theme/avatars.ts), not an image
   avatarId     String?
+  // set when the user finishes (or skips) the first-run onboarding. Accounts that
+  // existed before onboarding shipped were backfilled at migration time, so only
+  // brand new signups ever see the flow.
+  onboardingCompletedAt DateTime?
   passwordHash String
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt

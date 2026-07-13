@@ -134,11 +134,7 @@
     "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
     "quiz": {
       "question": "Why shouldn't you store potatoes and onions together?",
-      "choices": [
-        "They lose their color",
-        "They sprout and rot faster",
-        "They become sweeter"
-      ],
+      "choices": ["They lose their color", "They sprout and rot faster", "They become sweeter"],
       "answerIndex": 1,
       "explanation": "Potatoes and onions release gases that speed up their sprouting and rotting when stored next to each other."
     }
@@ -314,11 +310,7 @@
     "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
     "quiz": {
       "question": "How long can fresh fish be stored in the refrigerator?",
-      "choices": [
-        "1 to 2 days",
-        "3 to 4 days",
-        "5 to 7 days"
-      ],
+      "choices": ["1 to 2 days", "3 to 4 days", "5 to 7 days"],
       "answerIndex": 0,
       "explanation": "Fresh fish typically lasts only 1 to 2 days in the refrigerator to avoid spoilage and maintain quality."
     }
@@ -350,11 +342,7 @@
     "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
     "quiz": {
       "question": "How long can you keep cooked meat leftovers in the refrigerator?",
-      "choices": [
-        "Maximum 1 day",
-        "Maximum 3 days",
-        "Maximum 1 week"
-      ],
+      "choices": ["Maximum 1 day", "Maximum 3 days", "Maximum 1 week"],
       "answerIndex": 1,
       "explanation": "Cooked meat leftovers should be stored in the refrigerator for a maximum of 2 to 3 days to avoid any risk of contamination."
     }
@@ -404,11 +392,7 @@
     "sourceUrl": "https://agirpourlatransition.ademe.fr/particuliers/reduire-dechets/eviter-gaspillage/reduire-gaspillage-alimentaire",
     "quiz": {
       "question": "What should you do before freezing bread to make it easier to use?",
-      "choices": [
-        "Slice it into pieces",
-        "Soak it in water",
-        "Toast it immediately"
-      ],
+      "choices": ["Slice it into pieces", "Soak it in water", "Toast it immediately"],
       "answerIndex": 0,
       "explanation": "Slicing bread before freezing allows you to take out only the amount you need without thawing the whole loaf."
     }
@@ -440,11 +424,7 @@
     "sourceUrl": "https://www.anses.fr/fr/content/comment-bien-conserver-ses-aliments-et-ne-pas-interrompre-la-chaine-du-froid",
     "quiz": {
       "question": "Why should you cool cooked rice quickly?",
-      "choices": [
-        "To prevent bacterial growth",
-        "To keep the rice soft",
-        "To save energy"
-      ],
+      "choices": ["To prevent bacterial growth", "To keep the rice soft", "To save energy"],
       "answerIndex": 0,
       "explanation": "Cooked rice left at room temperature encourages the growth of bacteria like Bacillus cereus, which can cause food poisoning."
     }

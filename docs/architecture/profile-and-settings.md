@@ -25,6 +25,10 @@ Two things changed in the schema (`packages/api/prisma/schema.prisma`):
 - `UserSettings`: a one-row-per-user table with the knobs and their defaults
   (locale `en`, `recipeMinMatchedItems` 1, `recipeMatchThreshold` 0.7,
   `expiringSoonDays` 3, `lowStockThreshold` 1, `defaultStockLocation` PANTRY).
+- `User.onboardingCompletedAt`: a nullable date, null until the user finishes or
+  skips the first-run onboarding. This lives on `User`, not here, so the backfill
+  for old accounts stays a single `UPDATE`. See
+  [onboarding.md](./onboarding.md).
 
 The settings row is created lazily: the first `GET /users/me/settings` upserts
 it with the defaults. Accounts that never open their settings have no row, and
@@ -43,6 +47,9 @@ All under the existing `users` module, guarded by the JWT guard:
 - `GET` / `PATCH /users/me/settings` read and partially update the settings,
   with class-validator bounds shared with the clients through
   `SETTINGS_LIMITS` in `@pantryai/shared`.
+- `POST /users/me/onboarding/complete` marks the first-run onboarding as done.
+  It is idempotent. The onboarding steps write their answers through the same
+  profile and settings endpoints above, so this endpoint only sets the flag.
 
 ## Who consumes the settings
 
@@ -76,9 +83,10 @@ The language setting is real but the translations are not done yet. The setup:
   language via `expo-localization`.
 - a small `LocaleSync` component in each app fetches the settings once the
   user is signed in and calls `i18n.changeLanguage` with the saved locale.
-- only the profile and settings screens go through `t()` for now. The rest of
-  the app keeps its inline strings until the translation pass, where they get
-  extracted into the catalogs.
+- the profile, settings, learn, auth (login/register) and onboarding screens go
+  through `t()`, and their `auth.*` and `onboarding.*` keys are really
+  translated in French. The rest of the app keeps its inline strings until the
+  translation pass, where they get extracted into the catalogs.
 
 ## Why one save button instead of saving each change
 
