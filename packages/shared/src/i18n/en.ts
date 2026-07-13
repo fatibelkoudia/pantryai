@@ -110,6 +110,8 @@ export const en = {
   },
   lesson: {
     preparing: 'Preparing your quiz…',
+    readHint: 'Read the tip, then answer one quick question.',
+    quizMe: 'Start the quiz',
     question: 'Quick question',
     checkAnswer: 'Check answer',
     correct: 'Correct!',

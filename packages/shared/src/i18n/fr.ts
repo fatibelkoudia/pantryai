@@ -114,6 +114,8 @@ export const fr: TranslationCatalog = {
   },
   lesson: {
     preparing: 'Préparation de votre quiz…',
+    readHint: 'Lisez le conseil, puis répondez à une petite question.',
+    quizMe: 'Commencer le quiz',
     question: 'Petite question',
     checkAnswer: 'Vérifier ma réponse',
     correct: 'Bonne réponse !',
