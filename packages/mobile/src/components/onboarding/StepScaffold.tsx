@@ -1,8 +1,12 @@
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import Animated, { Easing, FadeInDown, useReducedMotion } from 'react-native-reanimated';
 import { colors, font, radii, spacing } from '../../theme';
 import { PrimaryButton } from '../PrimaryButton';
+import { TrashyMood } from '../TrashyMood';
+import { GlassCard } from './GlassCard';
+import { StepProgress } from './StepProgress';
 
 interface StepScaffoldProps {
   stepIndex: number;
@@ -17,8 +21,8 @@ interface StepScaffoldProps {
   error?: string | null;
 }
 
-// The shared chrome every setup step sits in: progress line, title, the step's own
-// content, then the Continue + "skip this step" footer.
+// The shared chrome every setup step sits in: progress bar, a small Trashy next to
+// the title, the step's own content in a glass card, then the Continue + skip footer.
 export function StepScaffold({
   stepIndex,
   totalSteps,
@@ -32,25 +36,39 @@ export function StepScaffold({
   error,
 }: StepScaffoldProps) {
   const { t } = useTranslation();
+  const reduce = useReducedMotion();
+
+  // stagger helper so title, subtitle and body slide in one after the other
+  const enter = (delay: number) =>
+    reduce
+      ? {}
+      : { entering: FadeInDown.delay(delay).duration(280).easing(Easing.out(Easing.cubic)) };
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-        <Text style={styles.progress}>
-          {t('onboarding.stepOf', { step: stepIndex + 1, total: totalSteps })}
-        </Text>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.subtitle}>{subtitle}</Text>
-        <View style={styles.body}>{children}</View>
-        {error ? (
-          <View style={styles.errorBanner}>
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-        ) : null}
+        <StepProgress stepIndex={stepIndex} totalSteps={totalSteps} />
+        <GlassCard style={styles.card}>
+          <Animated.View style={styles.titleRow} {...enter(0)}>
+            <TrashyMood mood="GOOD" size={44} showLabel={false} />
+            <Text style={styles.title}>{title}</Text>
+          </Animated.View>
+          <Animated.Text style={styles.subtitle} {...enter(60)}>
+            {subtitle}
+          </Animated.Text>
+          <Animated.View style={styles.body} {...enter(120)}>
+            {children}
+          </Animated.View>
+          {error ? (
+            <View style={styles.errorBanner}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          ) : null}
+        </GlassCard>
       </ScrollView>
 
       <View style={styles.footer}>
-        <PrimaryButton label={continueLabel} onPress={onContinue} loading={loading} />
+        <PrimaryButton label={continueLabel} onPress={onContinue} loading={loading} glow />
         <PrimaryButton
           label={t('onboarding.skipStep')}
           onPress={onSkip}
@@ -64,15 +82,15 @@ export function StepScaffold({
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  content: { padding: spacing.lg, gap: spacing.sm },
-  progress: {
-    fontSize: 13,
-    fontFamily: font.bold,
-    color: colors.leafGreen,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+  content: { padding: spacing.lg, gap: spacing.md },
+  card: { gap: spacing.sm },
+  titleRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  title: {
+    flex: 1,
+    fontSize: 24,
+    fontFamily: font.black,
+    color: colors.forestGreen,
   },
-  title: { fontSize: 26, fontFamily: font.black, color: colors.forestGreen },
   subtitle: {
     fontSize: 15,
     fontFamily: font.regular,

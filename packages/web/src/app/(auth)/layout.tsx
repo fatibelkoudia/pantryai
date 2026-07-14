@@ -8,8 +8,8 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   const { t } = useTranslation();
   const bullets = [
     t('onboarding.slides.scanTitle'),
-    t('onboarding.slides.trackTitle'),
-    t('onboarding.slides.cookTitle'),
+    t('onboarding.slides.rescueTitle'),
+    t('onboarding.slides.playTitle'),
   ];
 
   return (

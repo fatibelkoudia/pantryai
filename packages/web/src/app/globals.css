@@ -44,6 +44,44 @@
 
   /* "3D-lite" button lip (mirrors buttonLip in shared tokens) */
   --shadow-btn-lip: 0 3px 0 rgb(0 0 0 / 0.15);
+
+  /* aurora-glass recipe for onboarding (mirrors glass/glow in shared tokens) */
+  --color-glass: rgb(255 255 255 / 0.72);
+  --color-glass-border: rgb(255 255 255 / 0.65);
+  --shadow-glass: 0 8px 32px rgb(0 110 28 / 0.1);
+  --shadow-glow-brand: 0 0 24px rgb(76 175 80 / 0.35);
+  /* button lip + green halo together, for the onboarding CTAs */
+  --shadow-btn-lip-glow: 0 3px 0 rgb(0 0 0 / 0.15), 0 0 24px rgb(76 175 80 / 0.35);
+
+  /* slow drifting blobs behind the onboarding, transform-only so they stay cheap */
+  --animate-aurora-a: aurora-a 18s ease-in-out infinite alternate;
+  --animate-aurora-b: aurora-b 22s ease-in-out infinite alternate;
+  --animate-aurora-c: aurora-c 26s ease-in-out infinite alternate;
+
+  @keyframes aurora-a {
+    from {
+      transform: translate(-8%, -6%) scale(1);
+    }
+    to {
+      transform: translate(6%, 8%) scale(1.12);
+    }
+  }
+  @keyframes aurora-b {
+    from {
+      transform: translate(6%, 4%) scale(1.08);
+    }
+    to {
+      transform: translate(-6%, -8%) scale(0.95);
+    }
+  }
+  @keyframes aurora-c {
+    from {
+      transform: translate(-4%, 6%) scale(1);
+    }
+    to {
+      transform: translate(8%, -4%) scale(1.1);
+    }
+  }
 }
 
 body {

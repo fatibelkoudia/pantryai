@@ -1,6 +1,7 @@
 import { SETTINGS_LIMITS } from '@pantryai/shared';
 import type { StockLocation } from '@pantryai/shared';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -57,7 +58,10 @@ export function PantryStep({ stepIndex, totalSteps, onAdvance }: StepProps) {
         {LOCATIONS.map((loc) => (
           <TouchableOpacity
             key={loc}
-            onPress={() => setLocation(loc)}
+            onPress={() => {
+              void Haptics.selectionAsync();
+              setLocation(loc);
+            }}
             accessibilityRole="button"
             accessibilityState={{ selected: location === loc }}
             style={[styles.segmentItem, location === loc && styles.segmentItemSelected]}
@@ -73,7 +77,10 @@ export function PantryStep({ stepIndex, totalSteps, onAdvance }: StepProps) {
       <View style={styles.stepperRow}>
         <TouchableOpacity
           style={styles.stepperBtn}
-          onPress={() => setDays((d) => Math.max(min, d - 1))}
+          onPress={() => {
+            void Haptics.selectionAsync();
+            setDays((d) => Math.max(min, d - 1));
+          }}
           disabled={days <= min}
           accessibilityRole="button"
           accessibilityLabel={`${t('onboarding.pantry.expiringWindow')} -`}
@@ -83,7 +90,10 @@ export function PantryStep({ stepIndex, totalSteps, onAdvance }: StepProps) {
         <Text style={styles.stepperValue}>{t('settings.daysUnit', { count: days })}</Text>
         <TouchableOpacity
           style={styles.stepperBtn}
-          onPress={() => setDays((d) => Math.min(max, d + 1))}
+          onPress={() => {
+            void Haptics.selectionAsync();
+            setDays((d) => Math.min(max, d + 1));
+          }}
           disabled={days >= max}
           accessibilityRole="button"
           accessibilityLabel={`${t('onboarding.pantry.expiringWindow')} +`}
@@ -100,7 +110,7 @@ const styles = StyleSheet.create({
   segment: {
     flexDirection: 'row',
     gap: spacing.sm,
-    backgroundColor: colors.creamSurface,
+    backgroundColor: 'rgba(255, 255, 255, 0.55)',
     borderRadius: radii.card,
     padding: spacing.xs,
   },
@@ -118,7 +128,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: radii.pill,
-    backgroundColor: colors.surfaceGray,
+    backgroundColor: 'rgba(255, 255, 255, 0.72)',
     alignItems: 'center',
     justifyContent: 'center',
   },
