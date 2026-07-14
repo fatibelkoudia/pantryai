@@ -170,17 +170,20 @@ export default function ShoppingScreen() {
   // A preview like "Rice, Yogurt, Frozen peas" that doesn't overflow the card.
   const duplicateNames =
     duplicates.length > 3
-      ? `${duplicates
-          .slice(0, 3)
-          .map((d) => d.name)
-          .join(', ')} and ${duplicates.length - 3} more`
+      ? t('shopping.andMore', {
+          names: duplicates
+            .slice(0, 3)
+            .map((d) => d.name)
+            .join(', '),
+          count: duplicates.length - 3,
+        })
       : duplicates.map((d) => d.name).join(', ');
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>{t('nav.shopping')}</Text>
-        <Text style={styles.subtitle}>{t('shopping.subtitle')}</Text>
+        <Text style={styles.subtitle}>{t('shopping.subtitleMobile')}</Text>
       </View>
 
       {isError ? (
@@ -209,7 +212,7 @@ export default function ShoppingScreen() {
                     <Text style={styles.cardTitle}>{t('shopping.checkBeforeBuying')}</Text>
                   </View>
                   <Text style={styles.cardBody}>
-                    {t('shopping.alreadyHave', { items: duplicateNames })}
+                    {t('shopping.alreadyHaveAtHome', { names: duplicateNames })}
                   </Text>
                   <TouchableOpacity
                     style={styles.cardBtn}
@@ -236,9 +239,9 @@ export default function ShoppingScreen() {
                     <Text style={styles.cardTitle}>{t('shopping.completeMeals')}</Text>
                   </View>
                   <Text style={styles.cardBody}>
-                    {t('shopping.addToComplete', {
-                      itemCount: missingItems.length,
-                      recipeCount: suggestions.length,
+                    {t('shopping.addToCook', {
+                      items: t('shopping.itemsCount', { count: missingItems.length }),
+                      recipes: t('shopping.recipesCount', { count: suggestions.length }),
                     })}
                   </Text>
                   <View style={styles.chipsWrap}>
@@ -264,7 +267,7 @@ export default function ShoppingScreen() {
               {/* List header + stock generator */}
               <View style={styles.sectionRow}>
                 <Text style={styles.sectionTitle}>
-                  {t('shopping.yourList', { count: items.length })}
+                  {t('shopping.yourListCount', { count: items.length })}
                 </Text>
                 <TouchableOpacity
                   style={styles.generatePill}
@@ -276,7 +279,7 @@ export default function ShoppingScreen() {
                   <Text style={styles.generateText}>
                     {generate.isPending
                       ? t('shopping.generating')
-                      : t('shopping.generateFromStock')}
+                      : t('shopping.generateStock')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -286,7 +289,7 @@ export default function ShoppingScreen() {
           ListEmptyComponent={
             <View style={styles.emptyBox}>
               <Text style={styles.emptyTitle}>{t('shopping.empty')}</Text>
-              <Text style={styles.emptySub}>{t('shopping.emptyHint')}</Text>
+              <Text style={styles.emptySub}>{t('shopping.emptyHintMobile')}</Text>
             </View>
           }
           renderItem={({ item }) => (
@@ -304,7 +307,7 @@ export default function ShoppingScreen() {
         style={styles.fab}
         onPress={() => setShowAdd(true)}
         accessibilityRole="button"
-        accessibilityLabel={t('shopping.addItemA11y')}
+        accessibilityLabel={t('shopping.addItemLabel')}
       >
         <Ionicons name="add" size={28} color={colors.onBrand} />
       </TouchableOpacity>
@@ -318,12 +321,12 @@ export default function ShoppingScreen() {
       >
         <View style={styles.modalBackdrop}>
           <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>{t('shopping.addItemModal')}</Text>
+            <Text style={styles.modalTitle}>{t('shopping.addItemLabel')}</Text>
             <TextInput
               style={styles.modalInput}
               value={name}
               onChangeText={setName}
-              placeholder={t('shopping.itemPlaceholder')}
+              placeholder={t('shopping.addItemModalPlaceholder')}
               placeholderTextColor={colors.textMuted}
               autoFocus
               onSubmitEditing={handleAdd}
