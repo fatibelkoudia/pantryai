@@ -1,26 +1,30 @@
 import { ApiClientError } from '@pantryai/shared';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { apiClient } from '../src/api/client';
 import { buttonLip, colors, font } from '../src/theme';
 
-type ScanMode = 'ean' | 'qr';
+type ScanMode = 'ean' | 'receipt';
 
 export default function ScanScreen() {
   const { t } = useTranslation();
   const router = useRouter();
+  const { mode: initialMode } = useLocalSearchParams<{ mode?: string }>();
   const [permission, requestPermission] = useCameraPermissions();
   const [scannedCode, setScannedCode] = useState<string | null>(null);
-  const [scanMode, setScanMode] = useState<ScanMode>('ean');
+  const [uploading, setUploading] = useState(false);
+  const [scanMode, setScanMode] = useState<ScanMode>(initialMode === 'receipt' ? 'receipt' : 'ean');
+  const cameraRef = useRef<CameraView>(null);
   const processingRef = useRef(false);
 
   useFocusEffect(
     useCallback(() => {
       processingRef.current = false;
       setScannedCode(null);
+      setUploading(false);
     }, []),
   );
 
@@ -65,53 +69,49 @@ export default function ScanScreen() {
     [router, t],
   );
 
-  const handleQrScan = useCallback(
-    async ({ data }: { data: string }) => {
-      if (processingRef.current) return;
-      processingRef.current = true;
-      setScannedCode(data);
+  const handleCaptureReceipt = useCallback(async () => {
+    if (processingRef.current) return;
+    processingRef.current = true;
+    setUploading(true);
 
-      if (!data.startsWith('http://') && !data.startsWith('https://')) {
-        Alert.alert(t('scan.notReceiptQr'), t('scan.notReceiptQrMessage'), [
-          {
-            text: t('common.ok'),
-            onPress: () => {
-              processingRef.current = false;
-              setScannedCode(null);
-            },
-          },
-        ]);
-        return;
-      }
+    try {
+      const photo = await cameraRef.current?.takePictureAsync({ quality: 0.8 });
+      if (!photo) throw new Error(t('common.unknownError'));
 
-      try {
-        const { jobId } = await apiClient.scanQrReceipt(data);
-        router.push({ pathname: '/scan-result', params: { jobId } });
-      } catch (err) {
-        const message =
-          err instanceof ApiClientError
-            ? `API error ${err.status}: ${err.message}`
-            : err instanceof Error
-              ? err.message
-              : t('common.unknownError');
-        Alert.alert(t('scan.qrFailed'), message, [
-          {
-            text: t('common.ok'),
-            onPress: () => {
-              processingRef.current = false;
-              setScannedCode(null);
-            },
+      // React Native FormData takes a { uri, name, type } object where the
+      // browser takes a Blob, so we cast to keep the shared client's signature.
+      const file = {
+        uri: photo.uri,
+        name: 'receipt.jpg',
+        type: 'image/jpeg',
+      } as unknown as Blob;
+
+      const { jobId } = await apiClient.scanReceipt(file);
+      router.push({ pathname: '/scan-result', params: { jobId } });
+    } catch (err) {
+      const message =
+        err instanceof ApiClientError
+          ? `API error ${err.status}: ${err.message}`
+          : err instanceof Error
+            ? err.message
+            : t('common.unknownError');
+      Alert.alert(t('receipt.uploadFailed'), message, [
+        {
+          text: t('common.ok'),
+          onPress: () => {
+            processingRef.current = false;
+            setUploading(false);
           },
-        ]);
-      }
-    },
-    [router],
-  );
+        },
+      ]);
+    }
+  }, [router, t]);
 
   const switchMode = useCallback((mode: ScanMode) => {
     setScanMode(mode);
     processingRef.current = false;
     setScannedCode(null);
+    setUploading(false);
   }, []);
 
   if (!permission) {
@@ -129,23 +129,24 @@ export default function ScanScreen() {
     );
   }
 
+  const busy = scannedCode !== null || uploading;
+
   return (
     <View style={styles.container}>
       <CameraView
+        ref={cameraRef}
         style={StyleSheet.absoluteFill}
-        barcodeScannerSettings={{ barcodeTypes: [scanMode === 'ean' ? 'ean13' : 'qr'] }}
-        onBarcodeScanned={
-          scannedCode ? undefined : scanMode === 'ean' ? handleBarcodeScan : handleQrScan
-        }
+        barcodeScannerSettings={{ barcodeTypes: ['ean13'] }}
+        onBarcodeScanned={scanMode === 'ean' && !busy ? handleBarcodeScan : undefined}
       />
 
-      {/* Dim overlay once a code is detected */}
-      {scannedCode && <View style={styles.dimOverlay} />}
+      {/* Dim overlay while looking up a code or uploading a photo */}
+      {busy && <View style={styles.dimOverlay} />}
 
-      {scannedCode ? (
+      {busy ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#fff" />
-          <Text style={styles.loadingCode}>{scannedCode}</Text>
+          {scannedCode ? <Text style={styles.loadingCode}>{scannedCode}</Text> : null}
           <Text style={styles.loadingText}>
             {scanMode === 'ean' ? t('scan.lookingUp') : t('scan.submitting')}
           </Text>
@@ -153,7 +154,7 @@ export default function ScanScreen() {
       ) : (
         <View style={styles.scanOverlay}>
           <View style={styles.modeToggle}>
-            {(['ean', 'qr'] as const).map((mode) => (
+            {(['ean', 'receipt'] as const).map((mode) => (
               <TouchableOpacity
                 key={mode}
                 style={[styles.modeButton, scanMode === mode && styles.modeButtonActive]}
@@ -162,15 +163,25 @@ export default function ScanScreen() {
                 <Text
                   style={[styles.modeButtonText, scanMode === mode && styles.modeButtonTextActive]}
                 >
-                  {mode === 'ean' ? t('scan.barcodeMode') : t('scan.qrMode')}
+                  {mode === 'ean' ? t('scan.barcodeMode') : t('scan.receiptMode')}
                 </Text>
               </TouchableOpacity>
             ))}
           </View>
-          <View style={styles.scanArea} />
+          <View style={scanMode === 'ean' ? styles.scanArea : styles.receiptArea} />
           <Text style={styles.hint}>
-            {scanMode === 'ean' ? t('scan.barcodeTip') : t('scan.qrTip')}
+            {scanMode === 'ean' ? t('scan.barcodeTip') : t('scan.receiptTip')}
           </Text>
+          {scanMode === 'receipt' && (
+            <TouchableOpacity
+              style={styles.shutter}
+              onPress={handleCaptureReceipt}
+              accessibilityRole="button"
+              accessibilityLabel={t('scan.captureA11y')}
+            >
+              <View style={styles.shutterInner} />
+            </TouchableOpacity>
+          )}
         </View>
       )}
     </View>
@@ -238,6 +249,14 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     borderRadius: 8,
   },
+  // taller frame, receipts are portrait
+  receiptArea: {
+    width: 240,
+    height: 340,
+    borderWidth: 2,
+    borderColor: '#fff',
+    borderRadius: 8,
+  },
   hint: {
     marginTop: 20,
     color: '#fff',
@@ -267,5 +286,21 @@ const styles = StyleSheet.create({
   modeButtonTextActive: {
     color: colors.leafGreen,
     fontWeight: '700',
+  },
+  shutter: {
+    marginTop: 28,
+    width: 68,
+    height: 68,
+    borderRadius: 999,
+    borderWidth: 4,
+    borderColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  shutterInner: {
+    width: 52,
+    height: 52,
+    borderRadius: 999,
+    backgroundColor: '#fff',
   },
 });

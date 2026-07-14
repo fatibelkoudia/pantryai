@@ -1,8 +1,9 @@
 import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, { Easing, FadeInRight, useReducedMotion } from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { apiClient } from '../src/api/client';
 import { AuroraBackground } from '../src/components/onboarding/AuroraBackground';
 import { DoneStep } from '../src/components/onboarding/DoneStep';

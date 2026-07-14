@@ -13,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { apiClient } from '../../src/api/client';
 import { buttonLip, colors, font } from '../../src/theme';
 
@@ -59,6 +60,7 @@ function ShoppingRow({
 
 export default function ShoppingScreen() {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const queryClient = useQueryClient();
   const [showAdd, setShowAdd] = useState(false);
   const [name, setName] = useState('');
@@ -180,7 +182,7 @@ export default function ShoppingScreen() {
       : duplicates.map((d) => d.name).join(', ');
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
         <Text style={styles.title}>{t('nav.shopping')}</Text>
         <Text style={styles.subtitle}>{t('shopping.subtitleMobile')}</Text>
@@ -277,9 +279,7 @@ export default function ShoppingScreen() {
                 >
                   <Ionicons name="refresh-outline" size={14} color={colors.forestGreen} />
                   <Text style={styles.generateText}>
-                    {generate.isPending
-                      ? t('shopping.generating')
-                      : t('shopping.generateStock')}
+                    {generate.isPending ? t('shopping.generating') : t('shopping.generateStock')}
                   </Text>
                 </TouchableOpacity>
               </View>

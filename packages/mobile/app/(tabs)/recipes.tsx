@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { apiClient } from '../../src/api/client';
 import { buttonLip, colors, font } from '../../src/theme';
 
@@ -54,6 +55,7 @@ function RecipeCard({ suggestion }: { suggestion: RecipeSuggestion }) {
 
 export default function RecipesScreen() {
   const { t } = useTranslation();
+  const insets = useSafeAreaInsets();
   const { data, isLoading, isError, error, refetch, isRefetching } = useQuery({
     queryKey: ['recipes'],
     queryFn: () => apiClient.suggestRecipes(),
@@ -93,7 +95,7 @@ export default function RecipesScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       <Text style={styles.title}>{t('nav.recipes')}</Text>
       <FlatList
         data={suggestions}
