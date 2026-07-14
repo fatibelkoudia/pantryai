@@ -2,6 +2,7 @@ import { ApiClientError } from '@pantryai/shared';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { apiClient } from '../src/api/client';
 import { buttonLip, colors, font } from '../src/theme';
@@ -9,6 +10,7 @@ import { buttonLip, colors, font } from '../src/theme';
 type ScanMode = 'ean' | 'qr';
 
 export default function ScanScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const [permission, requestPermission] = useCameraPermissions();
   const [scannedCode, setScannedCode] = useState<string | null>(null);
@@ -43,15 +45,15 @@ export default function ScanScreen() {
         console.error('[ScanScreen] EAN lookup failed:', err);
         const message =
           err instanceof ApiClientError && err.status === 404
-            ? 'Product not found. Try scanning again or add it manually.'
+            ? t('scan.productNotFound')
             : err instanceof ApiClientError
               ? `API error ${err.status}: ${err.message}`
               : err instanceof Error
                 ? err.message
-                : 'Unknown error';
-        Alert.alert('Lookup failed', message, [
+                : t('common.unknownError');
+        Alert.alert(t('scan.lookupFailed'), message, [
           {
-            text: 'OK',
+            text: t('common.ok'),
             onPress: () => {
               processingRef.current = false;
               setScannedCode(null);
@@ -60,7 +62,7 @@ export default function ScanScreen() {
         ]);
       }
     },
-    [router],
+    [router, t],
   );
 
   const handleQrScan = useCallback(
@@ -70,9 +72,9 @@ export default function ScanScreen() {
       setScannedCode(data);
 
       if (!data.startsWith('http://') && !data.startsWith('https://')) {
-        Alert.alert('Not a receipt QR', 'This QR code does not contain a receipt URL.', [
+        Alert.alert(t('scan.notReceiptQr'), t('scan.notReceiptQrMessage'), [
           {
-            text: 'OK',
+            text: t('common.ok'),
             onPress: () => {
               processingRef.current = false;
               setScannedCode(null);
@@ -91,10 +93,10 @@ export default function ScanScreen() {
             ? `API error ${err.status}: ${err.message}`
             : err instanceof Error
               ? err.message
-              : 'Unknown error';
-        Alert.alert('QR scan failed', message, [
+              : t('common.unknownError');
+        Alert.alert(t('scan.qrFailed'), message, [
           {
-            text: 'OK',
+            text: t('common.ok'),
             onPress: () => {
               processingRef.current = false;
               setScannedCode(null);
@@ -119,9 +121,9 @@ export default function ScanScreen() {
   if (!permission.granted) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.permissionText}>Camera access is required to scan barcodes.</Text>
+        <Text style={styles.permissionText}>{t('scan.cameraPermission')}</Text>
         <TouchableOpacity style={styles.button} onPress={requestPermission}>
-          <Text style={styles.buttonText}>Grant Permission</Text>
+          <Text style={styles.buttonText}>{t('scan.grantPermission')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -145,7 +147,7 @@ export default function ScanScreen() {
           <ActivityIndicator size="large" color="#fff" />
           <Text style={styles.loadingCode}>{scannedCode}</Text>
           <Text style={styles.loadingText}>
-            {scanMode === 'ean' ? 'Looking up product…' : 'Submitting receipt…'}
+            {scanMode === 'ean' ? t('scan.lookingUp') : t('scan.submitting')}
           </Text>
         </View>
       ) : (
@@ -160,14 +162,14 @@ export default function ScanScreen() {
                 <Text
                   style={[styles.modeButtonText, scanMode === mode && styles.modeButtonTextActive]}
                 >
-                  {mode === 'ean' ? 'Barcode' : 'QR Ticket'}
+                  {mode === 'ean' ? t('scan.barcodeMode') : t('scan.qrMode')}
                 </Text>
               </TouchableOpacity>
             ))}
           </View>
           <View style={styles.scanArea} />
           <Text style={styles.hint}>
-            {scanMode === 'ean' ? 'Point at an EAN-13 barcode' : 'Point at a QR receipt code'}
+            {scanMode === 'ean' ? t('scan.barcodeTip') : t('scan.qrTip')}
           </Text>
         </View>
       )}

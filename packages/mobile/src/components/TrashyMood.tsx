@@ -1,4 +1,5 @@
 import { mascotMoodMeta, type WasteMood } from '@pantryai/shared';
+import { useTranslation } from 'react-i18next';
 import { Image, StyleSheet, Text, View, type ImageSourcePropType } from 'react-native';
 import { font } from '../theme';
 
@@ -21,19 +22,21 @@ interface TrashyMoodProps {
 
 // The Trashy mascot for a given mood.
 export function TrashyMood({ mood, size = 120, showLabel = true }: TrashyMoodProps) {
+  const { t } = useTranslation();
   const meta = mascotMoodMeta[mood];
+  const label = t(`waste.moods.${mood}`);
   return (
     <View
       style={styles.wrap}
       accessibilityRole="image"
-      accessibilityLabel={`Trashy looks ${meta.label.toLowerCase()}`}
+      accessibilityLabel={t('mascot.looks', { mood: label.toLowerCase() })}
     >
       <Image
         source={MASCOT_IMAGES[mood]}
         style={{ width: size, height: size }}
         resizeMode="contain"
       />
-      {showLabel ? <Text style={[styles.label, { color: meta.accent }]}>{meta.label}</Text> : null}
+      {showLabel ? <Text style={[styles.label, { color: meta.accent }]}>{label}</Text> : null}
     </View>
   );
 }

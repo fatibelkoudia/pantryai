@@ -1,23 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import type { TipCategory } from '@pantryai/shared';
 import { TIP_CATEGORIES } from '@pantryai/shared';
 import { apiClient } from '@/lib/api';
 
-// Friendlier labels for the raw category slugs the API uses.
-const CATEGORY_LABELS: Record<TipCategory, string> = {
-  fruits: 'Fruit',
-  legumes: 'Veg',
-  'produits-laitiers': 'Dairy',
-  viande: 'Meat & fish',
-  cereales: 'Grains',
-};
-
 type Filter = TipCategory | 'all';
 
 export default function LearnPage() {
+  const { t } = useTranslation();
   const [filter, setFilter] = useState<Filter>('all');
 
   const tips = useQuery({
@@ -30,13 +23,11 @@ export default function LearnPage() {
   return (
     <section className="flex flex-col gap-6">
       <header className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold">Learn</h1>
-        <p className="text-sm text-slate-500">
-          Conservation tips to keep food fresh and waste low.
-        </p>
+        <h1 className="text-2xl font-bold">{t('learn.title')}</h1>
+        <p className="text-sm text-slate-500">{t('learn.tipsSubtitle')}</p>
       </header>
 
-      <div role="tablist" aria-label="Filter tips by category" className="flex flex-wrap gap-2">
+      <div role="tablist" aria-label={t('learn.filterTipsA11y')} className="flex flex-wrap gap-2">
         {(['all', ...TIP_CATEGORIES] as Filter[]).map((cat) => {
           const active = filter === cat;
           return (
@@ -49,7 +40,7 @@ export default function LearnPage() {
                 active ? 'bg-brand text-brand-fg' : 'border border-border'
               }`}
             >
-              {cat === 'all' ? 'All' : CATEGORY_LABELS[cat]}
+              {t(`learn.categories.${cat}`)}
             </button>
           );
         })}
@@ -57,11 +48,11 @@ export default function LearnPage() {
 
       {tips.isLoading ? (
         <p role="status" className="text-slate-500">
-          Loading tips…
+          {t('learn.tipsLoading')}
         </p>
       ) : tips.isError ? (
         <p role="alert" className="text-expiry-expired">
-          Could not load tips. Please try again.
+          {t('learn.tipsError')}
         </p>
       ) : items.length > 0 ? (
         <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -71,16 +62,18 @@ export default function LearnPage() {
               className="flex flex-col gap-1 rounded-card border border-border bg-surface-card p-4"
             >
               <p className="text-xs font-semibold uppercase tracking-wide text-brand">
-                {CATEGORY_LABELS[tip.category]}
+                {t(`learn.categories.${tip.category}`)}
               </p>
               <h2 className="font-semibold">{tip.title}</h2>
               <p className="text-sm text-slate-600">{tip.body}</p>
-              <p className="mt-2 text-xs text-slate-400">Source: {tip.source}</p>
+              <p className="mt-2 text-xs text-slate-400">
+                {t('tip.source', { source: tip.source })}
+              </p>
             </li>
           ))}
         </ul>
       ) : (
-        <p className="text-slate-500">No tips in this category yet.</p>
+        <p className="text-slate-500">{t('learn.tipsEmpty')}</p>
       )}
     </section>
   );

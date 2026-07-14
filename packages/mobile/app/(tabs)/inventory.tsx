@@ -3,6 +3,8 @@ import type { StockDisposition, StockItemWithProduct, StockLocation } from '@pan
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import {
   ActivityIndicator,
   FlatList,
@@ -20,34 +22,24 @@ import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../../src/li
 import { categoryIcon } from '../../src/lib/foodIcons';
 import { buttonLip, colors, font } from '../../src/theme';
 
-const LOCATION_LABELS: Record<StockLocation, string> = {
-  FRIDGE: 'Fridge',
-  FREEZER: 'Freezer',
-  PANTRY: 'Pantry',
-};
-
 // Segmented tabs under the header. "ALL" shows everything.
-const LOCATION_TABS: { value: StockLocation | 'ALL'; label: string }[] = [
-  { value: 'ALL', label: 'All' },
-  { value: 'FRIDGE', label: 'Fridge' },
-  { value: 'PANTRY', label: 'Pantry' },
-  { value: 'FREEZER', label: 'Freezer' },
-];
+const LOCATION_TABS: (StockLocation | 'ALL')[] = ['ALL', 'FRIDGE', 'PANTRY', 'FREEZER'];
 
 // Freshness chips. Tapping the active one again clears the filter.
 type Freshness = 'SOON' | 'FRESH' | 'EXPIRED';
-const FRESHNESS_CHIPS: { value: Freshness; label: string }[] = [
-  { value: 'SOON', label: 'Use soon' },
-  { value: 'FRESH', label: 'Fresh' },
-  { value: 'EXPIRED', label: 'Expired' },
+const FRESHNESS_CHIPS: { value: Freshness; labelKey: string }[] = [
+  { value: 'SOON', labelKey: 'stock.useSoonChip' },
+  { value: 'FRESH', labelKey: 'stock.freshChip' },
+  { value: 'EXPIRED', labelKey: 'stock.expiredChip' },
 ];
 
 function ExpirationBadge({ expirationDate }: { expirationDate?: string }) {
+  const { t } = useTranslation();
   const days = daysUntil(expirationDate);
   const level = expiryLevel(days);
   const palette = EXPIRY_COLORS[level];
   // "Safe" reads friendlier than a raw day count for items that are fine.
-  const label = level === 'ok' ? 'Safe' : expiryLabel(days);
+  const label = level === 'ok' ? t('expiry.safe') : expiryLabel(days, t);
   return (
     <View style={[styles.badge, { backgroundColor: palette.bg }]}>
       <Text style={[styles.badgeText, { color: palette.fg }]}>{label}</Text>
@@ -56,6 +48,7 @@ function ExpirationBadge({ expirationDate }: { expirationDate?: string }) {
 }
 
 export default function InventoryScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [location, setLocation] = useState<StockLocation | 'ALL'>('ALL');
@@ -134,12 +127,12 @@ export default function InventoryScreen() {
   if (isError) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorTitle}>Could not load your stock</Text>
+        <Text style={styles.errorTitle}>{t('stock.loadErrorTitle')}</Text>
         <Text style={styles.errorSub}>
-          {error instanceof Error ? error.message : 'Unknown error'}
+          {error instanceof Error ? error.message : t('common.unknownError')}
         </Text>
         <TouchableOpacity style={styles.button} onPress={() => refetch()}>
-          <Text style={styles.buttonText}>Retry</Text>
+          <Text style={styles.buttonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -151,14 +144,14 @@ export default function InventoryScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>Inventory</Text>
-          <Text style={styles.subtitle}>Everything you have at home</Text>
+          <Text style={styles.title}>{t('stock.inventory')}</Text>
+          <Text style={styles.subtitle}>{t('stock.everythingAtHome')}</Text>
         </View>
         <TouchableOpacity
           style={styles.headerBtn}
           onPress={() => router.push('/scan')}
           accessibilityRole="button"
-          accessibilityLabel="Scan a receipt"
+          accessibilityLabel={t('home.scanReceiptA11y')}
         >
           <Ionicons name="scan-outline" size={20} color={colors.forestGreen} />
         </TouchableOpacity>
@@ -167,17 +160,17 @@ export default function InventoryScreen() {
       {/* Location segmented tabs */}
       <View style={styles.segmented}>
         {LOCATION_TABS.map((tab) => {
-          const active = location === tab.value;
+          const active = location === tab;
           return (
             <TouchableOpacity
-              key={tab.value}
-              onPress={() => setLocation(tab.value)}
+              key={tab}
+              onPress={() => setLocation(tab)}
               accessibilityRole="button"
               accessibilityState={{ selected: active }}
               style={[styles.segment, active && styles.segmentActive]}
             >
               <Text style={[styles.segmentText, active && styles.segmentTextActive]}>
-                {tab.label}
+                {t(`locations.${tab}`)}
               </Text>
             </TouchableOpacity>
           );
@@ -195,26 +188,26 @@ export default function InventoryScreen() {
             {/* Impact card: stock at a glance + Trashy's take on it */}
             <View style={styles.impactCard}>
               <View style={styles.impactLeft}>
-                <Text style={styles.impactTitle}>Your impact</Text>
+                <Text style={styles.impactTitle}>{t('stock.yourImpact')}</Text>
                 <Text style={styles.impactSub}>
                   {alertCount > 0
-                    ? `${alertCount} item${alertCount > 1 ? 's' : ''} need attention`
-                    : "You're doing great!"}
+                    ? t('stock.needAttention', { count: alertCount })
+                    : t('stock.doingGreat')}
                 </Text>
                 <View style={styles.statsRow}>
                   <View style={styles.stat}>
                     <Text style={[styles.statValue, { color: colors.forestGreen }]}>
                       {allItems.length}
                     </Text>
-                    <Text style={styles.statLabel}>Items</Text>
+                    <Text style={styles.statLabel}>{t('stock.items')}</Text>
                   </View>
                   <View style={styles.stat}>
                     <Text style={[styles.statValue, { color: colors.brickRed }]}>{alertCount}</Text>
-                    <Text style={styles.statLabel}>Alerts</Text>
+                    <Text style={styles.statLabel}>{t('stock.alerts')}</Text>
                   </View>
                   <View style={styles.stat}>
                     <Text style={[styles.statValue, { color: colors.amberText }]}>{usedCount}</Text>
-                    <Text style={styles.statLabel}>Used</Text>
+                    <Text style={styles.statLabel}>{t('stock.used')}</Text>
                   </View>
                 </View>
               </View>
@@ -223,7 +216,7 @@ export default function InventoryScreen() {
                   <TrashyMood mood={waste.data.mood} size={72} showLabel={false} />
                   <View style={styles.bubble}>
                     <Text style={styles.bubbleText}>
-                      {alertCount > 0 ? '"Let\'s save these!"' : '"Looking fresh!"'}
+                      {alertCount > 0 ? `"${t('stock.letsSave')}"` : `"${t('stock.lookingFresh')}"`}
                     </Text>
                   </View>
                 </View>
@@ -237,7 +230,7 @@ export default function InventoryScreen() {
                 style={styles.searchInput}
                 value={search}
                 onChangeText={setSearch}
-                placeholder="Search food item"
+                placeholder={t('stock.searchFoodPlaceholder')}
                 placeholderTextColor={colors.textMuted}
                 returnKeyType="search"
               />
@@ -256,7 +249,7 @@ export default function InventoryScreen() {
                     style={[styles.chip, active && styles.chipActive]}
                   >
                     <Text style={[styles.chipText, active && styles.chipTextActive]}>
-                      {chip.label}
+                      {t(chip.labelKey)}
                     </Text>
                   </TouchableOpacity>
                 );
@@ -268,19 +261,17 @@ export default function InventoryScreen() {
           <View style={styles.emptyBox}>
             {allItems.length === 0 ? (
               <>
-                <Text style={styles.emptyTitle}>Nothing in stock yet</Text>
-                <Text style={styles.emptySub}>
-                  Scan a barcode or a receipt to add your first items.
-                </Text>
+                <Text style={styles.emptyTitle}>{t('stock.nothingInStock')}</Text>
+                <Text style={styles.emptySub}>{t('stock.scanToAdd')}</Text>
                 <TouchableOpacity
                   style={styles.button}
                   onPress={() => router.push('/manual-entry')}
                 >
-                  <Text style={styles.buttonText}>Add manually</Text>
+                  <Text style={styles.buttonText}>{t('stock.addManually')}</Text>
                 </TouchableOpacity>
               </>
             ) : (
-              <Text style={styles.emptySub}>Nothing matches your filters.</Text>
+              <Text style={styles.emptySub}>{t('stock.noFilterMatch')}</Text>
             )}
           </View>
         }
@@ -300,10 +291,10 @@ export default function InventoryScreen() {
         style={styles.fab}
         onPress={() => router.push('/manual-entry')}
         accessibilityRole="button"
-        accessibilityLabel="Add an item"
+        accessibilityLabel={t('stock.addA11y')}
       >
         <Ionicons name="add" size={22} color={colors.onBrand} />
-        <Text style={styles.fabText}>Add</Text>
+        <Text style={styles.fabText}>{t('common.add')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -320,26 +311,32 @@ function InventoryCard({
   onResolve: (disposition: StockDisposition) => void;
   onRecipe: () => void;
 }) {
+  const { t } = useTranslation();
   const days = daysUntil(item.expirationDate);
   const level = expiryLevel(days);
 
   // One contextual primary action per card: toss what's gone, use what's about to
   // go, get a recipe for the rest of the week, quietly mark the safe stuff.
-  let primary: { label: string; style: 'urgent' | 'outline' | 'neutral'; onPress: () => void };
+  let primary: { labelKey: string; style: 'urgent' | 'outline' | 'neutral'; onPress: () => void };
   if (level === 'expired') {
-    primary = { label: 'Toss it', style: 'urgent', onPress: () => onResolve('DISCARDED') };
+    primary = { labelKey: 'stock.tossIt', style: 'urgent', onPress: () => onResolve('DISCARDED') };
   } else if (level === 'urgent') {
-    primary = { label: 'Use today', style: 'urgent', onPress: () => onResolve('CONSUMED') };
+    primary = { labelKey: 'stock.useToday', style: 'urgent', onPress: () => onResolve('CONSUMED') };
   } else if (level === 'soon') {
-    primary = { label: 'Recipe', style: 'outline', onPress: onRecipe };
+    primary = { labelKey: 'stock.recipe', style: 'outline', onPress: onRecipe };
   } else {
-    primary = { label: 'Mark as used', style: 'neutral', onPress: () => onResolve('CONSUMED') };
+    primary = {
+      labelKey: 'stock.markAsUsed',
+      style: 'neutral',
+      onPress: () => onResolve('CONSUMED'),
+    };
   }
 
   // The dispositions the primary button doesn't cover stay as small text links,
-  // so "Used it" / "Threw it out" are always one tap away.
-  const showUsedLink = primary.label === 'Toss it' || primary.label === 'Recipe';
-  const showTossLink = primary.label !== 'Toss it';
+  // so "Used it" / "Threw it out" are always one tap away. "Toss it" is expired,
+  // "Recipe" is soon; both leave the used link showing.
+  const showUsedLink = level === 'expired' || level === 'soon';
+  const showTossLink = level !== 'expired';
 
   return (
     <View style={styles.itemCard}>
@@ -365,7 +362,7 @@ function InventoryCard({
             <ExpirationBadge expirationDate={item.expirationDate} />
           </View>
           <Text style={styles.itemMeta}>
-            {LOCATION_LABELS[item.location]} · {item.quantity} {item.unit}
+            {t(`locations.${item.location}`)} · {item.quantity} {item.unit}
             {item.product.brand ? ` · ${item.product.brand}` : ''}
           </Text>
         </View>
@@ -390,7 +387,7 @@ function InventoryCard({
               primary.style === 'neutral' && styles.primaryBtnTextNeutral,
             ]}
           >
-            {primary.label}
+            {t(primary.labelKey)}
           </Text>
         </TouchableOpacity>
         {showUsedLink ? (
@@ -399,7 +396,7 @@ function InventoryCard({
             disabled={busy}
             onPress={() => onResolve('CONSUMED')}
           >
-            <Text style={styles.usedAction}>Used it</Text>
+            <Text style={styles.usedAction}>{t('stock.usedIt')}</Text>
           </TouchableOpacity>
         ) : null}
         {showTossLink ? (
@@ -408,7 +405,7 @@ function InventoryCard({
             disabled={busy}
             onPress={() => onResolve('DISCARDED')}
           >
-            <Text style={styles.tossedAction}>Threw it out</Text>
+            <Text style={styles.tossedAction}>{t('stock.threwOut')}</Text>
           </TouchableOpacity>
         ) : null}
       </View>

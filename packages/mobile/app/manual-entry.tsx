@@ -2,6 +2,7 @@ import { ApiClientError } from '@pantryai/shared';
 import type { Product } from '@pantryai/shared';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -22,6 +23,7 @@ const MIN_SEARCH_LENGTH = 2;
 const DEBOUNCE_MS = 300;
 
 export default function ManualEntryScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
 
   const [name, setName] = useState('');
@@ -57,7 +59,7 @@ export default function ManualEntryScreen() {
   const handleCreate = async () => {
     const trimmedName = name.trim();
     if (!trimmedName) {
-      Alert.alert('Missing name', 'Please enter a product name.');
+      Alert.alert(t('manualEntry.missingName'), t('manualEntry.missingNameMessage'));
       return;
     }
 
@@ -71,11 +73,11 @@ export default function ManualEntryScreen() {
     } catch (err) {
       const message =
         err instanceof ApiClientError && err.status === 401
-          ? 'You must be logged in to add a product.'
+          ? t('manualEntry.notLoggedIn')
           : err instanceof ApiClientError
             ? err.message
-            : 'Something went wrong. Please try again.';
-      Alert.alert('Error', message);
+            : t('common.error');
+      Alert.alert(t('common.errorTitle'), message);
     } finally {
       setIsCreating(false);
     }
@@ -88,24 +90,24 @@ export default function ManualEntryScreen() {
     >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <View style={styles.field}>
-          <Text style={styles.label}>Product name *</Text>
+          <Text style={styles.label}>{t('manualEntry.productNameLabel')}</Text>
           <TextInput
             style={styles.input}
             value={name}
             onChangeText={setName}
-            placeholder="e.g. Homemade jam"
+            placeholder={t('manualEntry.productNamePlaceholder')}
             placeholderTextColor="#aaa"
             autoFocus
           />
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.label}>Brand</Text>
+          <Text style={styles.label}>{t('manualEntry.brandLabel')}</Text>
           <TextInput
             style={styles.input}
             value={brand}
             onChangeText={setBrand}
-            placeholder="optional"
+            placeholder={t('manualEntry.brandPlaceholder')}
             placeholderTextColor="#aaa"
           />
         </View>
@@ -113,7 +115,7 @@ export default function ManualEntryScreen() {
         {searchTerm.length >= MIN_SEARCH_LENGTH && (
           <View style={styles.results}>
             <View style={styles.resultsHeader}>
-              <Text style={styles.label}>Existing products</Text>
+              <Text style={styles.label}>{t('manualEntry.existingProducts')}</Text>
               {isFetching && <ActivityIndicator size="small" color={colors.leafGreen} />}
             </View>
 
@@ -129,7 +131,7 @@ export default function ManualEntryScreen() {
                 </TouchableOpacity>
               ))
             ) : !isFetching ? (
-              <Text style={styles.noMatch}>No match. Create it below.</Text>
+              <Text style={styles.noMatch}>{t('manualEntry.noMatch')}</Text>
             ) : null}
           </View>
         )}
@@ -140,7 +142,7 @@ export default function ManualEntryScreen() {
           disabled={isCreating}
         >
           <Text style={styles.submitButtonText}>
-            {isCreating ? 'Creating…' : 'Create new product'}
+            {isCreating ? t('manualEntry.creating') : t('manualEntry.createButton')}
           </Text>
         </TouchableOpacity>
       </ScrollView>

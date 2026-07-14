@@ -1,6 +1,7 @@
 import { ApiClientError } from '@pantryai/shared';
 import type { StockLocation } from '@pantryai/shared';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import {
   Alert,
@@ -18,13 +19,8 @@ import { colors } from '../src/theme';
 
 const LOCATIONS: StockLocation[] = ['FRIDGE', 'FREEZER', 'PANTRY'];
 
-const LOCATION_LABELS: Record<StockLocation, string> = {
-  FRIDGE: 'Fridge',
-  FREEZER: 'Freezer',
-  PANTRY: 'Pantry',
-};
-
 export default function AddStockScreen() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { productId, productName, brand } = useLocalSearchParams<{
     productId: string;
@@ -40,13 +36,13 @@ export default function AddStockScreen() {
 
   const handleSubmit = async () => {
     if (!quantity || !unit) {
-      Alert.alert('Missing fields', 'Please enter quantity and unit.');
+      Alert.alert(t('addStock.missingFields'), t('addStock.missingFieldsMessage'));
       return;
     }
 
     const parsedQty = parseFloat(quantity);
     if (isNaN(parsedQty) || parsedQty <= 0) {
-      Alert.alert('Invalid quantity', 'Please enter a valid positive number.');
+      Alert.alert(t('addStock.invalidQuantity'), t('addStock.invalidQuantityMessage'));
       return;
     }
 
@@ -64,11 +60,11 @@ export default function AddStockScreen() {
     } catch (err) {
       const message =
         err instanceof ApiClientError && err.status === 401
-          ? 'You must be logged in to add items to stock.'
+          ? t('addStock.notLoggedIn')
           : err instanceof ApiClientError
             ? err.message
-            : 'Something went wrong. Please try again.';
-      Alert.alert('Error', message);
+            : t('common.error');
+      Alert.alert(t('common.errorTitle'), message);
     } finally {
       setIsSubmitting(false);
     }
@@ -86,43 +82,43 @@ export default function AddStockScreen() {
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.label}>Quantity *</Text>
+          <Text style={styles.label}>{t('addStock.quantityLabel')}</Text>
           <TextInput
             style={styles.input}
             value={quantity}
             onChangeText={setQuantity}
             keyboardType="decimal-pad"
-            placeholder="e.g. 1.5"
+            placeholder={t('addStock.quantityPlaceholder')}
             placeholderTextColor="#aaa"
           />
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.label}>Unit *</Text>
+          <Text style={styles.label}>{t('addStock.unitLabel')}</Text>
           <TextInput
             style={styles.input}
             value={unit}
             onChangeText={setUnit}
-            placeholder="e.g. kg, L, pcs"
+            placeholder={t('addStock.unitPlaceholder')}
             placeholderTextColor="#aaa"
             autoCapitalize="none"
           />
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.label}>Expiration date</Text>
+          <Text style={styles.label}>{t('addStock.expirationLabel')}</Text>
           <TextInput
             style={styles.input}
             value={expirationDate}
             onChangeText={setExpirationDate}
-            placeholder="YYYY-MM-DD (optional)"
+            placeholder={t('addStock.expirationPlaceholder')}
             placeholderTextColor="#aaa"
             keyboardType="numbers-and-punctuation"
           />
         </View>
 
         <View style={styles.field}>
-          <Text style={styles.label}>Location</Text>
+          <Text style={styles.label}>{t('addStock.locationLabel')}</Text>
           <View style={styles.locationRow}>
             {LOCATIONS.map((loc) => (
               <TouchableOpacity
@@ -131,7 +127,7 @@ export default function AddStockScreen() {
                 onPress={() => setLocation(loc)}
               >
                 <Text style={[styles.locationText, location === loc && styles.locationTextActive]}>
-                  {LOCATION_LABELS[loc]}
+                  {t(`locations.${loc}`)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -143,7 +139,9 @@ export default function AddStockScreen() {
           onPress={handleSubmit}
           disabled={isSubmitting}
         >
-          <Text style={styles.submitButtonText}>{isSubmitting ? 'Adding…' : 'Add to Stock'}</Text>
+          <Text style={styles.submitButtonText}>
+            {isSubmitting ? t('addStock.submitting') : t('addStock.submitButton')}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>

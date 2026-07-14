@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { GamificationCard } from '@/components/GamificationCard';
 import { StockCard } from '@/components/StockCard';
@@ -14,8 +15,9 @@ const EXPIRING_PREVIEW = 6;
 
 export default function HomePage() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   // user might still be loading, so fall back to a plain hello until we have a name
-  const greeting = user?.name ? `Hi, ${user.name}!` : 'Hi there!';
+  const greeting = user?.name ? t('home.greeting', { name: user.name }) : t('home.greetingGeneric');
 
   const expiring = useQuery({
     queryKey: ['stocks', { expiringSoon: true }],
@@ -28,7 +30,7 @@ export default function HomePage() {
     <section className="flex flex-col gap-6">
       <header className="flex flex-col gap-1">
         <h1 className="text-2xl font-bold">{greeting}</h1>
-        <p className="text-sm font-semibold text-brand">Waste less. Cook more.</p>
+        <p className="text-sm font-semibold text-brand">{t('home.tagline')}</p>
       </header>
 
       <WasteMoodCard />
@@ -40,15 +42,15 @@ export default function HomePage() {
 
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold">Expiring soon</h2>
+          <h2 className="text-xl font-bold">{t('home.expiringSoon')}</h2>
           <Link href="/stocks" className="text-sm font-medium text-brand hover:underline">
-            See all
+            {t('home.seeAll')}
           </Link>
         </div>
 
         {expiring.isLoading ? (
           <p role="status" className="text-slate-500">
-            Loading…
+            {t('common.loading')}
           </p>
         ) : expiringItems.length > 0 ? (
           <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -60,7 +62,7 @@ export default function HomePage() {
           </ul>
         ) : (
           <div className="rounded-card border border-dashed border-border p-8 text-center text-slate-500">
-            Nothing expiring soon. Nice work keeping waste down!
+            {t('home.nothingExpiring')}
           </div>
         )}
       </div>

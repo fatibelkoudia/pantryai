@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   FlatList,
@@ -12,12 +13,13 @@ import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../src/lib/e
 import { buttonLip, colors } from '../src/theme';
 
 function ExpirationBadge({ expirationDate }: { expirationDate?: string }) {
+  const { t } = useTranslation();
   const days = daysUntil(expirationDate);
   const level = expiryLevel(days);
   const palette = EXPIRY_COLORS[level];
   return (
     <View style={[styles.badge, { backgroundColor: palette.bg }]}>
-      <Text style={[styles.badgeText, { color: palette.fg }]}>{expiryLabel(days)}</Text>
+      <Text style={[styles.badgeText, { color: palette.fg }]}>{expiryLabel(days, t)}</Text>
     </View>
   );
 }
@@ -37,14 +39,15 @@ export default function ExpiringScreen() {
   }
 
   if (isError) {
+    const { t } = useTranslation();
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorTitle}>Could not load expiring items</Text>
+        <Text style={styles.errorTitle}>{t('common.errorTitle')}</Text>
         <Text style={styles.errorSub}>
-          {error instanceof Error ? error.message : 'Unknown error'}
+          {error instanceof Error ? error.message : t('common.unknownError')}
         </Text>
         <TouchableOpacity style={styles.button} onPress={() => refetch()}>
-          <Text style={styles.buttonText}>Retry</Text>
+          <Text style={styles.buttonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
     );

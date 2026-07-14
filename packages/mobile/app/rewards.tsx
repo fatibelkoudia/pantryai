@@ -41,9 +41,9 @@ export default function RewardsScreen() {
   if (challenges.isError || !challenges.data) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorTitle}>Could not load your challenges</Text>
+        <Text style={styles.errorTitle}>{t('rewards.loadError')}</Text>
         <TouchableOpacity style={styles.button} onPress={() => challenges.refetch()}>
-          <Text style={styles.buttonText}>Retry</Text>
+          <Text style={styles.buttonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -80,10 +80,10 @@ export default function RewardsScreen() {
 
       {tip.data?.tip ? (
         <View style={styles.tipCard}>
-          <Text style={styles.tipLabel}>TODAY&apos;S TIP</Text>
+          <Text style={styles.tipLabel}>{t('rewards.todaysTipLabel')}</Text>
           <Text style={styles.tipTitle}>{tip.data.tip.title}</Text>
           <Text style={styles.tipBody}>{tip.data.tip.body}</Text>
-          <Text style={styles.tipSource}>Source: {tip.data.tip.source}</Text>
+          <Text style={styles.tipSource}>{t('tip.source', { source: tip.data.tip.source })}</Text>
         </View>
       ) : null}
     </ScrollView>

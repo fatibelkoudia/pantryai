@@ -1,11 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery } from '@tanstack/react-query';
 import {
   colors,
-  FORGIVENESS_HINT,
-  PANTRY_BLOCKED_HINT,
   mascotMoodMeta,
   wasteMoodBands,
   wasteTrendMeta,
@@ -37,6 +36,7 @@ function bandProgress(score: number, mood: WasteMood): number {
 
 // Trashy's mood card: the mascot + the Waste Level gauge over the trailing 30 days.
 export function WasteMoodCard() {
+  const { t } = useTranslation();
   const [dialog, setDialog] = useState<WasteDetailType | null>(null);
 
   const waste = useQuery({
@@ -48,7 +48,7 @@ export function WasteMoodCard() {
     return (
       <section className="rounded-card border border-border bg-surface-card p-5" aria-busy="true">
         <p role="status" className="text-slate-500">
-          Checking on Trashy…
+          {t('waste.checking')}
         </p>
       </section>
     );
@@ -83,21 +83,25 @@ export function WasteMoodCard() {
             className="rounded-full px-2 py-0.5 text-xs font-bold"
             style={{ background: trendMeta.bg, color: trendMeta.fg }}
           >
-            {TREND_GLYPHS[trend]} {trendMeta.label}
+            {TREND_GLYPHS[trend]} {t(`waste.trend.${trend}`)}
           </span>
         ) : null}
         <WasteGauge score={score} accent={meta.accent} />
-        <p className="text-center text-sm text-slate-600 sm:text-left">{meta.message}</p>
+        <p className="text-center text-sm text-slate-600 sm:text-left">
+          {t(`waste.messages.${mood}`)}
+        </p>
         {nextMood !== null ? (
           <div className="flex w-full max-w-xs flex-col gap-1">
             {pantryBlocked || itemsToNextMood === null ? (
               <p className="text-center text-xs text-slate-600 sm:text-left">
-                {PANTRY_BLOCKED_HINT}
+                {t('waste.pantryBlockedHint')}
               </p>
             ) : (
               <p className="text-center text-xs text-slate-600 sm:text-left">
-                Use <strong>~{itemsToNextMood} more items</strong> and Trashy feels{' '}
-                <strong>{mascotMoodMeta[nextMood].label}</strong>
+                {t('waste.useMoreItems', {
+                  count: itemsToNextMood,
+                  mood: t(`waste.moods.${nextMood}`),
+                })}
               </p>
             )}
             <div className="h-1.5 w-full rounded-full" style={{ background: colors.warmGray }}>
@@ -113,26 +117,28 @@ export function WasteMoodCard() {
         ) : null}
         {counts.total > 0 ? (
           <p className="text-center text-xs text-slate-500 sm:text-left">
-            Last 30 days:{' '}
+            {t('waste.last30')}{' '}
             <button className={countBtn} onClick={() => setDialog('used')}>
-              {counts.consumed} used
+              {t('waste.usedCount', { count: counts.consumed })}
             </button>{' '}
             ·{' '}
             <button className={countBtn} onClick={() => setDialog('tossed')}>
-              {counts.discarded} thrown out · {counts.expired} expired
+              {t('waste.tossedCount', { discarded: counts.discarded, expired: counts.expired })}
             </button>{' '}
             ·{' '}
             <button className={countBtn} onClick={() => setDialog('co2')}>
-              {co2AvoidedKg} kg CO2 avoided
+              {t('waste.co2Avoided', { count: co2AvoidedKg })}
             </button>
           </p>
         ) : (
           <p className="text-center text-xs text-slate-500 sm:text-left">
-            No items resolved yet. Mark what you use or toss to see your level move.
+            {t('waste.noneResolved')}
           </p>
         )}
         <WasteHistory weeklyScores={weeklyScores} />
-        <p className="text-center text-xs text-slate-500 sm:text-left">{FORGIVENESS_HINT}</p>
+        <p className="text-center text-xs text-slate-500 sm:text-left">
+          {t('waste.forgivenessHint')}
+        </p>
       </div>
       {dialog ? (
         <WasteDetailDialog

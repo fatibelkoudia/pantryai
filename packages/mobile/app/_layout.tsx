@@ -8,6 +8,7 @@ import {
 } from '@expo-google-fonts/nunito';
 import { Stack, useRootNavigationState, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { syncPushRegistrationIfGranted } from '../src/lib/push';
 import { LocaleSync } from '../src/components/LocaleSync';
@@ -70,6 +71,7 @@ function AuthGate({ children }: { children: React.ReactNode }) {
 }
 
 export default function RootLayout() {
+  const { t } = useTranslation();
   // hold render until Nunito is ready so we never flash the system font
   const [fontsLoaded] = useFonts({
     Nunito_400Regular,
@@ -96,21 +98,21 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
             name="add-stock"
-            options={{ title: 'Add to Stock', presentation: 'modal' }}
+            options={{ title: t('stackTitles.addToStock'), presentation: 'modal' }}
           />
           <Stack.Screen
             name="manual-entry"
-            options={{ title: 'Add manually', presentation: 'modal' }}
+            options={{ title: t('stackTitles.addManually'), presentation: 'modal' }}
           />
           <Stack.Screen
             name="scan-result"
-            options={{ title: 'Receipt Result', presentation: 'modal' }}
+            options={{ title: t('stackTitles.receiptResult'), presentation: 'modal' }}
           />
-          <Stack.Screen name="scan" options={{ title: 'Scan' }} />
-          <Stack.Screen name="profile" options={{ title: 'Profile' }} />
-          <Stack.Screen name="expiring" options={{ title: 'Expiring soon' }} />
-          <Stack.Screen name="mood" options={{ title: "Trashy's Mood" }} />
-          <Stack.Screen name="rewards" options={{ title: 'Rewards' }} />
+          <Stack.Screen name="scan" options={{ title: t('stackTitles.scan') }} />
+          <Stack.Screen name="profile" options={{ title: t('stackTitles.profile') }} />
+          <Stack.Screen name="expiring" options={{ title: t('stackTitles.expiringSoon') }} />
+          <Stack.Screen name="mood" options={{ title: t('stackTitles.trashyMood') }} />
+          <Stack.Screen name="rewards" options={{ title: t('stackTitles.rewards') }} />
         </Stack>
       </AuthGate>
     </QueryClientProvider>

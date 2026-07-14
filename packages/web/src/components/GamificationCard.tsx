@@ -1,6 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import type { ChallengeProgress } from '@pantryai/shared';
 import { apiClient } from '@/lib/api';
 
@@ -8,6 +9,7 @@ import { apiClient } from '@/lib/api';
 // Yellow colour for the rewards bits. The data comes from GET /challenges, which also
 // hands out XP for anything the user just finished.
 export function GamificationCard() {
+  const { t } = useTranslation();
   const challenges = useQuery({
     queryKey: ['challenges'],
     queryFn: () => apiClient.getChallenges(),
@@ -17,7 +19,7 @@ export function GamificationCard() {
     return (
       <section className="rounded-card border border-border bg-surface-card p-5" aria-busy="true">
         <p role="status" className="text-slate-500">
-          Loading your challenges…
+          {t('gamification.loading')}
         </p>
       </section>
     );
@@ -32,7 +34,7 @@ export function GamificationCard() {
 
   return (
     <section
-      aria-label="Challenges and XP"
+      aria-label={t('gamification.ariaLabel')}
       className="flex flex-col gap-4 rounded-card border border-border bg-surface-card p-5"
     >
       <header className="flex items-center justify-between gap-3">
@@ -41,9 +43,9 @@ export function GamificationCard() {
             ⭐
           </span>
           <div>
-            <p className="text-2xl font-bold leading-none">{xp} XP</p>
+            <p className="text-2xl font-bold leading-none">{t('gamification.xp', { count: xp })}</p>
             <p className="text-xs text-slate-500">
-              {completed} / {list.length} challenges done
+              {t('gamification.challengesDone', { completed, total: list.length })}
             </p>
           </div>
         </div>
@@ -59,21 +61,28 @@ export function GamificationCard() {
 }
 
 function ChallengeRow({ challenge }: { challenge: ChallengeProgress }) {
+  const { t } = useTranslation();
   const pct = challenge.target > 0 ? Math.round((challenge.progress / challenge.target) * 100) : 0;
+  const title = t(`challenges.${challenge.key}.title`, { defaultValue: challenge.title });
+  const description = t(`challenges.${challenge.key}.description`, {
+    defaultValue: challenge.description,
+  });
 
   return (
     <li className="rounded-card bg-surface p-3">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="font-semibold">{challenge.title}</p>
-          <p className="text-xs text-slate-600">{challenge.description}</p>
+          <p className="font-semibold">{title}</p>
+          <p className="text-xs text-slate-600">{description}</p>
         </div>
         {challenge.completed ? (
           <span className="shrink-0 rounded-full bg-sunny px-2 py-1 text-xs font-bold text-charcoal">
-            +{challenge.xp} XP ✓
+            {t('gamification.xpChipDone', { count: challenge.xp })}
           </span>
         ) : (
-          <span className="shrink-0 text-xs font-semibold text-slate-500">+{challenge.xp} XP</span>
+          <span className="shrink-0 text-xs font-semibold text-slate-500">
+            {t('gamification.xpChip', { count: challenge.xp })}
+          </span>
         )}
       </div>
       <div
@@ -82,7 +91,7 @@ function ChallengeRow({ challenge }: { challenge: ChallengeProgress }) {
         aria-valuenow={challenge.progress}
         aria-valuemin={0}
         aria-valuemax={challenge.target}
-        aria-label={`${challenge.title} progress`}
+        aria-label={t('gamification.progressA11y', { title })}
       >
         <div className="h-full rounded-full bg-sunny" style={{ width: `${pct}%` }} />
       </div>

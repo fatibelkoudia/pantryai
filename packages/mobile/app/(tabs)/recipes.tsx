@@ -1,5 +1,6 @@
 import type { RecipeSuggestion } from '@pantryai/shared';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   FlatList,
@@ -13,6 +14,7 @@ import { apiClient } from '../../src/api/client';
 import { buttonLip, colors, font } from '../../src/theme';
 
 function RecipeCard({ suggestion }: { suggestion: RecipeSuggestion }) {
+  const { t } = useTranslation();
   const { recipe, score, matchedIngredients, missingIngredients } = suggestion;
   const percent = Math.round(score * 100);
 
@@ -32,18 +34,18 @@ function RecipeCard({ suggestion }: { suggestion: RecipeSuggestion }) {
 
         {recipe.category ? <Text style={styles.category}>{recipe.category}</Text> : null}
 
-        <Text style={styles.label}>You have</Text>
+        <Text style={styles.label}>{t('recipe.youHave')}</Text>
         <Text style={styles.have}>
-          {matchedIngredients.length > 0 ? matchedIngredients.join(', ') : 'None yet'}
+          {matchedIngredients.length > 0 ? matchedIngredients.join(', ') : t('recipe.noneYet')}
         </Text>
 
         {missingIngredients.length > 0 ? (
           <>
-            <Text style={styles.label}>Missing</Text>
+            <Text style={styles.label}>{t('recipe.missing')}</Text>
             <Text style={styles.missing}>{missingIngredients.join(', ')}</Text>
           </>
         ) : (
-          <Text style={styles.complete}>You have everything you need!</Text>
+          <Text style={styles.complete}>{t('recipe.haveEverything')}</Text>
         )}
       </View>
     </View>
@@ -51,6 +53,7 @@ function RecipeCard({ suggestion }: { suggestion: RecipeSuggestion }) {
 }
 
 export default function RecipesScreen() {
+  const { t } = useTranslation();
   const { data, isLoading, isError, error, refetch, isRefetching } = useQuery({
     queryKey: ['recipes'],
     queryFn: () => apiClient.suggestRecipes(),
@@ -67,12 +70,12 @@ export default function RecipesScreen() {
   if (isError) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorTitle}>Could not load recipes</Text>
+        <Text style={styles.errorTitle}>{t('recipe.loadError')}</Text>
         <Text style={styles.errorSub}>
-          {error instanceof Error ? error.message : 'Unknown error'}
+          {error instanceof Error ? error.message : t('common.unknownError')}
         </Text>
         <TouchableOpacity style={styles.button} onPress={() => refetch()}>
-          <Text style={styles.buttonText}>Retry</Text>
+          <Text style={styles.buttonText}>{t('common.retry')}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -83,15 +86,15 @@ export default function RecipesScreen() {
   if (suggestions.length === 0) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.emptyTitle}>No recipes match your stock yet</Text>
-        <Text style={styles.emptySub}>Add more items to your stock to unlock recipe ideas.</Text>
+        <Text style={styles.emptyTitle}>{t('recipe.empty')}</Text>
+        <Text style={styles.emptySub}>{t('recipe.addMore')}</Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Recipe ideas</Text>
+      <Text style={styles.title}>{t('nav.recipes')}</Text>
       <FlatList
         data={suggestions}
         keyExtractor={(item) => item.recipe.id}
