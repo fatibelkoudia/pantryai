@@ -28,8 +28,12 @@ export class CreateStockItemDto {
   @Type(() => Date)
   expirationDate?: Date;
 
+  // No default initializer here: it would leak through PartialType into
+  // UpdateStockItemDto (making `location` always defined and silently resetting
+  // it on partial updates) and would also override the user's defaultStockLocation
+  // on create. The default is resolved in StockService.create instead.
   @ApiPropertyOptional({ enum: StockLocation, default: StockLocation.PANTRY })
   @IsEnum(StockLocation)
   @IsOptional()
-  location?: StockLocation = StockLocation.PANTRY;
+  location?: StockLocation;
 }
