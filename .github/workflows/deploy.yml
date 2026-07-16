@@ -1,13 +1,18 @@
 name: Deploy
 
-# A tagged release (v1.2.3) ships both apps: the web frontend to Vercel and the
-# API to the Hetzner host over SSH. The API job runs DB migrations first, then
-# deploys the new image with a health check and an automatic rollback if it
-# doesn't come up (risk R6).
+# Target deployment protocol: ships both apps — the web frontend to Vercel and
+# the API to the Hetzner host over SSH — running DB migrations first, then a
+# health check with an automatic rollback if the new image doesn't come up
+# (risk R6).
+#
+# Trigger is manual (workflow_dispatch) on purpose: this is the *target* protocol
+# for the future Hetzner migration, not the live MVP path. The MVP deploys the API
+# to Railway automatically on push to master, independently of this workflow.
+# Keeping it off the `push: tags` trigger means publishing a version tag (v1.0.0)
+# stays a pure version marker and never fires a doomed SSH deploy to a host that
+# doesn't exist yet. Re-enable the tag trigger when Hetzner is provisioned.
 on:
-  push:
-    tags:
-      - 'v*'
+  workflow_dispatch:
 
 concurrency:
   group: deploy-${{ github.ref }}
