@@ -51,11 +51,11 @@ jobs:
       - name: Unit tests + coverage (api)
         run: pnpm --filter @pantryai/api test:unit:coverage
 
-      - name: Upload coverage report
+      - name: Upload coverage report (unit)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: api-coverage
+          name: api-coverage-unit
           path: packages/api/coverage/
           retention-days: 30
 
@@ -128,8 +128,19 @@ jobs:
       - name: Apply migrations to the test DB
         run: pnpm --filter @pantryai/api exec prisma migrate deploy
 
-      - name: Integration tests (api)
-        run: pnpm --filter @pantryai/api test:integration
+      # Runs both projects (unit + integration) under a single coverage run, so
+      # the reported figure is the one for the whole API surface and not just the
+      # unit slice. Thresholds from vitest.config.ts stay enforced.
+      - name: Full suite + coverage (api)
+        run: pnpm --filter @pantryai/api test:coverage
+
+      - name: Upload coverage report (full suite)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-coverage-full
+          path: packages/api/coverage/
+          retention-days: 30
 
   build:
     name: Build
