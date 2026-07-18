@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { apiClient } from '../../src/api/client';
+import { AvatarImage } from '../../src/components/AvatarImage';
 import { TrashyMood } from '../../src/components/TrashyMood';
 import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../../src/lib/expiry';
 import { categoryIcon } from '../../src/lib/foodIcons';
@@ -80,7 +81,7 @@ export default function HomeScreen() {
           accessibilityLabel={t('home.openProfileA11y')}
         >
           {avatar ? (
-            <Text style={styles.avatarEmoji}>{avatar.emoji}</Text>
+            <AvatarImage id={avatar.id} size={36} />
           ) : (
             <Text style={styles.avatarInitial}>{initial}</Text>
           )}
@@ -290,9 +291,9 @@ const styles = StyleSheet.create({
     borderColor: colors.paleGreen,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   avatarInitial: { color: colors.onBrand, fontSize: 17, fontFamily: font.bold },
-  avatarEmoji: { fontSize: 20 },
   headerText: { flex: 1 },
   greeting: { fontSize: 18, fontFamily: font.black, color: colors.forestGreen },
   tagline: { fontSize: 13, color: colors.textMuted, marginTop: 1 },

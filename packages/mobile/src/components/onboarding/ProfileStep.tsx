@@ -4,6 +4,7 @@ import * as Haptics from 'expo-haptics';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { AvatarImage } from '../AvatarImage';
 import { apiClient } from '../../api/client';
 import { useAuthStore } from '../../store/auth';
 import { colors, font, glow, radii, spacing } from '../../theme';
@@ -58,22 +59,30 @@ export function ProfileStep({ stepIndex, totalSteps, onAdvance }: StepProps) {
       <Text style={styles.fieldLabel}>{t('profile.chooseAvatar')}</Text>
       <View style={styles.avatarGrid}>
         {avatarPresets.map((preset) => (
-          <TouchableOpacity
-            key={preset.id}
-            onPress={() => {
-              void Haptics.selectionAsync();
-              setAvatarId(preset.id);
-            }}
-            accessibilityRole="button"
-            accessibilityState={{ selected: selected.id === preset.id }}
-            style={[
-              styles.avatarChoice,
-              { backgroundColor: preset.bg },
-              selected.id === preset.id && styles.avatarChoiceSelected,
-            ]}
-          >
-            <Text style={styles.avatarEmoji}>{preset.emoji}</Text>
-          </TouchableOpacity>
+          <View key={preset.id} style={styles.avatarItem}>
+            <TouchableOpacity
+              onPress={() => {
+                void Haptics.selectionAsync();
+                setAvatarId(preset.id);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={preset.name}
+              accessibilityState={{ selected: selected.id === preset.id }}
+              style={[
+                styles.avatarChoice,
+                { backgroundColor: preset.bg },
+                selected.id === preset.id && styles.avatarChoiceSelected,
+              ]}
+            >
+              <AvatarImage id={preset.id} size={56} />
+            </TouchableOpacity>
+            <Text
+              style={[styles.avatarName, selected.id === preset.id && styles.avatarNameSelected]}
+              numberOfLines={1}
+            >
+              {preset.name}
+            </Text>
+          </View>
         ))}
       </View>
 
@@ -91,17 +100,20 @@ export function ProfileStep({ stepIndex, totalSteps, onAdvance }: StepProps) {
 const styles = StyleSheet.create({
   fieldLabel: { fontSize: 14, fontFamily: font.bold, color: colors.charcoal },
   avatarGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md },
+  avatarItem: { alignItems: 'center', gap: 4, width: 56 },
   avatarChoice: {
     width: 56,
     height: 56,
     borderRadius: radii.pill,
     alignItems: 'center',
     justifyContent: 'center',
+    overflow: 'hidden',
   },
   avatarChoiceSelected: {
     borderWidth: 2,
     borderColor: colors.forestGreen,
     boxShadow: `0 0 20px ${glow.brand}`,
   },
-  avatarEmoji: { fontSize: 28 },
+  avatarName: { fontSize: 11, fontFamily: font.semibold, color: colors.textMuted },
+  avatarNameSelected: { color: colors.forestGreen, fontFamily: font.bold },
 });

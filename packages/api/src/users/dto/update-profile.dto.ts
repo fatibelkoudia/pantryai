@@ -17,7 +17,7 @@ export class UpdateProfileDto {
   @IsOptional()
   email?: string;
 
-  @ApiPropertyOptional({ example: 'tomato', enum: AVATAR_IDS })
+  @ApiPropertyOptional({ example: 'chef', enum: AVATAR_IDS })
   @IsIn(AVATAR_IDS)
   @IsOptional()
   avatarId?: string;
