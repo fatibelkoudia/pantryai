@@ -284,18 +284,19 @@ function SettingsCard() {
     queryFn: () => apiClient.getSettings(),
   });
 
-  // reset the draft whenever fresh settings come in
-  useEffect(() => {
-    if (settings.data) {
-      setDraft({
-        recipeMinMatchedItems: settings.data.recipeMinMatchedItems,
-        recipeMatchThreshold: settings.data.recipeMatchThreshold,
-        expiringSoonDays: settings.data.expiringSoonDays,
-        lowStockThreshold: settings.data.lowStockThreshold,
-        defaultStockLocation: settings.data.defaultStockLocation,
-      });
-    }
-  }, [settings.data]);
+  // reset the draft whenever fresh settings come in (during render, not in an
+  // effect, so we don't get a wasted extra render)
+  const [seenSettings, setSeenSettings] = useState(settings.data);
+  if (settings.data && settings.data !== seenSettings) {
+    setSeenSettings(settings.data);
+    setDraft({
+      recipeMinMatchedItems: settings.data.recipeMinMatchedItems,
+      recipeMatchThreshold: settings.data.recipeMatchThreshold,
+      expiringSoonDays: settings.data.expiringSoonDays,
+      lowStockThreshold: settings.data.lowStockThreshold,
+      defaultStockLocation: settings.data.defaultStockLocation,
+    });
+  }
 
   const save = useMutation({
     mutationFn: () => apiClient.updateSettings(draft),
