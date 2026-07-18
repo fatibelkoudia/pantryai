@@ -276,6 +276,7 @@ export const fr: TranslationCatalog = {
     expiringSoon: 'Bientôt périmés',
     trashyMood: "L'humeur de Trashy",
     rewards: 'Récompenses',
+    recipe: 'Recette',
   },
   home: {
     greeting: 'Bonjour {{name}} !',
@@ -438,6 +439,24 @@ export const fr: TranslationCatalog = {
     noneYet: 'Rien pour l’instant',
     missing: 'Manquants',
     haveEverything: 'Vous avez tout ce qu’il faut !',
+    ingredientCount: '{{matched}} sur {{total}} ingrédients',
+    openRecipe: 'Ouvrir {{name}}',
+    // Écran de détail
+    ingredients: 'Ingrédients',
+    instructions: 'Préparation',
+    noInstructions: 'Aucune instruction n’est disponible pour cette recette pour le moment.',
+    haveCount: 'Vous avez {{matched}} sur {{total}} ingrédients',
+    inStock: 'En stock',
+    needToBuy: 'À acheter',
+    staple: 'De base',
+    step: 'Étape {{number}}',
+    addMissing: 'Ajouter {{count}} ingrédient manquant à la liste',
+    addMissing_other: 'Ajouter {{count}} ingrédients manquants à la liste',
+    adding: 'Ajout…',
+    added: 'Ajouté à votre liste de courses',
+    addMissingError: 'Impossible d’ajouter les articles. Veuillez réessayer.',
+    notFound: 'Recette introuvable.',
+    backToRecipes: 'Retour aux recettes',
   },
   scan: {
     // Écran web de scan de ticket.

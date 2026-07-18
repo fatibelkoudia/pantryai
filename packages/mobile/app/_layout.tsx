@@ -118,6 +118,7 @@ export default function RootLayout() {
             <Stack.Screen name="expiring" options={{ title: t('stackTitles.expiringSoon') }} />
             <Stack.Screen name="mood" options={{ title: t('stackTitles.trashyMood') }} />
             <Stack.Screen name="rewards" options={{ title: t('stackTitles.rewards') }} />
+            <Stack.Screen name="recipe/[id]" options={{ title: t('stackTitles.recipe') }} />
           </Stack>
         </AuthGate>
       </QueryClientProvider>

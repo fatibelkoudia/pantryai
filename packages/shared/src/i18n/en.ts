@@ -268,6 +268,7 @@ export const en = {
     expiringSoon: 'Expiring soon',
     trashyMood: "Trashy's Mood",
     rewards: 'Rewards',
+    recipe: 'Recipe',
   },
   home: {
     greeting: 'Hi, {{name}}!',
@@ -429,6 +430,24 @@ export const en = {
     noneYet: 'None yet',
     missing: 'Missing',
     haveEverything: 'You have everything you need!',
+    ingredientCount: '{{matched}} of {{total}} ingredients',
+    openRecipe: 'Open {{name}}',
+    // Detail screen
+    ingredients: 'Ingredients',
+    instructions: 'Instructions',
+    noInstructions: 'No instructions are available for this recipe yet.',
+    haveCount: 'You have {{matched}} of {{total}} ingredients',
+    inStock: 'In stock',
+    needToBuy: 'To buy',
+    staple: 'Pantry staple',
+    step: 'Step {{number}}',
+    addMissing: 'Add {{count}} missing item to shopping list',
+    addMissing_other: 'Add {{count}} missing items to shopping list',
+    adding: 'Adding…',
+    added: 'Added to your shopping list',
+    addMissingError: 'Could not add the items. Please try again.',
+    notFound: 'We could not find that recipe.',
+    backToRecipes: 'Back to recipes',
   },
   scan: {
     // Web receipt-scan screen.
