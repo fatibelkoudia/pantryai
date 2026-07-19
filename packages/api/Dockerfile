@@ -34,8 +34,11 @@ RUN pnpm install --frozen-lockfile
 # Now bring in the sources and build.
 COPY packages/shared packages/shared
 COPY packages/api packages/api
-# Generate Prisma client and build (Turborepo handles dependency order).
-RUN pnpm --filter @pantryai/api exec prisma generate && pnpm build
+# Build shared FIRST: the api tsconfig maps @pantryai/shared to ../shared/dist,
+# so those declarations must exist before nest build runs.
+RUN pnpm --filter @pantryai/shared build \
+  && pnpm --filter @pantryai/api exec prisma generate \
+  && pnpm --filter @pantryai/api build
 
 # ---------- prod-deps ----------
 FROM base AS prod-deps
