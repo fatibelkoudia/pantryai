@@ -29,8 +29,8 @@ COPY packages/shared/package.json packages/shared/
 COPY packages/api/package.json packages/api/
 COPY packages/web/package.json packages/web/
 COPY packages/mobile/package.json packages/mobile/
-# Install api + its workspace deps (shared) only, so web/mobile deps are skipped.
-RUN pnpm install --frozen-lockfile --filter "@pantryai/api..."
+# Install all workspace deps (pnpm needs the full graph to resolve correctly).
+RUN pnpm install --frozen-lockfile
 # Now bring in the sources and build.
 COPY packages/shared packages/shared
 COPY packages/api packages/api
