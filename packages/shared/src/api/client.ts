@@ -11,7 +11,7 @@ import type {
   TipsResponse,
 } from '../types/learning.js';
 import type { Locale } from '../types/settings.js';
-import type { OcrJob } from '../types/ocr.js';
+import type { ConfirmOcrJobPayload, OcrJob } from '../types/ocr.js';
 import type { CreateProductDto, Product, ProductQuery } from '../types/product.js';
 import type { RecipeSuggestionsResponse } from '../types/recipe.js';
 import type {
@@ -483,11 +483,19 @@ export class PantryApiClient {
     });
   }
 
-  /** Add the selected parsed items (by index into the job's parsedItems) to stock. */
-  confirmOcrJob(jobId: string, indices: number[]): Promise<{ added: number }> {
+  // Adds the chosen receipt items to the stock.
+  // You can pass just an array of indices, or an object with edited items.
+  confirmOcrJob(
+    jobId: string,
+    selection: number[] | ConfirmOcrJobPayload,
+  ): Promise<{ added: number }> {
+    // if we got an array, wrap it as { indices: [...] } so the body is always the same shape
+    const body: ConfirmOcrJobPayload = Array.isArray(selection)
+      ? { indices: selection }
+      : selection;
     return this.request<{ added: number }>(`/ocr/jobs/${jobId}/confirm`, {
       method: 'POST',
-      body: JSON.stringify({ indices }),
+      body: JSON.stringify(body),
     });
   }
 

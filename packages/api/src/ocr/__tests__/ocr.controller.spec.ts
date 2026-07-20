@@ -146,15 +146,16 @@ describe('OcrController.scan upload validation', () => {
 });
 
 describe('OcrController.confirmJob', () => {
-  it('delegates the job id, user, and selected indices to the service', async () => {
+  it('delegates the job id, user, and the confirm DTO to the service', async () => {
     mockOcrService.confirmJob = vi.fn().mockResolvedValue({ added: 2 });
     const controller = new OcrController(mockOcrService as never);
 
-    const result = await controller.confirmJob('job-1', { indices: [0, 2] }, {
+    const dto = { indices: [0, 2] };
+    const result = await controller.confirmJob('job-1', dto, {
       user: { userId: 'user-1', email: 'user@example.com' },
     } as never);
 
     expect(result).toEqual({ added: 2 });
-    expect(mockOcrService.confirmJob).toHaveBeenCalledWith('job-1', 'user-1', [0, 2]);
+    expect(mockOcrService.confirmJob).toHaveBeenCalledWith('job-1', 'user-1', dto);
   });
 });

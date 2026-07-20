@@ -6,9 +6,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Queue } from 'bullmq';
+import type { StockLocation } from '@pantryai/shared';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { R2StorageService } from '../storage/r2-storage.service.js';
+import { ConfirmOcrItemDto, ConfirmOcrJobDto } from './dto/confirm-ocr-job.dto.js';
 import type { ParsedReceiptItem } from './parsers/index.js';
+
+// A receipt item we are about to save. It can also carry the location the user chose.
+type CommitItem = ParsedReceiptItem & { location?: StockLocation };
 
 export interface OcrJobPayload {
   jobId: string;
@@ -107,12 +112,17 @@ export class OcrService {
     return job;
   }
 
-  /**
-   * Add the chosen parsed items to the user's stock (web review flow).
-   * `indices` point into the job's stored `parsedItems`, so the client only sends a selection
-   * and the server uses its own trusted copy (keeps EAN-13 / expiry that the UI never exposes).
-   */
-  async confirmJob(jobId: string, userId: string, indices: number[]): Promise<{ added: number }> {
+  // Adds the receipt items the user picked to their stock.
+  // The web app only sends the indices of the items it wants (no changes).
+  // The mobile app sends items with the changes the user made (quantity, unit,
+  // date, location). We accept both so both apps keep working.
+  async confirmJob(
+    jobId: string,
+    userId: string,
+    selection: number[] | ConfirmOcrJobDto,
+  ): Promise<{ added: number }> {
+    const dto: ConfirmOcrJobDto = Array.isArray(selection) ? { indices: selection } : selection;
+
     const job = await this.getJob(jobId, userId);
 
     if (job.status === 'CONFIRMED') {
@@ -124,10 +134,10 @@ export class OcrService {
     }
 
     const parsed = (job.parsedItems ?? []) as unknown as ParsedReceiptItem[];
-    const unique = [...new Set(indices)];
-    const selected = unique
-      .filter((i) => Number.isInteger(i) && i >= 0 && i < parsed.length)
-      .map((i) => parsed[i] as ParsedReceiptItem);
+    const selected =
+      dto.items && dto.items.length > 0
+        ? selectEditedItems(parsed, dto.items)
+        : selectByIndices(parsed, dto.indices ?? []);
 
     if (selected.length === 0) {
       throw new BadRequestException('No valid items selected');
@@ -144,11 +154,11 @@ export class OcrService {
     return { added: selected.length };
   }
 
-  /**
-   * Match each parsed item to a product (EAN-13 first, then generic name) and create a stock item.
-   * Shared by the worker's auto-commit path and the web confirm endpoint.
-   */
-  async commitParsedItems(userId: string, items: ParsedReceiptItem[]): Promise<void> {
+  // Goes through each parsed item, finds the matching product (EAN-13 first,
+  // then by name) and creates a stock item for it. Used both when we add items
+  // automatically and when the user confirms them from the review screen.
+  // If an item has a location we use it, otherwise it goes to the PANTRY.
+  async commitParsedItems(userId: string, items: CommitItem[]): Promise<void> {
     for (const item of items) {
       const name = item.name.trim().replace(/\s+/g, ' ');
 
@@ -177,7 +187,7 @@ export class OcrService {
           productId: product.id,
           quantity: item.quantity ?? 1,
           unit: item.unit ?? 'unit',
-          location: 'PANTRY',
+          location: item.location ?? 'PANTRY',
           // If receipt has an expiry date, copy it to the stock item.
           ...(item.expirationDate && { expirationDate: new Date(item.expirationDate) }),
         },
@@ -188,4 +198,36 @@ export class OcrService {
   async deleteImageFromR2(imageKey: string): Promise<void> {
     await this.storage.deleteObject(imageKey);
   }
+}
+
+// Takes the list of indices the user selected and returns the matching items.
+// It removes duplicates and skips any index that is not in the list.
+function selectByIndices(parsed: ParsedReceiptItem[], indices: number[]): CommitItem[] {
+  const unique = [...new Set(indices)];
+  return unique
+    .filter((i) => Number.isInteger(i) && i >= 0 && i < parsed.length)
+    .map((i) => parsed[i] as ParsedReceiptItem);
+}
+
+// Same idea, but here the user also edited some fields. We start from the parsed
+// item and only replace the fields the user changed. Duplicates and bad indices are skipped.
+function selectEditedItems(parsed: ParsedReceiptItem[], edits: ConfirmOcrItemDto[]): CommitItem[] {
+  const seen = new Set<number>();
+  const selected: CommitItem[] = [];
+  for (const edit of edits) {
+    const inRange = Number.isInteger(edit.index) && edit.index >= 0 && edit.index < parsed.length;
+    if (!inRange || seen.has(edit.index)) continue;
+    seen.add(edit.index);
+    const base = parsed[edit.index] as ParsedReceiptItem;
+    selected.push({
+      ...base,
+      ...(edit.quantity !== undefined && { quantity: edit.quantity }),
+      ...(edit.unit !== undefined && { unit: edit.unit }),
+      ...(edit.expirationDate !== undefined && {
+        expirationDate: edit.expirationDate.toISOString(),
+      }),
+      ...(edit.location !== undefined && { location: edit.location }),
+    });
+  }
+  return selected;
 }

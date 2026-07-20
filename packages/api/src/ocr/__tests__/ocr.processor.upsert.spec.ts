@@ -4,6 +4,7 @@
  * Uses mocks only.
  */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { StockLocation } from '../../stock/dto/create-stock-item.dto.js';
 
 vi.mock('@nestjs/bullmq', () => ({
   Processor: () => () => undefined,
@@ -239,5 +240,56 @@ describe('confirmJob() — selective add to stock', () => {
 
     await expect(service.confirmJob('job-1', USER_ID, [99])).rejects.toThrow();
     expect(prismaMock.stockItem.create).not.toHaveBeenCalled();
+  });
+
+  it('applies per-item edits (quantity, unit, expiration, location) over the parsed values', async () => {
+    mockJob();
+    const expiration = new Date('2026-08-01T00:00:00.000Z');
+
+    const result = await service.confirmJob('job-1', USER_ID, {
+      items: [
+        {
+          index: 0,
+          quantity: 3,
+          unit: 'L',
+          expirationDate: expiration,
+          location: StockLocation.FRIDGE,
+        },
+      ],
+    });
+
+    expect(result).toEqual({ added: 1 });
+    expect(prismaMock.stockItem.create).toHaveBeenCalledTimes(1);
+    expect(prismaMock.stockItem.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        userId: USER_ID,
+        quantity: 3,
+        unit: 'L',
+        location: 'FRIDGE',
+        expirationDate: expiration,
+      }),
+    });
+  });
+
+  it('keeps parsed values for fields an edited item leaves unset', async () => {
+    mockJob();
+
+    await service.confirmJob('job-1', USER_ID, { items: [{ index: 1 }] });
+
+    // PARSED[1] = { name: 'Pain', quantity: 2 } with no unit/location on the receipt.
+    expect(prismaMock.stockItem.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({ quantity: 2, unit: 'unit', location: 'PANTRY' }),
+    });
+  });
+
+  it('ignores duplicate and out-of-range edited items', async () => {
+    mockJob();
+
+    const result = await service.confirmJob('job-1', USER_ID, {
+      items: [{ index: 0 }, { index: 0 }, { index: 99 }],
+    });
+
+    expect(result).toEqual({ added: 1 });
+    expect(prismaMock.stockItem.create).toHaveBeenCalledTimes(1);
   });
 });

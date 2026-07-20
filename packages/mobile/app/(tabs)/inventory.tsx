@@ -1,11 +1,17 @@
 import { Ionicons } from '@expo/vector-icons';
-import type { StockDisposition, StockItemWithProduct, StockLocation } from '@pantryai/shared';
+import type {
+  StockDisposition,
+  StockItemWithProduct,
+  StockLocation,
+  UpdateStockItemDto,
+} from '@pantryai/shared';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
+  Alert,
   FlatList,
   Image,
   StyleSheet,
@@ -17,6 +23,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { apiClient } from '../../src/api/client';
 import { ConservationTipCard } from '../../src/components/ConservationTipCard';
+import { EditStockSheet } from '../../src/components/EditStockSheet';
 import { TrashyMood } from '../../src/components/TrashyMood';
 import { EXPIRY_COLORS, daysUntil, expiryLabel, expiryLevel } from '../../src/lib/expiry';
 import { categoryIcon } from '../../src/lib/foodIcons';
@@ -55,6 +62,7 @@ export default function InventoryScreen() {
   const [location, setLocation] = useState<StockLocation | 'ALL'>('ALL');
   const [freshness, setFreshness] = useState<Freshness | null>(null);
   const [search, setSearch] = useState('');
+  const [editing, setEditing] = useState<StockItemWithProduct | null>(null);
 
   const { data, isLoading, isError, error, refetch, isRefetching } = useQuery({
     queryKey: ['stocks'],
@@ -75,6 +83,18 @@ export default function InventoryScreen() {
       void queryClient.invalidateQueries({ queryKey: ['waste'] });
       // It can also complete a challenge (e.g. Use It All), so refresh XP/challenges.
       void queryClient.invalidateQueries({ queryKey: ['challenges'] });
+    },
+  });
+
+  const update = useMutation({
+    mutationFn: ({ id, dto }: { id: string; dto: UpdateStockItemDto }) =>
+      apiClient.updateStock(id, dto),
+    onSuccess: () => {
+      setEditing(null);
+      void queryClient.invalidateQueries({ queryKey: ['stocks'] });
+    },
+    onError: (err) => {
+      Alert.alert(t('stock.updateFailed'), err instanceof Error ? err.message : t('common.error'));
     },
   });
 
@@ -283,6 +303,7 @@ export default function InventoryScreen() {
             busy={remove.isPending}
             onResolve={(disposition) => remove.mutate({ id: item.id, disposition })}
             onRecipe={() => router.push('/(tabs)/recipes')}
+            onEdit={() => setEditing(item)}
           />
         )}
       />
@@ -297,6 +318,13 @@ export default function InventoryScreen() {
         <Ionicons name="add" size={22} color={colors.onBrand} />
         <Text style={styles.fabText}>{t('common.add')}</Text>
       </TouchableOpacity>
+
+      <EditStockSheet
+        item={editing}
+        saving={update.isPending}
+        onClose={() => setEditing(null)}
+        onSave={(id, dto) => update.mutate({ id, dto })}
+      />
     </View>
   );
 }
@@ -306,11 +334,13 @@ function InventoryCard({
   busy,
   onResolve,
   onRecipe,
+  onEdit,
 }: {
   item: StockItemWithProduct;
   busy: boolean;
   onResolve: (disposition: StockDisposition) => void;
   onRecipe: () => void;
+  onEdit: () => void;
 }) {
   const { t } = useTranslation();
   const days = daysUntil(item.expirationDate);
@@ -341,7 +371,13 @@ function InventoryCard({
 
   return (
     <View style={styles.itemCard}>
-      <View style={styles.itemTop}>
+      <TouchableOpacity
+        style={styles.itemTop}
+        onPress={onEdit}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel={t('stock.editItemA11y', { name: item.product.name })}
+      >
         <View style={styles.itemImageBox}>
           {item.product.imageUrl ? (
             <Image
@@ -367,7 +403,8 @@ function InventoryCard({
             {item.product.brand ? ` · ${item.product.brand}` : ''}
           </Text>
         </View>
-      </View>
+        <Ionicons name="create-outline" size={18} color={colors.textMuted} />
+      </TouchableOpacity>
       <View style={styles.itemActions}>
         <TouchableOpacity
           style={[

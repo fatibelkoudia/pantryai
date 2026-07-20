@@ -169,6 +169,6 @@ export class OcrController {
     @Body() dto: ConfirmOcrJobDto,
     @Request() req: JwtRequest,
   ): Promise<{ added: number }> {
-    return this.ocrService.confirmJob(id, req.user.userId, dto.indices);
+    return this.ocrService.confirmJob(id, req.user.userId, dto);
   }
 }

@@ -86,7 +86,9 @@ export default function ScanScreen() {
         type: 'image/jpeg',
       } as unknown as Blob;
 
-      const { jobId } = await apiClient.scanReceipt(file);
+      // autoCommit: false means the API reads the receipt but doesn't add the items yet.
+      // The user checks and edits them on the scan-result screen and confirms there.
+      const { jobId } = await apiClient.scanReceipt(file, { autoCommit: false });
       router.push({ pathname: '/scan-result', params: { jobId } });
     } catch (err) {
       const message =

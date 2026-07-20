@@ -1,46 +1,47 @@
 import { ApiClientError } from '@pantryai/shared';
-import type { StockLocation } from '@pantryai/shared';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import {
   Alert,
+  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { apiClient } from '../src/api/client';
+import { StockFields, type StockFieldsValue } from '../src/components/StockFields';
 import { colors } from '../src/theme';
-
-const LOCATIONS: StockLocation[] = ['FRIDGE', 'FREEZER', 'PANTRY'];
 
 export default function AddStockScreen() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { productId, productName, brand } = useLocalSearchParams<{
+  const { productId, productName, brand, imageUrl } = useLocalSearchParams<{
     productId: string;
     productName: string;
     brand: string;
+    imageUrl: string;
   }>();
 
-  const [quantity, setQuantity] = useState('');
-  const [unit, setUnit] = useState('');
-  const [expirationDate, setExpirationDate] = useState('');
-  const [location, setLocation] = useState<StockLocation>('PANTRY');
+  const [fields, setFields] = useState<StockFieldsValue>({
+    quantity: '',
+    unit: '',
+    expirationDate: undefined,
+    location: 'PANTRY',
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    if (!quantity || !unit) {
+    if (!fields.quantity || !fields.unit) {
       Alert.alert(t('addStock.missingFields'), t('addStock.missingFieldsMessage'));
       return;
     }
 
-    const parsedQty = parseFloat(quantity);
+    const parsedQty = parseFloat(fields.quantity);
     if (isNaN(parsedQty) || parsedQty <= 0) {
       Alert.alert(t('addStock.invalidQuantity'), t('addStock.invalidQuantityMessage'));
       return;
@@ -52,9 +53,9 @@ export default function AddStockScreen() {
       await apiClient.createStockItem({
         productId: productId ?? '',
         quantity: parsedQty,
-        unit,
-        expirationDate: expirationDate.trim() || undefined,
-        location,
+        unit: fields.unit,
+        expirationDate: fields.expirationDate || undefined,
+        location: fields.location,
       });
       router.replace('/(tabs)');
     } catch (err) {
@@ -77,62 +78,16 @@ export default function AddStockScreen() {
     >
       <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
         <View style={styles.productHeader}>
-          <Text style={styles.productName}>{productName}</Text>
-          {!!brand && <Text style={styles.productBrand}>{brand}</Text>}
-        </View>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>{t('addStock.quantityLabel')}</Text>
-          <TextInput
-            style={styles.input}
-            value={quantity}
-            onChangeText={setQuantity}
-            keyboardType="decimal-pad"
-            placeholder={t('addStock.quantityPlaceholder')}
-            placeholderTextColor="#aaa"
-          />
-        </View>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>{t('addStock.unitLabel')}</Text>
-          <TextInput
-            style={styles.input}
-            value={unit}
-            onChangeText={setUnit}
-            placeholder={t('addStock.unitPlaceholder')}
-            placeholderTextColor="#aaa"
-            autoCapitalize="none"
-          />
-        </View>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>{t('addStock.expirationLabel')}</Text>
-          <TextInput
-            style={styles.input}
-            value={expirationDate}
-            onChangeText={setExpirationDate}
-            placeholder={t('addStock.expirationPlaceholder')}
-            placeholderTextColor="#aaa"
-            keyboardType="numbers-and-punctuation"
-          />
-        </View>
-
-        <View style={styles.field}>
-          <Text style={styles.label}>{t('addStock.locationLabel')}</Text>
-          <View style={styles.locationRow}>
-            {LOCATIONS.map((loc) => (
-              <TouchableOpacity
-                key={loc}
-                style={[styles.locationButton, location === loc && styles.locationButtonActive]}
-                onPress={() => setLocation(loc)}
-              >
-                <Text style={[styles.locationText, location === loc && styles.locationTextActive]}>
-                  {t(`locations.${loc}`)}
-                </Text>
-              </TouchableOpacity>
-            ))}
+          {imageUrl ? (
+            <Image source={{ uri: imageUrl }} style={styles.productImage} resizeMode="cover" />
+          ) : null}
+          <View style={styles.productHeaderText}>
+            <Text style={styles.productName}>{productName}</Text>
+            {!!brand && <Text style={styles.productBrand}>{brand}</Text>}
           </View>
         </View>
+
+        <StockFields value={fields} onChange={setFields} />
 
         <TouchableOpacity
           style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]}
@@ -155,7 +110,19 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   productHeader: {
-    marginBottom: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    marginBottom: 4,
+  },
+  productImage: {
+    width: 56,
+    height: 56,
+    borderRadius: 14,
+    backgroundColor: colors.creamSurface,
+  },
+  productHeaderText: {
+    flex: 1,
   },
   productName: {
     fontSize: 20,
@@ -166,52 +133,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginTop: 2,
-  },
-  field: {
-    gap: 6,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#444',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#111',
-    backgroundColor: '#fafafa',
-  },
-  locationRow: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  locationButton: {
-    flex: 1,
-    paddingVertical: 10,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    alignItems: 'center',
-    backgroundColor: '#fafafa',
-  },
-  locationButtonActive: {
-    borderColor: colors.leafGreen,
-    backgroundColor: '#e8f5e9',
-  },
-  locationText: {
-    fontSize: 14,
-    color: '#555',
-    fontWeight: '500',
-  },
-  locationTextActive: {
-    color: colors.leafGreen,
-    fontWeight: '700',
   },
   submitButton: {
     backgroundColor: colors.leafGreen,
