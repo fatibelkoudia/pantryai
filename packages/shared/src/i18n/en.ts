@@ -464,6 +464,8 @@ export const en = {
     barcodeTip: 'Point at an EAN-13 barcode',
     receiptTip: 'Fit the whole receipt in the frame',
     captureA11y: 'Take a photo of the receipt',
+    importReceipt: 'Import a file',
+    importA11y: 'Import a receipt image or PDF from your files',
     lookingUp: 'Looking up product…',
     submitting: 'Sending receipt…',
     lookupFailed: 'Lookup failed',

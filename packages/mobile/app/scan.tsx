@@ -1,5 +1,6 @@
 import { ApiClientError } from '@pantryai/shared';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import * as DocumentPicker from 'expo-document-picker';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -69,6 +70,39 @@ export default function ScanScreen() {
     [router, t],
   );
 
+  // Both the camera capture and the file import end up here.
+  // autoCommit: false means the API reads the receipt but doesn't add the items yet.
+  // The user checks and edits them on the scan-result screen and confirms there.
+  const uploadReceipt = useCallback(
+    async (file: Blob) => {
+      const { jobId } = await apiClient.scanReceipt(file, { autoCommit: false });
+      router.push({ pathname: '/scan-result', params: { jobId } });
+    },
+    [router],
+  );
+
+  // Shared error popup so the capture and import paths show the same thing.
+  const showUploadError = useCallback(
+    (err: unknown) => {
+      const message =
+        err instanceof ApiClientError
+          ? `API error ${err.status}: ${err.message}`
+          : err instanceof Error
+            ? err.message
+            : t('common.unknownError');
+      Alert.alert(t('receipt.uploadFailed'), message, [
+        {
+          text: t('common.ok'),
+          onPress: () => {
+            processingRef.current = false;
+            setUploading(false);
+          },
+        },
+      ]);
+    },
+    [t],
+  );
+
   const handleCaptureReceipt = useCallback(async () => {
     if (processingRef.current) return;
     processingRef.current = true;
@@ -86,28 +120,47 @@ export default function ScanScreen() {
         type: 'image/jpeg',
       } as unknown as Blob;
 
-      // autoCommit: false means the API reads the receipt but doesn't add the items yet.
-      // The user checks and edits them on the scan-result screen and confirms there.
-      const { jobId } = await apiClient.scanReceipt(file, { autoCommit: false });
-      router.push({ pathname: '/scan-result', params: { jobId } });
+      await uploadReceipt(file);
     } catch (err) {
-      const message =
-        err instanceof ApiClientError
-          ? `API error ${err.status}: ${err.message}`
-          : err instanceof Error
-            ? err.message
-            : t('common.unknownError');
-      Alert.alert(t('receipt.uploadFailed'), message, [
-        {
-          text: t('common.ok'),
-          onPress: () => {
-            processingRef.current = false;
-            setUploading(false);
-          },
-        },
-      ]);
+      showUploadError(err);
     }
-  }, [router, t]);
+  }, [showUploadError, t, uploadReceipt]);
+
+  // Lets the user pick an existing receipt from their files instead of the camera.
+  const handleImportReceipt = useCallback(async () => {
+    if (processingRef.current) return;
+    processingRef.current = true;
+
+    try {
+      // Same file types the API accepts (images + PDF).
+      const result = await DocumentPicker.getDocumentAsync({
+        type: ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'],
+        copyToCacheDirectory: true,
+      });
+
+      // User backed out of the picker, so reset and do nothing.
+      if (result.canceled) {
+        processingRef.current = false;
+        return;
+      }
+
+      const asset = result.assets[0];
+      if (!asset) throw new Error(t('common.unknownError'));
+
+      setUploading(true);
+
+      // Keep the name/type the picker gave us so PDFs upload as PDFs.
+      const file = {
+        uri: asset.uri,
+        name: asset.name,
+        type: asset.mimeType ?? 'application/octet-stream',
+      } as unknown as Blob;
+
+      await uploadReceipt(file);
+    } catch (err) {
+      showUploadError(err);
+    }
+  }, [showUploadError, t, uploadReceipt]);
 
   const switchMode = useCallback((mode: ScanMode) => {
     setScanMode(mode);
@@ -175,14 +228,25 @@ export default function ScanScreen() {
             {scanMode === 'ean' ? t('scan.barcodeTip') : t('scan.receiptTip')}
           </Text>
           {scanMode === 'receipt' && (
-            <TouchableOpacity
-              style={styles.shutter}
-              onPress={handleCaptureReceipt}
-              accessibilityRole="button"
-              accessibilityLabel={t('scan.captureA11y')}
-            >
-              <View style={styles.shutterInner} />
-            </TouchableOpacity>
+            <>
+              <TouchableOpacity
+                style={styles.shutter}
+                onPress={handleCaptureReceipt}
+                accessibilityRole="button"
+                accessibilityLabel={t('scan.captureA11y')}
+              >
+                <View style={styles.shutterInner} />
+              </TouchableOpacity>
+              {/* Import an existing receipt (image or PDF) instead of using the camera */}
+              <TouchableOpacity
+                style={styles.importButton}
+                onPress={handleImportReceipt}
+                accessibilityRole="button"
+                accessibilityLabel={t('scan.importA11y')}
+              >
+                <Text style={styles.importButtonText}>{t('scan.importReceipt')}</Text>
+              </TouchableOpacity>
+            </>
           )}
         </View>
       )}
@@ -304,5 +368,20 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 999,
     backgroundColor: '#fff',
+  },
+  // subtle pill under the shutter so it reads as the secondary action
+  importButton: {
+    marginTop: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.6)',
+    backgroundColor: 'rgba(0,0,0,0.35)',
+  },
+  importButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontFamily: font.semibold,
   },
 });

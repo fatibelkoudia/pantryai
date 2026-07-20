@@ -219,6 +219,9 @@ importers:
       expo-device:
         specifier: ~55.0.18
         version: 55.0.18(expo@55.0.27)
+      expo-document-picker:
+        specifier: ~55.0.15
+        version: 55.0.15(expo@55.0.27)
       expo-font:
         specifier: ~55.0.8
         version: 55.0.8(expo@55.0.27)(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)
@@ -5153,6 +5156,11 @@ packages:
 
   expo-device@55.0.18:
     resolution: {integrity: sha512-MEdnb+Si3VICmJzzSVsQyo90LQg8cG5h9to2tcaHFXPX31yOolYJXbHGN5bmR9MjKOgw6d6h7Ow/kMTnSwZrPQ==}
+    peerDependencies:
+      expo: '*'
+
+  expo-document-picker@55.0.15:
+    resolution: {integrity: sha512-yqeWkt/y6CbSCVaE8xxa8XX7SijxRiThVEyhM97OKyWYZNVVn4d7HwvPJxwyFl7mDbOTiZai62d+qFaqMtQrlA==}
     peerDependencies:
       expo: '*'
 
@@ -14247,6 +14255,10 @@ snapshots:
     dependencies:
       expo: 55.0.27(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.11)(expo-router@55.0.16)(react-dom@19.2.0(react@19.2.0))(react-native-worklets@0.7.4(@babel/core@7.29.0)(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       ua-parser-js: 0.7.41
+
+  expo-document-picker@55.0.15(expo@55.0.27):
+    dependencies:
+      expo: 55.0.27(@babel/core@7.29.0)(@expo/dom-webview@55.0.3)(@expo/metro-runtime@55.0.11)(expo-router@55.0.16)(react-dom@19.2.0(react@19.2.0))(react-native-worklets@0.7.4(@babel/core@7.29.0)(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0))(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
 
   expo-file-system@55.0.23(expo@55.0.27)(react-native@0.83.6(@babel/core@7.29.0)(@types/react@19.2.14)(react@19.2.0)):
     dependencies:

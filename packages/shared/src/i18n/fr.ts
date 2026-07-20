@@ -474,6 +474,8 @@ export const fr: TranslationCatalog = {
     barcodeTip: 'Visez un code-barres EAN-13',
     receiptTip: 'Cadrez le ticket en entier',
     captureA11y: 'Photographier le ticket',
+    importReceipt: 'Importer un fichier',
+    importA11y: 'Importer une image ou un PDF de ticket depuis vos fichiers',
     lookingUp: 'Recherche du produit…',
     submitting: 'Envoi du ticket…',
     lookupFailed: 'Recherche impossible',
