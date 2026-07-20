@@ -22,6 +22,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run --project unit",
     "test:unit": "vitest run --project unit",
+    "test:db:setup": "DATABASE_DIRECT_URL=postgresql://pantryai:pantryai@localhost:5433/pantryai_test prisma migrate deploy",
     "test:integration": "vitest run --project integration",
     "test:all": "vitest run",
     "seed": "tsx scripts/seed.ts",

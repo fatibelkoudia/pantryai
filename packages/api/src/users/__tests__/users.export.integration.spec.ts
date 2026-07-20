@@ -42,7 +42,7 @@ beforeAll(async () => {
   // forUser() runs against the same database the seed helpers write to.
   process.env['DATABASE_TRANSACTION_POOLER_URL'] =
     process.env['DATABASE_TEST_URL'] ??
-    'postgresql://postgres:postgres@localhost:5433/pantryai_test';
+    'postgresql://pantryai:pantryai@localhost:5433/pantryai_test';
   prisma = new PrismaService();
 
   const moduleRef = await Test.createTestingModule({
