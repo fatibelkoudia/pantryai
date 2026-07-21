@@ -234,7 +234,7 @@ export default function InventoryScreen() {
               </View>
               {waste.data ? (
                 <View style={styles.impactRight}>
-                  <TrashyMood mood={waste.data.mood} size={72} showLabel={false} />
+                  <TrashyMood mood={waste.data.mood} size={64} showLabel={false} />
                   <View style={styles.bubble}>
                     <Text style={styles.bubbleText}>
                       {alertCount > 0 ? `"${t('stock.letsSave')}"` : `"${t('stock.lookingFresh')}"`}
@@ -526,6 +526,7 @@ const styles = StyleSheet.create({
   },
   impactCard: {
     flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.white,
     borderRadius: 20,
     padding: 18,
@@ -533,6 +534,8 @@ const styles = StyleSheet.create({
   },
   impactLeft: {
     flex: 1,
+    // lets the stats row shrink to fit instead of pushing into the mascot column
+    minWidth: 0,
     gap: 4,
   },
   impactTitle: {
@@ -564,15 +567,19 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
   impactRight: {
+    // fixed width + no shrink so the mascot and its bubble stay in their own lane
+    // and never overlap the stats on the left
+    width: 84,
+    flexShrink: 0,
     alignItems: 'center',
     gap: 4,
   },
   bubble: {
     backgroundColor: colors.heroMint,
-    borderRadius: 999,
+    borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 4,
-    maxWidth: 110,
+    maxWidth: 84,
   },
   bubbleText: {
     fontSize: 10,

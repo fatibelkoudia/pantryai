@@ -84,7 +84,7 @@ export default function LearnScreen() {
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
       <View style={styles.header}>
-        <View>
+        <View style={styles.headerTitleWrap}>
           <Text style={styles.title}>{t('learn.title')}</Text>
           <Text style={styles.subtitle}>{t('learn.subtitle')}</Text>
         </View>
@@ -339,9 +339,12 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 10,
   },
+  // takes the leftover space so a long title/subtitle wraps instead of squishing the pills
+  headerTitleWrap: { flex: 1, paddingRight: 8 },
   title: { fontSize: 22, fontFamily: font.black, color: colors.forestGreen },
   subtitle: { fontSize: 13, color: colors.textMuted, marginTop: 1 },
-  headerPills: { flexDirection: 'row', gap: 8 },
+  // flexShrink 0 keeps the streak + xp pills at full width so the xp badge never gets cut off
+  headerPills: { flexDirection: 'row', gap: 8, flexShrink: 0 },
   streakPill: {
     backgroundColor: colors.redTint,
     borderRadius: 999,

@@ -60,31 +60,23 @@ export default function HomeScreen() {
 
   // user might still be loading, so fall back to a plain hello until we have a name
   const firstName = user?.name?.trim().split(/\s+/)[0];
-  const initial = (firstName ?? user?.email ?? '?').charAt(0).toUpperCase();
-  // show the avatar they picked on the profile page, or their initial before they pick one
-  const avatar = user?.avatarId ? getAvatarPreset(user.avatarId) : null;
+  // always show the avatar art (defaults to the classic one) so the header matches the profile page
+  const avatar = getAvatarPreset(user?.avatarId ?? null);
   const expiringItems = expiring.data?.items ?? [];
   const topSuggestion = recipes.data?.suggestions[0];
   const mood = waste.data ? mascotMoodMeta[waste.data.mood] : null;
 
   return (
-    <ScrollView
-      style={[styles.container, { paddingTop: insets.top }]}
-      contentContainerStyle={styles.content}
-    >
-      {/* Header: avatar -> profile, bell -> expiring alerts */}
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      {/* Header stays pinned while the cards below scroll */}
       <View style={styles.header}>
         <TouchableOpacity
-          style={[styles.avatar, avatar ? { backgroundColor: avatar.bg } : null]}
+          style={[styles.avatar, { backgroundColor: avatar.bg }]}
           onPress={() => router.push('/profile')}
           accessibilityRole="button"
           accessibilityLabel={t('home.openProfileA11y')}
         >
-          {avatar ? (
-            <AvatarImage id={avatar.id} size={36} />
-          ) : (
-            <Text style={styles.avatarInitial}>{initial}</Text>
-          )}
+          <AvatarImage id={avatar.id} size={36} />
         </TouchableOpacity>
         <View style={styles.headerText}>
           <Text style={styles.greeting}>
@@ -101,187 +93,218 @@ export default function HomeScreen() {
           accessibilityLabel={t('home.seeExpiringA11y')}
         >
           <Ionicons name="notifications-outline" size={20} color={colors.forestGreen} />
-        </TouchableOpacity>
-      </View>
-
-      {/* Scan shortcuts: the two ways to add food, front and center */}
-      <View style={styles.scanRow}>
-        <TouchableOpacity
-          style={styles.scanPrimary}
-          onPress={() => router.push({ pathname: '/scan', params: { mode: 'receipt' } })}
-          accessibilityRole="button"
-        >
-          <View style={styles.scanIconOnBrand}>
-            <Ionicons name="receipt-outline" size={22} color={colors.onBrand} />
-          </View>
-          <Text style={styles.scanPrimaryText}>{t('home.scanReceipt')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.scanSecondary}
-          onPress={() => router.push({ pathname: '/scan', params: { mode: 'ean' } })}
-          accessibilityRole="button"
-        >
-          <View style={styles.scanIconTinted}>
-            <Ionicons name="barcode-outline" size={22} color={colors.forestGreen} />
-          </View>
-          <Text style={styles.scanSecondaryText}>{t('home.scanBarcode')}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Trashy's mood + Waste Level */}
-      <View style={styles.card}>
-        {waste.isLoading ? (
-          <ActivityIndicator color={colors.leafGreen} />
-        ) : waste.data && mood ? (
-          <View style={styles.moodCard}>
-            <TouchableOpacity
-              onPress={() => router.push('/mood')}
-              accessibilityRole="button"
-              accessibilityLabel={t('home.moodDetailsA11y')}
-            >
-              <TrashyMood mood={waste.data.mood} size={130} showLabel={false} />
-            </TouchableOpacity>
-            <Text style={styles.statusTitle}>
-              {t('home.status', { label: t(`waste.moods.${waste.data.mood}`) })}
-            </Text>
-            <Text style={styles.moodMessage}>{t(`waste.messages.${waste.data.mood}`)}</Text>
-            <View
-              style={styles.wasteTrack}
-              accessibilityRole="progressbar"
-              accessibilityValue={{ min: 0, max: 100, now: Math.round(waste.data.score) }}
-              accessibilityLabel={t('waste.gaugeLabel')}
-            >
-              <View
-                style={[
-                  styles.wasteFill,
-                  {
-                    width: `${Math.max(0, Math.min(100, Math.round(waste.data.score)))}%`,
-                    backgroundColor: mood.accent,
-                  },
-                ]}
-              />
-            </View>
-            <TouchableOpacity style={styles.cta} onPress={() => router.push('/(tabs)/recipes')}>
-              <Text style={styles.ctaText}>{t('learn.trashyTitle')}</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <Text style={styles.muted}>{t('home.couldNotCheckTrashy')}</Text>
-        )}
-      </View>
-
-      {/* Use Soon */}
-      <View style={styles.sectionHeaderRow}>
-        <Text style={styles.sectionTitle}>{t('home.useSoon')}</Text>
-        <TouchableOpacity onPress={() => router.push('/expiring')}>
-          <Text style={styles.seeAll}>{t('home.seeAll')}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {expiring.isLoading ? (
-        <ActivityIndicator color={colors.leafGreen} />
-      ) : expiringItems.length === 0 ? (
-        <View style={styles.emptyCard}>
-          <Text style={styles.muted}>{t('home.nothingExpiring')}</Text>
-        </View>
-      ) : (
-        expiringItems.slice(0, EXPIRING_PREVIEW).map((item) => {
-          const days = daysUntil(item.expirationDate);
-          const palette = EXPIRY_COLORS[expiryLevel(days)];
-          return (
-            <View key={item.id} style={styles.expiringRow}>
-              <View style={[styles.itemIcon, { backgroundColor: palette.bg }]}>
-                <Ionicons name={categoryIcon(item.product.category)} size={20} color={palette.fg} />
-              </View>
-              <View style={styles.itemInfo}>
-                <Text style={styles.itemName}>{item.product.name}</Text>
-                <Text style={styles.itemMeta}>
-                  {t(`locations.${item.location}`)} · {item.quantity} {item.unit}
-                </Text>
-              </View>
-              <View style={[styles.badge, { backgroundColor: palette.bg }]}>
-                <Text style={[styles.badgeText, { color: palette.fg }]}>
-                  {expiryLabel(days, t)}
-                </Text>
-              </View>
-            </View>
-          );
-        })
-      )}
-
-      {/* Cook with what you have: best recipe match for the current stock */}
-      <Text style={[styles.sectionTitle, styles.sectionSpacing]}>{t('home.cookWithStock')}</Text>
-      {recipes.isLoading ? (
-        <ActivityIndicator color={colors.leafGreen} />
-      ) : topSuggestion ? (
-        <View style={styles.recipeCard}>
-          {topSuggestion.recipe.imageUrl ? (
-            <View>
-              <Image
-                source={{ uri: topSuggestion.recipe.imageUrl }}
-                style={styles.recipeImage}
-                resizeMode="cover"
-              />
-              <View style={styles.matchPill}>
-                <Text style={styles.matchText}>
-                  {t('recipe.match', { percent: Math.round(topSuggestion.score * 100) })}
-                </Text>
-              </View>
-            </View>
-          ) : null}
-          <View style={styles.recipeBody}>
-            <Text style={styles.recipeTitle}>{topSuggestion.recipe.name}</Text>
-            <View style={styles.haveRow}>
-              <View style={styles.haveCount}>
-                <Text style={styles.haveCountText}>{topSuggestion.matchedIngredients.length}</Text>
-              </View>
-              <Text style={styles.haveText}>
-                {t('home.alreadyHave', {
-                  matched: topSuggestion.matchedIngredients.length,
-                  total: topSuggestion.recipe.ingredients.length,
-                })}
+          {/* little red badge showing how many items are expiring soon */}
+          {expiringItems.length > 0 ? (
+            <View style={styles.notifBadge}>
+              <Text style={styles.notifBadgeText}>
+                {expiringItems.length > 9 ? '9+' : expiringItems.length}
               </Text>
             </View>
-            <TouchableOpacity style={styles.cta} onPress={() => router.push('/(tabs)/recipes')}>
-              <Text style={styles.ctaText}>{t('home.cookThis')}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      ) : (
-        <View style={styles.emptyCard}>
-          <Text style={styles.muted}>{t('home.noRecipeMatch', { percent: matchPercent })}</Text>
+          ) : null}
+        </TouchableOpacity>
+      </View>
+
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Scan shortcuts: the two ways to add food, front and center */}
+        <View style={styles.scanRow}>
           <TouchableOpacity
-            style={styles.cta}
-            onPress={() => router.push('/(tabs)/recipes')}
+            style={styles.scanPrimary}
+            onPress={() => router.push({ pathname: '/scan', params: { mode: 'receipt' } })}
             accessibilityRole="button"
           >
-            <Text style={styles.ctaText}>{t('home.browseRecipes')}</Text>
+            <View style={styles.scanIconOnBrand}>
+              <Ionicons name="receipt-outline" size={22} color={colors.onBrand} />
+            </View>
+            <Text style={styles.scanPrimaryText}>{t('home.scanReceipt')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.scanSecondary}
+            onPress={() => router.push({ pathname: '/scan', params: { mode: 'ean' } })}
+            accessibilityRole="button"
+          >
+            <View style={styles.scanIconTinted}>
+              <Ionicons name="barcode-outline" size={22} color={colors.forestGreen} />
+            </View>
+            <Text style={styles.scanSecondaryText}>{t('home.scanBarcode')}</Text>
           </TouchableOpacity>
         </View>
-      )}
 
-      {/* Today's Tip */}
-      {tip.data?.tip ? (
-        <View style={styles.tipCard}>
-          <View style={styles.tipIcon}>
-            <Ionicons name="bulb-outline" size={20} color={colors.forestGreen} />
-          </View>
-          <View style={styles.tipBody}>
-            <Text style={styles.tipLabel}>{t('home.todaysTip')}</Text>
-            <Text style={styles.tipTitle}>{tip.data.tip.title}</Text>
-            <Text style={styles.tipText}>{tip.data.tip.body}</Text>
-            <Text style={styles.tipSource}>{t('tip.source', { source: tip.data.tip.source })}</Text>
-          </View>
+        {/* Trashy's mood + Waste Level */}
+        <View style={styles.card}>
+          {waste.isLoading ? (
+            <ActivityIndicator color={colors.leafGreen} />
+          ) : waste.data && mood ? (
+            <View style={styles.moodCard}>
+              <TouchableOpacity
+                onPress={() => router.push('/mood')}
+                accessibilityRole="button"
+                accessibilityLabel={t('home.moodDetailsA11y')}
+              >
+                <TrashyMood mood={waste.data.mood} size={130} showLabel={false} />
+              </TouchableOpacity>
+              <Text style={styles.statusTitle}>
+                {t('home.status', { label: t(`waste.moods.${waste.data.mood}`) })}
+              </Text>
+              <Text style={styles.moodMessage}>{t(`waste.messages.${waste.data.mood}`)}</Text>
+              <View
+                style={styles.wasteTrack}
+                accessibilityRole="progressbar"
+                accessibilityValue={{ min: 0, max: 100, now: Math.round(waste.data.score) }}
+                accessibilityLabel={t('waste.gaugeLabel')}
+              >
+                <View
+                  style={[
+                    styles.wasteFill,
+                    {
+                      width: `${Math.max(0, Math.min(100, Math.round(waste.data.score)))}%`,
+                      backgroundColor: mood.accent,
+                    },
+                  ]}
+                />
+              </View>
+              <TouchableOpacity style={styles.cta} onPress={() => router.push('/(tabs)/recipes')}>
+                <Text style={styles.ctaText}>{t('learn.trashyTitle')}</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <Text style={styles.muted}>{t('home.couldNotCheckTrashy')}</Text>
+          )}
         </View>
-      ) : null}
-    </ScrollView>
+
+        {/* Use Soon */}
+        <View style={styles.sectionHeaderRow}>
+          <Text style={styles.sectionTitle}>{t('home.useSoon')}</Text>
+          <TouchableOpacity onPress={() => router.push('/expiring')}>
+            <Text style={styles.seeAll}>{t('home.seeAll')}</Text>
+          </TouchableOpacity>
+        </View>
+
+        {expiring.isLoading ? (
+          <ActivityIndicator color={colors.leafGreen} />
+        ) : expiringItems.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <Text style={styles.muted}>{t('home.nothingExpiring')}</Text>
+          </View>
+        ) : (
+          expiringItems.slice(0, EXPIRING_PREVIEW).map((item) => {
+            const days = daysUntil(item.expirationDate);
+            const palette = EXPIRY_COLORS[expiryLevel(days)];
+            return (
+              <View key={item.id} style={styles.expiringRow}>
+                <View style={[styles.itemIcon, { backgroundColor: palette.bg }]}>
+                  <Ionicons
+                    name={categoryIcon(item.product.category)}
+                    size={20}
+                    color={palette.fg}
+                  />
+                </View>
+                <View style={styles.itemInfo}>
+                  <Text style={styles.itemName}>{item.product.name}</Text>
+                  <Text style={styles.itemMeta}>
+                    {t(`locations.${item.location}`)} · {item.quantity} {item.unit}
+                  </Text>
+                </View>
+                <View style={[styles.badge, { backgroundColor: palette.bg }]}>
+                  <Text style={[styles.badgeText, { color: palette.fg }]}>
+                    {expiryLabel(days, t)}
+                  </Text>
+                </View>
+              </View>
+            );
+          })
+        )}
+
+        {/* Cook with what you have: best recipe match for the current stock */}
+        <Text style={[styles.sectionTitle, styles.sectionSpacing]}>{t('home.cookWithStock')}</Text>
+        {recipes.isLoading ? (
+          <ActivityIndicator color={colors.leafGreen} />
+        ) : topSuggestion ? (
+          <View style={styles.recipeCard}>
+            {topSuggestion.recipe.imageUrl ? (
+              <View>
+                <Image
+                  source={{ uri: topSuggestion.recipe.imageUrl }}
+                  style={styles.recipeImage}
+                  resizeMode="cover"
+                />
+                <View style={styles.matchPill}>
+                  <Text style={styles.matchText}>
+                    {t('recipe.match', { percent: Math.round(topSuggestion.score * 100) })}
+                  </Text>
+                </View>
+              </View>
+            ) : null}
+            <View style={styles.recipeBody}>
+              <Text style={styles.recipeTitle}>{topSuggestion.recipe.name}</Text>
+              <View style={styles.haveRow}>
+                <View style={styles.haveCount}>
+                  <Text style={styles.haveCountText}>
+                    {topSuggestion.matchedIngredients.length}
+                  </Text>
+                </View>
+                <Text style={styles.haveText}>
+                  {t('home.alreadyHave', {
+                    matched: topSuggestion.matchedIngredients.length,
+                    total: topSuggestion.recipe.ingredients.length,
+                  })}
+                </Text>
+              </View>
+              <TouchableOpacity style={styles.cta} onPress={() => router.push('/(tabs)/recipes')}>
+                <Text style={styles.ctaText}>{t('home.cookThis')}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        ) : (
+          <View style={styles.emptyCard}>
+            <Text style={styles.muted}>{t('home.noRecipeMatch', { percent: matchPercent })}</Text>
+            <TouchableOpacity
+              style={styles.cta}
+              onPress={() => router.push('/(tabs)/recipes')}
+              accessibilityRole="button"
+            >
+              <Text style={styles.ctaText}>{t('home.browseRecipes')}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Today's Tip */}
+        {tip.data?.tip ? (
+          <View style={styles.tipCard}>
+            <View style={styles.tipIcon}>
+              <Ionicons name="bulb-outline" size={20} color={colors.forestGreen} />
+            </View>
+            <View style={styles.tipBody}>
+              <Text style={styles.tipLabel}>{t('home.todaysTip')}</Text>
+              <Text style={styles.tipTitle}>{tip.data.tip.title}</Text>
+              <Text style={styles.tipText}>{tip.data.tip.body}</Text>
+              <Text style={styles.tipSource}>
+                {t('tip.source', { source: tip.data.tip.source })}
+              </Text>
+            </View>
+          </View>
+        ) : null}
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.warmCream },
-  content: { padding: 16, gap: 14 },
-  header: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingTop: 8 },
+  scroll: { flex: 1 },
+  // big bottom padding so the last card clears the tab bar and isn't cut off
+  content: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 100, gap: 14 },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    paddingBottom: 10,
+  },
   avatar: {
     width: 40,
     height: 40,
@@ -293,7 +316,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
   },
-  avatarInitial: { color: colors.onBrand, fontSize: 17, fontFamily: font.bold },
   headerText: { flex: 1 },
   greeting: { fontSize: 18, fontFamily: font.black, color: colors.forestGreen },
   tagline: { fontSize: 13, color: colors.textMuted, marginTop: 1 },
@@ -305,6 +327,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  // sits on the top-right corner of the bell, cream border so it pops off the button
+  notifBadge: {
+    position: 'absolute',
+    top: -3,
+    right: -3,
+    minWidth: 18,
+    height: 18,
+    borderRadius: 999,
+    paddingHorizontal: 4,
+    backgroundColor: colors.brickRed,
+    borderWidth: 2,
+    borderColor: colors.warmCream,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  notifBadgeText: { color: colors.onBrand, fontSize: 10, fontFamily: font.bold },
   scanRow: { flexDirection: 'row', gap: 10 },
   scanPrimary: {
     ...buttonLip,
