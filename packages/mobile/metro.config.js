@@ -6,8 +6,8 @@ const monorepoRoot = path.resolve(projectRoot, '../..');
 
 const config = getDefaultConfig(projectRoot);
 
-// Watch the shared package source for live updates
-config.watchFolders = [monorepoRoot];
+// Watch the shared package source for live updates (preserve Expo defaults)
+config.watchFolders = [monorepoRoot, ...config.watchFolders];
 
 // Ensure Metro resolves node_modules from both mobile and monorepo root
 config.resolver.nodeModulesPaths = [

@@ -4,10 +4,7 @@
     "slug": "pantryai",
     "version": "1.0.0",
     "scheme": "pantryai",
-    "platforms": [
-      "ios",
-      "android"
-    ],
+    "platforms": ["ios", "android"],
     "icon": "./assets/icon.png",
     "android": {
       "package": "com.pantryai.app",
@@ -15,10 +12,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#4CAF50"
       },
-      "permissions": [
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
-      ]
+      "permissions": ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"]
     },
     "ios": {
       "bundleIdentifier": "com.pantryai.app"
