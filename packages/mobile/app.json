@@ -4,14 +4,21 @@
     "slug": "pantryai",
     "version": "1.0.0",
     "scheme": "pantryai",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "icon": "./assets/icon.png",
     "android": {
       "package": "com.pantryai.app",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#4CAF50"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "ios": {
       "bundleIdentifier": "com.pantryai.app"
@@ -22,6 +29,13 @@
       "expo-secure-store",
       "expo-notifications",
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a1c96bd3-a07b-422c-a753-ab6db975703e"
+      }
+    },
+    "owner": "tima101"
   }
 }

@@ -16,7 +16,7 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.pantryai.app"
+        "EXPO_PUBLIC_API_URL": "https://pantryaiapi-production.up.railway.app"
       }
     },
     "production": {
