@@ -10,7 +10,8 @@
     "lint": "eslint src/ app/",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "clean": "rm -rf .expo dist"
+    "clean": "rm -rf .expo dist",
+    "eas-build-post-install": "pnpm --filter @pantryai/shared build"
   },
   "dependencies": {
     "@expo-google-fonts/nunito": "^0.4.2",
