@@ -7,7 +7,7 @@ dist/
 .expo/
 *.tgz
 .turbo/
-help/
+help/*
 tsconfig.tsbuildinfo
 coverage/
 
@@ -18,3 +18,4 @@ packages/api/src/ocr/__tests__/fixtures/**/*.pdf
 .DS_Store
 .vercel
 .env*
+!help/FUTURE.md
