@@ -1,0 +1,65 @@
+version: 2
+updates:
+  # Root devDependencies shared across the monorepo (turbo, typescript, prettier).
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      patch-and-minor:
+        update-types: ["patch", "minor"]
+    labels: ["dependencies"]
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "npm"
+    directory: "/packages/api"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      patch-and-minor:
+        update-types: ["patch", "minor"]
+    labels: ["dependencies", "api"]
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "npm"
+    directory: "/packages/web"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      patch-and-minor:
+        update-types: ["patch", "minor"]
+    labels: ["dependencies", "web"]
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "npm"
+    directory: "/packages/mobile"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      patch-and-minor:
+        update-types: ["patch", "minor"]
+    labels: ["dependencies", "mobile"]
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: "npm"
+    directory: "/packages/shared"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    groups:
+      patch-and-minor:
+        update-types: ["patch", "minor"]
+    labels: ["dependencies", "shared"]
+    open-pull-requests-limit: 5
+
+  # GitHub Actions used by ci.yml and deploy.yml.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    labels: ["dependencies", "ci"]

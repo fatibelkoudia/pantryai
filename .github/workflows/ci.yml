@@ -36,6 +36,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Dependency audit (informational)
+        run: pnpm audit --prod --audit-level=high
+        continue-on-error: true
+
       # The api and web packages type-check against shared/dist, so build it first.
       - name: Build shared package
         run: pnpm --filter @pantryai/shared build
