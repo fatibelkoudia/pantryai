@@ -43,13 +43,40 @@ against the new schema: add first, remove later.
 
 ## Updating dependencies
 
-Update inside a single package with pnpm, for example:
+**Tool and frequency.** Dependabot (`.github/dependabot.yml`) scans every package
+weekly (Mondays) plus the GitHub Actions used in CI/CD. It is the source of truth for
+"is anything out of date" — we don't rely on someone remembering to run
+`pnpm outdated`.
+
+**Scope.** Every `package.json` in the monorepo: root devDependencies, and each of
+`packages/api`, `packages/web`, `packages/mobile`, `packages/shared`, plus the
+Actions pinned in `.github/workflows/*.yml`.
+
+**Automatic vs. manual.** Dependabot groups patch and minor bumps per package into a
+single PR; those merge once CI is green (lint, typecheck, tests, build — see
+[cicd.md](./cicd.md)), without a deep manual review. Major bumps are deliberately
+left out of the group, so each one opens its own PR and gets a real review: read the
+package's changelog/migration guide, run the full check list below, and make sure the
+integration suite still passes against a real Postgres before merging. The Prisma
+6 → 7 migration (native engine dropped, config moved to `prisma.config.ts`, client
+regenerated under `packages/api/src/generated/prisma`) is the kind of change this
+manual step exists to catch.
+
+**Vulnerabilities.** Dependabot security alerts are enabled on the repo and open a PR
+as soon as a fix is available upstream. CI also runs `pnpm audit --prod
+--audit-level=high` on every push as a visibility check (non-blocking — most current
+findings sit in transitive dev-tooling dependencies with no fix published yet, so a
+hard gate would keep CI permanently red for things we can't act on). Treat a red
+Dependabot security alert as higher priority than a routine version bump.
+
+To update by hand between two Dependabot cycles (e.g. reacting to an advisory before
+Monday), update inside a single package with pnpm:
 
 ```bash
 pnpm --filter @pantryai/api update
 ```
 
-After any update, run the full set of checks before committing:
+After any update — automatic or manual — run the full set of checks before merging:
 
 ```bash
 pnpm lint
