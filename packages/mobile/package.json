@@ -53,6 +53,6 @@
     "eslint-config-expo": "^55.0.1",
     "eslint-plugin-import": "^2.32.0",
     "typescript": "^5.8.3",
-    "vitest": "^3.2.7"
+    "vitest": "^4.1.10"
   }
 }
