@@ -20,7 +20,7 @@
     "@pantryai/shared": "workspace:*",
     "@tanstack/react-query": "^5.68.0",
     "expo": "~55.0.28",
-    "expo-camera": "~55.0.21",
+    "expo-camera": "~57.0.3",
     "expo-constants": "^55.0.17",
     "expo-device": "~55.0.19",
     "expo-document-picker": "~55.0.15",
