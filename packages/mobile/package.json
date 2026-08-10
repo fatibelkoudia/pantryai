@@ -32,7 +32,7 @@
     "expo-notifications": "~55.0.25",
     "expo-router": "~55.0.17",
     "expo-secure-store": "~55.0.16",
-    "expo-status-bar": "~55.0.6",
+    "expo-status-bar": "~57.0.1",
     "i18next": "^26.3.6",
     "react": "19.2.0",
     "react-dom": "19.2.0",
