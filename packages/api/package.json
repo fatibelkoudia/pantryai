@@ -41,7 +41,7 @@
     "@bull-board/api": "^8.0.1",
     "@bull-board/fastify": "^8.0.1",
     "@fastify/helmet": "^13.0.2",
-    "@fastify/multipart": "^9.4.0",
+    "@fastify/multipart": "^10.1.0",
     "@fastify/static": "^9.0.0",
     "@mistralai/mistralai": "^2.1.2",
     "@nestjs/bullmq": "^11.0.4",
