@@ -19,3 +19,7 @@ packages/api/src/ocr/__tests__/fixtures/**/*.pdf
 .vercel
 .env*
 !help/FUTURE.md
+.agent/
+.claude/
+# Certification dossiers: not published with the code.
+certification/

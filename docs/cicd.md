@@ -49,42 +49,59 @@ Runs on every push and pull request. It generates the Prisma client and runs the
 full `turbo build` (the API, the web app, and the shared package). This is what
 catches a build that compiles in dev but breaks in a production build.
 
-## Continuous delivery (`deploy.yml`)
+## Continuous delivery
 
-Deploys happen from a Git tag that looks like a version, for example `v1.2.3`.
-Pushing that tag is what triggers a release:
+Two things ship the app today, and neither of them is the tag.
 
-```bash
-git tag v1.2.3
-git push origin v1.2.3
-```
+**The API redeploys on every push to `master`.** Railway watches the branch, builds
+`packages/api/Dockerfile` (that is what `railway.json` tells it to do) and swaps the
+container. So merging a pull request into `master` _is_ the production deploy. There is
+no separate step to run.
 
-The workflow has two jobs that run in parallel.
+**The web app goes to Vercel** from the `web` job of `deploy.yml`, triggered by hand.
 
-### web
+A `v1.x.x` Git tag is a version marker only. It records which commit a release points
+at so `CHANGELOG.md` and the repo agree, and it triggers nothing.
 
-Builds the Next.js app and deploys it to Vercel using the Vercel CLI.
+### How the API deploy works
 
-### api
+Railway does the work, and it is worth knowing what it does on each push to `master`:
 
-1. installs dependencies and generates the Prisma client,
-2. applies the database migrations against the production database (using the
-   direct connection, not the pooler, because migrations need advisory locks),
-3. connects to the Hetzner server over SSH and deploys the new container image,
-4. checks the API actually came up, and rolls back to the previous image if it
-   did not (see below).
+1. builds the image from `packages/api/Dockerfile`, as `railway.json` tells it to. If
+   the build fails, the previous version keeps serving.
+2. starts `node dist/main`.
+3. checks `/health` before routing traffic to the new instance.
+4. switches traffic over.
 
-### The rollback safety net
+Migrations are deliberately **not** run at container start. Replaying a migration on a
+restart would be dangerous, and keeping them separate means a schema failure and an
+application failure do not look alike. Apply them before merging, as described in
+[update-guide.md](./update-guide.md#database-migrations).
 
-If the new API container does not come up, the job puts the previous image back and
-fails so we get notified, so a broken release never leaves the API down (risk R6).
-The full mechanism is in [deployment.md](./deployment.md#rollback).
+### The rollback
+
+The Railway console can reactivate a previous deployment without rebuilding it. That
+holds only as long as migrations stay backward compatible (add nullable columns rather
+than renaming or dropping): rolling back restores the code, it does not undo a
+migration. If the previous code cannot run against the current schema, the rollback
+becomes impossible exactly when it is needed.
+
+### `deploy.yml`
+
+Only the `web` job is used, and it is triggered by hand from the Actions tab. It builds
+the Next.js app and deploys it to Vercel through the Vercel CLI.
+
+The file also contains an `api` job that deploys over SSH to a self-managed VPS. **It is
+dead code.** That infrastructure route was considered and dropped, Railway stays the
+production platform, and the job has never run against anything. It should be deleted;
+that is tracked as recommendation 3 in
+[FUTURE.md](../help/FUTURE.md).
 
 ## Secrets
 
-The deploy workflow needs a set of GitHub Actions secrets (the Vercel tokens, the
-Hetzner SSH details, and `DATABASE_DIRECT_URL` for the migration step). CI does not
-need any of them, it uses placeholders. The full list is in
+The `web` deploy job needs `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`. The
+keep-alive workflow needs `SUPABASE_DB_URL`. CI needs none of them, it uses
+placeholders. The full list is in
 [deployment.md](./deployment.md#secrets-the-workflows-need).
 
 ## Running the same checks locally

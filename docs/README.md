@@ -39,4 +39,9 @@ The "why is it like this" notes, so we remember our reasons later.
 
 ## Deliverables
 
-- [cahier-de-recettes.md](./cahier-de-recettes.md) - the acceptance test book
+- [cahier-de-recettes.md](./cahier-de-recettes.md) - the acceptance test book: every
+  scenario we run to say the app works, with a results matrix
+
+Bugs found by running it are filed as GitHub issues through
+[the bug report form](../.github/ISSUE_TEMPLATE/bug_report.yml), which asks for the same
+fields a scenario does, so an issue is reproducible on its own.

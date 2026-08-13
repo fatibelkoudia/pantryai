@@ -2,6 +2,8 @@
 
 This file tracks ideas, improvements, and features that are intentionally out of scope for this project but worth implementing in a future version.
 
+This is the raw backlog: anything goes in here, evidence or not.
+
 ---
 
 ## v2 — OCR & Parsing Quality
@@ -99,6 +101,62 @@ This file tracks ideas, improvements, and features that are intentionally out of
 ### Typed Processor Errors
 
 **Why:** The global exception filter handles the HTTP side, but `ocr.processor.ts` still throws bare `Error()` for everything: HTTP status from a remote URL, the 5 MB size cap, the SSRF guard. They all end up looking the same in the job's `error` column, so we can't tell a user mistake from an attack attempt without reading the message string. Typed error classes for the OCR pipeline would let the processor decide what is retryable and what should fail the job outright.
+
+---
+
+## v2 — Monitoring & Ops
+
+These came out of auditing the monitoring setup. They are the gaps `docs/monitoring.md`
+admits to, in the order we would close them.
+
+### Crash reporting on the Android app
+
+**Why:** There is no crash reporting on the client, so an APK crash produces no signal
+at all: no Sentry event, no log, nothing in `/health`. Of everything we watch, mobile
+is the only component where a total failure can go unnoticed indefinitely. Testers only
+tell us when they remember to.
+**Approach:** `@sentry/react-native` in `packages/mobile`, second Sentry project, reuse
+the scrubbing rules already written for the API in `instrument.ts`. Enable only on the
+`preview` and `production` EAS profiles so dev noise stays out.
+
+### Worker errors never reach Sentry
+
+**Why:** `Sentry.captureException` is called in exactly one place, the HTTP exception
+filter. The OCR processor catches its own errors, logs them and marks the job `FAILED`
+without telling Sentry. So a failure in the OCR pipeline shows up in the BullMQ
+counters and nowhere else, which is the part of the product that fails quietly.
+**Approach:** One `Sentry.captureException(err)` in the processor's catch, on the
+final-attempt branch so intermediate retries that will succeed do not report.
+
+### Alert when the OCR queue backs up
+
+**Why:** The dashboard shows waiting and failed counts but nothing tells us when they
+grow. We find out by opening the page, so up to a day of scans could be failing first.
+**Approach:** A scheduled job that reads the counters and fails loudly when `waiting`
+stays above a threshold across two runs, or `failed` grows between runs. Same shape as
+`supabase-keepalive.yml`, so no new alerting service.
+
+### Structured logging
+
+**Why:** We use the NestJS `Logger`, so production logs are plain text with no
+aggregation, no search and no retention. Investigating anything older than a container
+recycle is guesswork, and it slowed down every one of the 1.0.0 production fixes.
+**Approach:** `nestjs-pino` for JSON logs with a request id, redaction configured on the
+same fields the Sentry `beforeSend` already strips so the RGPD position is unchanged.
+
+### A metrics endpoint
+
+**Why:** The performance KPIs are read by hand off the BullMQ dashboard, so we have
+numbers for a test window and nothing continuous. Worth doing after the queue alert
+above, which delivers most of the benefit for less work.
+**Approach:** `/metrics` exposing OCR durations and queue depth.
+
+### Delete the dead deploy job
+
+**Why:** The `api` job in `deploy.yml` deploys over SSH to a self-managed VPS we decided
+not to build. It also health-checks `/api/docs` rather than `/health`, and Swagger
+answers even when the database is unreachable, so its automatic rollback would pass a
+deploy that came up broken. Keep the `web` job, drop the rest.
 
 ---
 

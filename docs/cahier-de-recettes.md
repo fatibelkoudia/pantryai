@@ -6,8 +6,9 @@ the Must Have and Should Have features, plus the performance and RGPD checks.
 
 This document is the eliminatory deliverable for competence C2.3.1, so each
 scenario has to be reproducible by hand. When a scenario fails we open a bug and
-track it in [plan-de-correction-des-bogues.md](./plan-de-correction-des-bogues.md);
-the scenario only counts as passed once it runs green end to end.
+track it as a GitHub issue, filed through
+[the bug report form](../.github/ISSUE_TEMPLATE/bug_report.yml) so it carries enough
+detail to reproduce. The scenario only counts as passed once it runs green end to end.
 
 ## How to read a scenario
 

@@ -1,0 +1,45 @@
+name: Supabase keep-alive
+
+# Keeps the free-tier Supabase project from pausing. Supabase pauses a free project
+# after 7 days with no activity, and while it is paused every DB query fails, so the
+# whole API goes down. There is no free setting to turn that off, the only way is to
+# make real database activity inside the window. See docs/supabase-keepalive.md.
+#
+# Every 3 days gives us two chances to catch a missed run before the 7 day limit.
+# The query has to actually touch Postgres, hitting a static page does not count.
+
+on:
+  schedule:
+    - cron: '0 6 */3 * *' # every 3 days at 06:00 UTC
+  workflow_dispatch: {} # also lets us run it by hand
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install the Postgres client
+        run: npm install pg@8
+
+      - name: Ping the database
+        env:
+          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          node -e "
+            const { Client } = require('pg');
+            if (!process.env.DB_URL) throw new Error('SUPABASE_DB_URL secret is not set');
+            const client = new Client({ connectionString: process.env.DB_URL });
+            client
+              .connect()
+              .then(() => client.query('select 1'))
+              .then(() => client.end())
+              .then(() => console.log('kept alive'))
+              .catch((err) => {
+                console.error('keep-alive failed:', err.message);
+                process.exit(1);
+              });
+          "
