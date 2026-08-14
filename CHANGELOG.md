@@ -9,6 +9,54 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 Nothing yet.
 
+## [1.0.1] - 2026-08-12
+
+A maintenance release. No new features: this one is about keeping the app running,
+keeping its dependencies current, and making the way we handle anomalies something
+that exists in the repository rather than only in a document.
+
+### Added
+
+- Automated dependency updates with Dependabot, scanning every package in the
+  monorepo plus the GitHub Actions used in CI, weekly on Mondays. Patch and minor
+  bumps are grouped into one pull request per package; majors are deliberately left
+  out of the group so each one gets its own review.
+- A dependency audit step in CI (`pnpm audit --prod --audit-level=high`), non-blocking
+  for now because the current findings sit in transitive dev tooling with no fix
+  published upstream.
+- Supabase keep-alive workflow. The free plan pauses a project after 7 days without
+  activity, and while it is paused every database query fails. A scheduled job now
+  runs `select 1` every 3 days to prevent it. The workflow had been documented since
+  June but was never committed, so the protection existed only on paper.
+- Bug report and improvement issue templates, plus a pull request template. The bug
+  template is a GitHub issue form with required fields, so an issue cannot be opened
+  without enough information to reproduce the problem.
+- Anomalies are now tracked as GitHub issues. The acceptance test book had linked to a
+  bug correction plan since July that was never written; it now points at the issue
+  form instead, which is where bugs actually go.
+
+### Changed
+
+- The monitoring guide now documents the supervision perimeter, each probe and what
+  it actually verifies, the thresholds we measure against, who gets alerted through
+  which channel, which probes are actually switched on, and what the setup does not
+  cover.
+- The update guide, the CI/CD guide and the deployment guide now describe how deploys
+  really happen. All three said that pushing a `v1.2.3` tag ships a release. It does
+  not: the API redeploys on every push to `master` through Railway, the web app is
+  deployed from a manually triggered workflow, and the tag is a version marker.
+- The self-managed VPS target is dropped. Railway stays the production platform, so the
+  documentation no longer describes a server migration, an Nginx layer or an SSH
+  deploy, and the rollback documented is the one we actually have: reactivating a
+  previous deployment from the Railway console. The dead `api` job in `deploy.yml` is
+  still there and is queued for removal.
+
+### Fixed
+
+- The Supabase project no longer pauses itself after a week of quiet, which took the
+  whole API down with it (`DriverAdapterError: (ENOTFOUND) tenant/user ... not found`
+  on every request). Recorded as ANO-02.
+
 ## [1.0.0] - 2026-07-24
 
 The MVP release: the app runs end to end in production, from creating an account
@@ -135,5 +183,6 @@ set, the Trashy brand layer, security hardening, and the test suite.
 - Unit and integration test suites (Vitest and Supertest) with a coverage gate of
   80% on services and 60% overall.
 
-[Unreleased]: https://github.com/fatibelkoudia/pantryai/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/fatibelkoudia/pantryai/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/fatibelkoudia/pantryai/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/fatibelkoudia/pantryai/releases/tag/v1.0.0

@@ -1,65 +1,65 @@
 version: 2
 updates:
   # Root devDependencies shared across the monorepo (turbo, typescript, prettier).
-  - package-ecosystem: "npm"
-    directory: "/"
+  - package-ecosystem: 'npm'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: 'weekly'
+      day: 'monday'
     groups:
       patch-and-minor:
-        update-types: ["patch", "minor"]
-    labels: ["dependencies"]
+        update-types: ['patch', 'minor']
+    labels: ['dependencies']
     open-pull-requests-limit: 5
 
-  - package-ecosystem: "npm"
-    directory: "/packages/api"
+  - package-ecosystem: 'npm'
+    directory: '/packages/api'
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: 'weekly'
+      day: 'monday'
     groups:
       patch-and-minor:
-        update-types: ["patch", "minor"]
-    labels: ["dependencies", "api"]
+        update-types: ['patch', 'minor']
+    labels: ['dependencies', 'api']
     open-pull-requests-limit: 5
 
-  - package-ecosystem: "npm"
-    directory: "/packages/web"
+  - package-ecosystem: 'npm'
+    directory: '/packages/web'
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: 'weekly'
+      day: 'monday'
     groups:
       patch-and-minor:
-        update-types: ["patch", "minor"]
-    labels: ["dependencies", "web"]
+        update-types: ['patch', 'minor']
+    labels: ['dependencies', 'web']
     open-pull-requests-limit: 5
 
-  - package-ecosystem: "npm"
-    directory: "/packages/mobile"
+  - package-ecosystem: 'npm'
+    directory: '/packages/mobile'
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: 'weekly'
+      day: 'monday'
     groups:
       patch-and-minor:
-        update-types: ["patch", "minor"]
-    labels: ["dependencies", "mobile"]
+        update-types: ['patch', 'minor']
+    labels: ['dependencies', 'mobile']
     open-pull-requests-limit: 5
 
-  - package-ecosystem: "npm"
-    directory: "/packages/shared"
+  - package-ecosystem: 'npm'
+    directory: '/packages/shared'
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: 'weekly'
+      day: 'monday'
     groups:
       patch-and-minor:
-        update-types: ["patch", "minor"]
-    labels: ["dependencies", "shared"]
+        update-types: ['patch', 'minor']
+    labels: ['dependencies', 'shared']
     open-pull-requests-limit: 5
 
   # GitHub Actions used by ci.yml and deploy.yml.
-  - package-ecosystem: "github-actions"
-    directory: "/"
+  - package-ecosystem: 'github-actions'
+    directory: '/'
     schedule:
-      interval: "weekly"
-      day: "monday"
-    labels: ["dependencies", "ci"]
+      interval: 'weekly'
+      day: 'monday'
+    labels: ['dependencies', 'ci']

@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question about using PantryAI
+    url: https://github.com/fatibelkoudia/pantryai/blob/master/docs/user-guide.md
+    about: The user guide covers how the app is meant to work. Read it first.
+  - name: Deploying or running it yourself
+    url: https://github.com/fatibelkoudia/pantryai/blob/master/docs/deployment.md
+    about: Setup and go-live steps, including the secrets the workflows need.
