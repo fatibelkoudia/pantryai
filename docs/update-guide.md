@@ -6,19 +6,24 @@ first time, read [deployment.md](./deployment.md) first.
 
 ## Releasing a new version
 
-1. Get your changes merged and make sure CI is green.
+1. Open a pull request and make sure CI is green. The integration tests only run on
+   pull requests, so this is the one place they get exercised.
 2. Update [CHANGELOG.md](../CHANGELOG.md): move things out of "Unreleased" into a
    new version section with today's date.
-3. Tag and push:
+3. Merge into `master`. **This is the deploy.** Railway rebuilds the API image and
+   swaps the container on every push to `master`.
+4. Tag the released commit and push the tag:
 
    ```bash
    git tag v1.3.0
    git push origin v1.3.0
    ```
 
-That tag triggers the deploy workflow, which ships the web app to Vercel and the
-API to the server, runs the migrations first, and rolls back automatically if the
-API does not come up.
+The tag is a version marker, not a trigger. It records which commit the release
+points at so the changelog and the repo agree. Deploying is step 3.
+
+If a release turns out to be broken, reactivate the previous deployment from the
+Railway console. See [cicd.md](./cicd.md) for the full delivery picture.
 
 We follow semantic versioning: bump the patch number for fixes, the minor number
 for new features, and the major number for breaking changes.

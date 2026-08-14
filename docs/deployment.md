@@ -7,13 +7,13 @@ This explains how PantryAI gets to production and what runs where.
 There are four moving parts in production:
 
 - The **web app** runs on Vercel.
-- The **API** runs in a Docker container on a Hetzner server, behind Nginx which
-  terminates SSL.
-- A separate **OCR worker** container runs the BullMQ queue processor and the
-  scheduled jobs, so heavy OCR work never shares an event loop with the API.
-- The **database** is PostgreSQL on Supabase, and **Redis** runs as a container
-  that both the API and the worker reach over the compose network (it is not
-  published to the host).
+- The **API** runs as a Docker container on Railway, in the EU West region
+  (Amsterdam). Railway terminates TLS, so there is no reverse proxy to administer.
+- The **OCR worker** runs inside the same process as the API today. It can be split
+  into its own container by setting `RUN_OCR_WORKER=false` on the API, which is the
+  first lever if OCR work ever starts crowding the event loop.
+- The **database** is PostgreSQL on Supabase (EU), and **Redis** is a Railway managed
+  service that backs the BullMQ queue.
 
 The **mobile app** is not hosted anywhere: it ships as an Android APK built with
 EAS and installed straight on the phone. It talks to the same API over HTTPS.
@@ -21,43 +21,54 @@ See [the mobile section](#the-mobile-app-android-apk) below.
 
 Receipt images live in Cloudflare R2 and are deleted within 24 hours.
 
+Everything that touches personal data (API, database, OCR) stays under EU
+jurisdiction. The region is set explicitly, because Railway defaults to `us-west1`.
+
 ```
         Browser / phone
               │  HTTPS
               v
-        ┌───────────┐         ┌────────────────────┐
-        │  Vercel   │         │      Hetzner       │
-        │  (web)    │──────▶  │   Nginx :443       │  SSL termination
-        └───────────┘         │      │             │
-                              │      v             │
-                              │  API :3001         │
-                              │      │             │
-                              │   Redis ◀── Worker │  OCR + cron jobs
-                              └────────────────────┘
-                                     │
-                                     v
-                              Supabase (Postgres)
-                              Cloudflare R2 (images)
+        ┌───────────┐         ┌────────────────────────┐
+        │  Vercel   │         │   Railway (EU West)    │
+        │  (web)    │──────▶  │                        │
+        └───────────┘         │  API :3001 + worker    │
+                              │        │               │
+                              │   Redis (managed)      │
+                              └────────────────────────┘
+                                       │
+                                       v
+                                Supabase (Postgres, EU)
+                                Cloudflare R2 (images)
 ```
 
 ## What deploys, and when
 
-Both apps deploy from one place: a Git tag that looks like `v1.2.3`. Pushing that
-tag runs the `Deploy` GitHub Actions workflow (`.github/workflows/deploy.yml`),
-which has two jobs:
+Today the two apps deploy from two different places, and a release tag deploys
+nothing.
 
-1. **web**: builds the Next.js app and deploys it to Vercel.
-2. **api**: runs the database migrations, then deploys the new container image to
-   Hetzner over SSH, checks it came up, and rolls back if it did not.
+**API: push to `master`.** Railway watches the branch and rebuilds from
+`packages/api/Dockerfile` on every push, as configured in `railway.json`. Merging a
+pull request into `master` is the production deploy, there is no extra step.
 
-So the normal release flow is:
+**Web: the `web` job of `deploy.yml`**, run by hand from the Actions tab. It builds
+the Next.js app and deploys it to Vercel.
+
+**A `v1.2.3` tag is a version marker.** It records which commit a release points at,
+so `CHANGELOG.md` and the repo agree. It does not trigger anything.
+
+So the normal release flow is: green pull request, merge to `master` (the API deploys
+itself), run the `web` job if the front end changed, then tag the released commit.
 
 ```bash
 git tag v1.2.3
 git push origin v1.2.3
 ```
 
-The mobile app is not part of the tag workflow: we build the APK on demand with
+`deploy.yml` also contains an `api` job that deploys over SSH to a self-managed VPS.
+That route was considered and dropped: Railway stays the production platform. The job
+has never run against anything and should be deleted.
+
+The mobile app is not part of any workflow: we build the APK on demand with
 EAS whenever we want to hand out a new build (see the mobile section below).
 
 Continuous integration (`.github/workflows/ci.yml`) runs on every push and pull
@@ -89,15 +100,15 @@ that new Prisma migrations are committed under `packages/api/prisma/migrations/`
 
 Set these in the GitHub repository settings, under Actions secrets:
 
-| Secret                | Used for                                           |
-| --------------------- | -------------------------------------------------- |
-| `VERCEL_TOKEN`        | Deploying the web app                              |
-| `VERCEL_ORG_ID`       | The Vercel org                                     |
-| `VERCEL_PROJECT_ID`   | The Vercel project for the web app                 |
-| `DATABASE_DIRECT_URL` | Running migrations against the production database |
-| `HETZNER_HOST`        | The server's address                               |
-| `HETZNER_USER`        | The SSH user                                       |
-| `HETZNER_SSH_KEY`     | The private SSH key for that user                  |
+| Secret              | Used for                                                    |
+| ------------------- | ----------------------------------------------------------- |
+| `VERCEL_TOKEN`      | Deploying the web app                                       |
+| `VERCEL_ORG_ID`     | The Vercel org                                              |
+| `VERCEL_PROJECT_ID` | The Vercel project for the web app                          |
+| `SUPABASE_DB_URL`   | The keep-alive workflow, so the free project does not pause |
+
+The API needs no deploy secret: Railway builds from the repo itself. Its runtime
+environment variables are set in the Railway dashboard, not here.
 
 ## Setting up Vercel (one time)
 
@@ -131,27 +142,30 @@ pnpm dlx vercel build --prod
 pnpm dlx vercel deploy --prebuilt --prod
 ```
 
-## Setting up the Hetzner server (one time)
+## Setting up Railway (one time)
 
-A small instance is enough to start (the free or cheapest tier covers the MVP).
+1. Create the service in the **EU West (Amsterdam)** region, connected to the repo and
+   the `master` branch. The region matters: Railway defaults to `us-west1`, and the
+   whole personal-data path has to stay in the EU.
+2. Check that `railway.json` forces the Dockerfile builder. Without it, automatic
+   detection compiles the API without building `@pantryai/shared` first and the build
+   fails.
+3. Add the managed Redis service and reference its variables.
+4. Set the environment variables (see the table further down). `PORT` is injected by
+   Railway and read by `main.ts`, so do not hardcode it.
+5. Apply the migrations before the first release, as described in
+   [update-guide.md](./update-guide.md#database-migrations).
+6. Check `GET /health` answers with `db: "up"` and `redis: "up"`.
 
-1. Install Docker and the Docker Compose plugin.
-2. Clone the repository to `/opt/pantryai`.
-3. Create `packages/api/.env` on the server with the production values (database
-   URLs, JWT secrets, Mistral key, R2 keys, and so on). This file is read by the
-   API container through `env_file` in the compose file.
-4. Point your domain's DNS at the server.
-5. Issue an SSL certificate with certbot for the API domain. The Nginx config
-   expects the certificate under `/etc/letsencrypt/live/<domain>/`. Update the
-   `server_name` and certificate paths in `deploy/nginx/pantryai.conf` to match
-   your domain.
-6. Start the stack:
+Two things that catch people out:
 
-   ```bash
-   docker compose -f docker-compose.prod.yml up -d --build
-   ```
+- **Managed Redis** needs a password, and its private host resolves over IPv6. The
+  client is configured with `password` and `family: 0` (dual stack) for that reason.
+  Without it the connection fails quietly and `/health` reports `redis: "down"`.
+- **`NEXT_PUBLIC_*` variables** are inlined at build time. Changing one means
+  rebuilding the front end, not restarting it.
 
-After that, releases are automatic from Git tags.
+After that, every push to `master` redeploys the API on its own.
 
 ## The container image
 
@@ -193,42 +207,41 @@ later).
 
 ## Rollback
 
-The API deploy has a built-in safety net for risk R6. Before it deploys, it
-records the image that is currently serving. After it starts the new container,
-it polls the API for up to a minute. If the API never answers, it re-tags the
-previous image as the live one and brings it back, then fails the job so we get
-notified. So a bad release does not leave the API down, it falls back to the last
-version that worked.
+This is the mitigation for risk R6. Two layers protect a release:
 
-If you need to roll back by hand later, check out the previous tag on the server
-and run the compose build and up again:
+**Before traffic switches.** Railway checks `/health` on the new instance. If it does
+not come up, the previous version keeps serving and the deploy is marked failed. A
+broken build never takes the API down.
 
-```bash
-cd /opt/pantryai
-git checkout v1.2.2
-docker compose -f docker-compose.prod.yml up -d --build
-```
+**After traffic switches.** If a release is bad in a way a health check cannot see, open
+the Railway console, pick the previous deployment and reactivate it. It is reapplied
+without rebuilding, so it takes seconds. This has been exercised for real: a deployment
+was deliberately failed and the previous version restored from the console.
+
+The one rule that keeps this working: **migrations have to stay backward compatible.**
+Rolling back restores the code, it does not undo a migration. Add nullable columns
+rather than renaming or dropping, or the rollback becomes impossible at the exact
+moment you need it.
 
 ## The OCR worker
 
-In production the OCR work runs in its own container (`node dist/worker`), next to
-the API and sharing the same Redis. This matches the deployment diagram from the
-design: a heavy OCR job runs in the worker and never ties up the API event loop.
+**Today the API and the OCR worker share one process on Railway.** That is fine at
+current volumes, and it is the known scaling limit: a heavy OCR job competes for the
+same event loop as HTTP requests. Splitting them is the first lever if that starts to
+show, and the code is already prepared for it.
 
 Which process does the background work is decided by one env var, `RUN_OCR_WORKER`:
 
-- The **API** container sets `RUN_OCR_WORKER=false`. It enqueues OCR jobs but does
-  not consume them, and it does not run the daily cron jobs.
-- The **worker** container sets `RUN_OCR_WORKER=true`. It owns the OCR queue
-  processor and the scheduled jobs (R2 sweep, expiration push).
+- Left **unset**, one process does both the HTTP and the OCR work. This is how it runs
+  in production today, and how it runs locally.
+- Set to **`false`**, the process enqueues OCR jobs but does not consume them, and does
+  not run the daily cron jobs. This is what the API would set once split.
+- Set to **`true`** on a second service started with `node dist/worker`, that service
+  owns the OCR queue processor and the scheduled jobs (R2 sweep, expiration push).
 
-That split is what stops a job, or a daily push, from firing twice. Both values
-are already set in `docker-compose.prod.yml`, so `up -d` brings both containers up
-correctly.
-
-For a single-process setup (local dev or a minimal deploy), leave `RUN_OCR_WORKER`
-unset: it defaults to on, so one process does both the HTTP and the OCR work, just
-like before.
+The flag is what stops a queue job, or a daily push, from firing twice once there are
+two processes. `packages/api/Dockerfile` already supports both start commands, so the
+split is a Railway configuration change rather than a code change.
 
 ## The mobile app (Android APK)
 
@@ -316,56 +329,47 @@ Error tracking (Sentry), uptime (Uptime Robot), and the OCR queue dashboard
 (BullMQ) are wired up. The full setup, the env vars, and the RGPD note on scrubbing
 personal data live in [monitoring.md](./monitoring.md). The short version:
 
-- `GET /health` pings Postgres and Redis. The Docker healthcheck and Uptime Robot
+- `GET /health` pings Postgres and Redis. The Railway healthcheck and Uptime Robot
   both use it.
 - Sentry is off unless `SENTRY_DSN` is set, and it strips PII before sending.
 - The queue dashboard is at `/admin/queues`, behind basic auth, only mounted when
   `BULLBOARD_USER` and `BULLBOARD_PASSWORD` are set.
 
+Note that the last two are not set in production yet, so Sentry collects nothing and
+the dashboard is not exposed. Setting them is the first item in
+[FUTURE.md](../help/FUTURE.md).
+
 ## Go-live runbook
 
-The first production stand-up, in order. After this, releases are automatic from
-Git tags. Run the [pre-flight checks](#pre-flight-checks) before starting, and
-have the [GitHub Actions secrets](#secrets-the-workflows-need) ready as you go:
-the deploy workflow needs all seven of them set before the first tag push.
+The first production stand-up, in order. After this, every push to `master` redeploys
+the API on its own. Run the [pre-flight checks](#pre-flight-checks) before starting.
 
-1. **Provision the server.** Create a Hetzner CX11 (or the cheapest tier), Ubuntu
-   LTS. Install Docker and the Compose plugin.
-2. **DNS.** Point an A record for your API domain (for example `api.pantryai.app`)
-   at the server's IP.
-3. **Get the code.** Clone the repo to `/opt/pantryai`.
-4. **Secrets.** Create `packages/api/.env` on the server with the production
-   values: database URLs (Supabase), JWT secrets, Mistral key, R2 keys, and the
-   monitoring vars (`SENTRY_DSN`, `BULLBOARD_USER`, `BULLBOARD_PASSWORD`). Leave
-   `RUN_OCR_WORKER` out of the file; compose sets it per container.
-5. **SSL.** Issue a certificate with certbot for the API domain. Update
-   `server_name` and the certificate paths in `deploy/nginx/pantryai.conf` to match
-   your domain.
-6. **Migrate.** Run `pnpm --filter @pantryai/api exec prisma migrate deploy`
-   against `DATABASE_DIRECT_URL` (this also happens in the deploy workflow).
-7. **Bring up the stack.** From `/opt/pantryai`:
+1. **Database.** Create the Supabase project in an EU region. Note both the pooled and
+   the direct connection strings.
+2. **Migrate.** Run `pnpm --filter @pantryai/api exec prisma migrate deploy` against
+   `DATABASE_DIRECT_URL` (the direct one, not the pooler: migrations need advisory
+   locks).
+3. **API.** Do the [Railway one-time setup](#setting-up-railway-one-time): service in
+   EU West on `master`, Dockerfile builder, managed Redis, environment variables.
+4. **Check it.** `curl https://<your-api>/health` returns
+   `{"status":"ok","db":"up","redis":"up"}`. Open `/api/docs`.
+5. **Keep-alive.** Add the `SUPABASE_DB_URL` repository secret, then run the
+   Supabase keep-alive workflow once by hand from the Actions tab and confirm the log
+   says `kept alive`. Without this the free project pauses after 7 idle days and takes
+   the whole API down.
+6. **Web app.** Do the [Vercel one-time setup](#setting-up-vercel-one-time) (link the
+   project, root directory, env vars, the three secrets). Set `NEXT_PUBLIC_API_URL`
+   and `API_URL` **with no trailing slash**. Then deploy once by hand with the three
+   `vercel` commands, or run the `web` job of `deploy.yml`.
+7. **Monitoring.** Set `SENTRY_DSN`, `BULLBOARD_USER` and `BULLBOARD_PASSWORD` on
+   Railway, add the Uptime Robot monitor on `/health` with an alert contact, and
+   confirm Sentry receives a test error with no personal data. See
+   [monitoring.md](./monitoring.md).
+8. **Mobile app.** Do the [EAS one-time setup](#one-time-setup), point
+   `EXPO_PUBLIC_API_URL` in `packages/mobile/eas.json` at your API domain, then build
+   and install the APK as described in
+   [the mobile section](#the-mobile-app-android-apk).
 
-   ```bash
-   docker compose -f docker-compose.prod.yml up -d --build
-   ```
-
-   This starts Redis, the API, the worker, and Nginx.
-
-8. **Check it.** `curl https://<your-domain>/health` returns
-   `{"status":"ok","db":"up","redis":"up"}`. Open `/api/docs` and
-   `/admin/queues` (the dashboard should ask for the basic-auth login).
-9. **Web app.** Do the [Vercel one-time setup](#setting-up-vercel-one-time)
-   (link the project, root directory, env vars, the three secrets). Then deploy
-   once by hand with the three `vercel` commands from that section, or push the
-   first tag and let the workflow do it.
-10. **Monitoring.** Add the Uptime Robot monitor on `/health`, and confirm Sentry
-    receives a test error with no personal data. See
-    [monitoring.md](./monitoring.md).
-11. **Mobile app.** Do the [EAS one-time setup](#one-time-setup), point the
-    `EXPO_PUBLIC_API_URL` in `packages/mobile/eas.json` at your API domain, then
-    build and install the APK as described in
-    [the mobile section](#the-mobile-app-android-apk).
-
-Acceptance for the deployment phase: the site is reachable over HTTPS, `/health`
-is green, the three monitors are live, and the APK installs and logs in against
-the production API.
+Acceptance for the deployment phase: the site is reachable over HTTPS, `/health` is
+green, the keep-alive has run at least once, the three monitors are live, and the APK
+installs and logs in against the production API.
