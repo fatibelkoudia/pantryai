@@ -1,0 +1,48 @@
+name: Improvement
+description: Suggest a change that makes the app better, faster, or easier to keep running.
+title: '[improvement] '
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For things that are not broken but could be better. If something is broken,
+        use the bug report instead. Accepted improvements get written up with their
+        cost and expected gain in
+        [recommandations-amelioration.md](../blob/master/docs/recommandations-amelioration.md).
+
+  - type: textarea
+    id: observation
+    attributes:
+      label: What did you observe?
+      description: The measurement, the monitoring reading, or the user feedback behind this.
+      placeholder: Faded thermal receipts come back with character errors like CLIVES VERTES instead of OLIVES VERTES.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What do you propose?
+    validations:
+      required: true
+
+  - type: textarea
+    id: gain
+    attributes:
+      label: Expected gain
+      description: What gets better, and by how much if you can put a number on it.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: effort
+    attributes:
+      label: Rough effort
+      options:
+        - Under a day
+        - 1 to 3 days
+        - About a week
+        - More than a week
+    validations:
+      required: true
