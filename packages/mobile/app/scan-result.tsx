@@ -166,7 +166,19 @@ export default function ScanResultScreen() {
     );
   }
 
-  const reviewRows = rows ?? [];
+  // The job is done but the effect hasn't built the rows yet. Without this we fall
+  // through to the "no items" screen for a frame, which looked like the scan had
+  // found nothing before the list appeared.
+  if (rows === null) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={colors.leafGreen} />
+        <Text style={styles.processingText}>{t('scanResult.processing')}</Text>
+      </View>
+    );
+  }
+
+  const reviewRows = rows;
   const selectedCount = reviewRows.filter((r) => r.selected).length;
 
   if (reviewRows.length === 0) {
