@@ -178,12 +178,15 @@ below describe the `data` or `error` part.
 ### CR-STOCK-07: Update and delete a stock item
 
 - **Priorité:** Must
-- **Préconditions:** A stock item exists.
+- **Préconditions:** A stock item exists with `location: FRIDGE` and an expiration date.
 - **Étapes:**
-  1. `PATCH /stocks/:id` to change the quantity.
-  2. `DELETE /stocks/:id`.
-- **Résultat attendu:** The patch returns the new quantity. The delete returns
-  success and the item no longer shows in `GET /stocks`.
+  1. `PATCH /stocks/:id` to change **only** the quantity.
+  2. `GET /stocks/:id`.
+  3. `DELETE /stocks/:id`.
+- **Résultat attendu:** The patch returns the new quantity. The get shows `location` is
+  still `FRIDGE` and the expiration date is unchanged: a field the request never sent
+  must not move. The delete returns success and the item no longer shows in
+  `GET /stocks`.
 
 ### CR-STOCK-08: Users cannot see each other's stock (isolation)
 
