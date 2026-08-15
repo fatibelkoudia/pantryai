@@ -9,7 +9,7 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 Nothing yet.
 
-## [1.0.2] - 2026-08-16
+## [1.0.2] - 2026-08-15
 
 A second maintenance release. It closes the gaps the 1.0.1 work turned up: a blind spot
 in the error reporting, a deploy job for infrastructure we decided not to build, and a
