@@ -64,9 +64,9 @@ git tag v1.2.3
 git push origin v1.2.3
 ```
 
-`deploy.yml` also contains an `api` job that deploys over SSH to a self-managed VPS.
-That route was considered and dropped: Railway stays the production platform. The job
-has never run against anything and should be deleted.
+`deploy.yml` used to carry a second job that deployed the API over SSH to a self-managed
+VPS. That route was considered and dropped, so the job was removed in 1.0.2. Railway
+stays the production platform.
 
 The mobile app is not part of any workflow: we build the APK on demand with
 EAS whenever we want to hand out a new build (see the mobile section below).
@@ -98,17 +98,23 @@ that new Prisma migrations are committed under `packages/api/prisma/migrations/`
 
 ## Secrets the workflows need
 
-Set these in the GitHub repository settings, under Actions secrets:
+Repository settings, under Actions secrets. Check what is actually there with
+`gh secret list`, because the table below is what the workflows *would* use, not what is
+configured.
 
-| Secret              | Used for                                                    |
-| ------------------- | ----------------------------------------------------------- |
-| `VERCEL_TOKEN`      | Deploying the web app                                       |
-| `VERCEL_ORG_ID`     | The Vercel org                                              |
-| `VERCEL_PROJECT_ID` | The Vercel project for the web app                          |
-| `SUPABASE_DB_URL`   | The keep-alive workflow, so the free project does not pause |
+| Secret              | Used for                                                    | Set? |
+| ------------------- | ----------------------------------------------------------- | ---- |
+| `SUPABASE_DB_URL`   | The keep-alive workflow, so the free project does not pause | yes  |
+| `VERCEL_TOKEN`      | The `web` deploy job                                        | no   |
+| `VERCEL_ORG_ID`     | The Vercel org                                              | no   |
+| `VERCEL_PROJECT_ID` | The Vercel project for the web app                          | no   |
 
-The API needs no deploy secret: Railway builds from the repo itself. Its runtime
-environment variables are set in the Railway dashboard, not here.
+**The three Vercel ones are not set**, so the `web` job has never run. We deploy the web
+app by running the `vercel` commands locally, as described below. Setting them is what it
+would take to move that to the workflow.
+
+The API needs no deploy secret at all: Railway builds from the repo itself, and its
+runtime environment variables live in the Railway dashboard, not here.
 
 ## Setting up Vercel (one time)
 
