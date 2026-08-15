@@ -22,7 +22,7 @@ jobs:
     name: Lint, type-check, unit tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -109,7 +109,7 @@ jobs:
       R2_SECRET_ACCESS_KEY: ci-test-secret-key
       R2_BUCKET_NAME: ci-test-bucket
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -153,7 +153,7 @@ jobs:
       # next build needs this at build time; a placeholder is fine here.
       NEXT_PUBLIC_API_URL: http://localhost:3001
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
