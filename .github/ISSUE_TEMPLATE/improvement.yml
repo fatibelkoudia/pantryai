@@ -7,9 +7,7 @@ body:
     attributes:
       value: |
         For things that are not broken but could be better. If something is broken,
-        use the bug report instead. Accepted improvements get written up with their
-        cost and expected gain in
-        [recommandations-amelioration.md](../blob/master/docs/recommandations-amelioration.md).
+        use the bug report instead.
 
   - type: textarea
     id: observation
