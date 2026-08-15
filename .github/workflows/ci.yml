@@ -57,7 +57,7 @@ jobs:
 
       - name: Upload coverage report (unit)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: api-coverage-unit
           path: packages/api/coverage/
@@ -140,7 +140,7 @@ jobs:
 
       - name: Upload coverage report (full suite)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: api-coverage-full
           path: packages/api/coverage/
