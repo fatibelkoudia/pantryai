@@ -8,88 +8,97 @@ run on free tiers.
 
 | What   | Tool             | Where                      |
 | ------ | ---------------- | -------------------------- |
-| Errors | Sentry           | API and worker processes   |
+| Errors | Sentry           | API, HTTP path only        |
 | Uptime | Uptime Robot     | polls `GET /health`        |
 | Queue  | BullMQ dashboard | `/admin/queues` on the API |
 
-## What we supervise, and what we do not
+## What we watch
 
-PantryAI is a web and mobile client on top of one API, with an asynchronous OCR
-pipeline behind it. That shape decides the supervision: the API is the single point
-everything goes through, so watching it well is worth more than watching each client.
-The OCR queue gets its own attention because it is the one part that fails slowly
-rather than loudly, jobs pile up long before anyone sees an error.
+The web and mobile apps both talk to the same API, and all the logic lives there. So we
+mostly watch the API. The OCR queue gets its own check because it fails quietly: jobs
+pile up while the app carries on answering normally, so nobody notices until an
+inventory does not fill up.
 
-In scope:
+| Component               | Why we watch it                                                    |
+| ----------------------- | ------------------------------------------------------------------ |
+| API process (Railway)   | Everything goes through it. If it is down, everything is down      |
+| OCR worker              | Same process as the API today. Stuck worker, receipts never finish |
+| Postgres (Supabase)     | All the data. Also pauses itself on the free plan, see ANO-02      |
+| Redis (Railway managed) | Holds the queue. Without it scans are accepted and never processed |
+| OCR queue depth         | Tells us early when the pipeline is in trouble                     |
+| Web app (Vercel)        | Vercel's own dashboard covers builds and functions                 |
 
-| Component               | Why it is watched                                                                              |
-| ----------------------- | ---------------------------------------------------------------------------------------------- |
-| API process (Railway)   | Every feature goes through it. If it is down, everything is down                               |
-| OCR worker              | Runs in the same process on Railway today. A stuck worker means receipts never finish scanning |
-| Postgres (Supabase)     | All application data. Also pauses itself on the free plan, see ANO-02                          |
-| Redis (Railway managed) | The BullMQ queue. Without it, scans are accepted and never processed                           |
-| OCR queue depth         | The pipeline's early warning signal                                                            |
-| Web app (Vercel)        | Vercel's own dashboard reports build and function health                                       |
+What we do not watch:
 
-Out of scope, deliberately, and worth being straight about:
-
-- **The Android APK.** There is no crash reporting on the client, so a mobile crash
-  reaches us only if a tester tells us. This is the biggest hole in the setup and it
-  is the first recommendation in
+- **The Android APK.** No crash reporting on the client, so we only hear about a mobile
+  crash if a tester tells us. Biggest gap we have, it is in
   [FUTURE.md](../help/FUTURE.md).
-- **Cloudflare R2.** Storage failures show up as API errors in Sentry rather than
-  being watched directly. Acceptable because receipt images live for 24 hours and a
-  failed upload fails the scan loudly.
-- **Load behaviour.** No load testing has been done. The product has no real traffic,
-  so a p95 measured with no concurrency would not tell us anything useful.
+- **Cloudflare R2.** Storage problems show up as API errors in Sentry. Fine for now:
+  images only live 24 hours and a failed upload fails the scan visibly.
+- **Load.** We have not run any load tests. There is no real traffic yet, so a p95
+  measured on an idle app would not mean much.
 
 ## The probes
 
-A probe is something that runs on its own and tells us the answer without anyone
-looking. Six of them:
+These run on their own, without anyone looking. Six of them:
 
-| Probe                     | What it actually verifies                                                                           | How often    | Where it runs                                                                           | A failure means                                        |
-| ------------------------- | --------------------------------------------------------------------------------------------------- | ------------ | --------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| `GET /health`             | Runs a real `SELECT 1` against Postgres and a `PING` against Redis, then reports `ok` or `degraded` | On demand    | [health.controller.ts](../packages/api/src/health/health.controller.ts)                 | The request path is broken, not just the process       |
-| Uptime Robot monitor      | Calls `/health` over the public internet and keyword-matches `"status":"ok"`                        | Every 5 min  | Uptime Robot, outside our infrastructure                                                | The API is unreachable or degraded for real users      |
-| Railway healthcheck       | Calls `/health` before routing traffic to a new deployment                                          | Every deploy | Railway platform                                                                        | The new version does not serve, the previous one stays |
-| Sentry exception capture  | Catches unhandled non-HTTP exceptions in the API and the worker                                     | On every 500 | [http-exception.filter.ts](../packages/api/src/common/filters/http-exception.filter.ts) | Code is failing in a way we did not anticipate         |
-| Supabase keep-alive       | Connects and runs `select 1` so the free project does not pause                                     | Every 3 days | [supabase-keepalive.yml](../.github/workflows/supabase-keepalive.yml)                   | The database is about to pause, or already has         |
-| BullMQ dashboard counters | Waiting, active, completed and failed job counts, with durations                                    | Read by hand | [bull-board.ts](../packages/api/src/common/bull-board.ts)                               | The OCR pipeline is backing up or failing              |
+| Probe                     | What it checks                                                                            | How often                             | Where                                                                                   | A failure means                                        |
+| ------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `GET /health`             | Runs a real `SELECT 1` on Postgres and a `PING` on Redis, then returns `ok` or `degraded` | On demand                             | [health.controller.ts](../packages/api/src/health/health.controller.ts)                 | The whole request path is broken, not just the process |
+| Uptime Robot monitor      | Calls `/health` from outside and looks for `"status":"ok"`                                | Every 5 min                           | Uptime Robot                                                                            | The API is unreachable or degraded for real users      |
+| Railway healthcheck       | Calls `/health` before sending traffic to a new deployment                                | Every deploy                          | Railway                                                                                 | The new version does not serve, the old one stays      |
+| Sentry exception capture  | Catches unexpected failures on the API's HTTP path and in the OCR worker                  | 500s, and a job's last failed attempt | [http-exception.filter.ts](../packages/api/src/common/filters/http-exception.filter.ts) | Code is failing in a way we did not expect             |
+| Supabase keep-alive       | Connects and runs `select 1` so the free project does not pause                           | Every 3 days                          | [supabase-keepalive.yml](../.github/workflows/supabase-keepalive.yml)                   | The database is about to pause, or already has         |
+| BullMQ dashboard counters | Waiting, active, completed and failed job counts, and how long jobs took                  | Read by hand                          | [bull-board.ts](../packages/api/src/common/bull-board.ts)                               | The OCR pipeline is backing up or failing              |
 
-Two of these deserve a note.
+Three notes on these.
 
-**Why `/health` is a readiness check and not a liveness check.** It would be cheaper
-to return `200 OK` and be done. But a Node process answers HTTP perfectly well while
-its database connection is dead, so a liveness check would stay green through an
-outage that breaks every feature. Touching both dependencies is what makes a green
-check mean something. The cost is one trivial query every 5 minutes.
+**Why `/health` hits the database and Redis.** Returning `200 OK` would be cheaper, but
+a Node process keeps answering HTTP fine even when its database connection is dead. A
+check like that would stay green right through an outage. Querying both dependencies
+costs one small query every 5 minutes, and it makes the green light mean something.
 
-**Why Sentry only sees some failures.** The exception filter reports to Sentry only
-for non-`HttpException` errors, meaning genuine 500s. Deliberate 4xx responses, a
-validation failure or a 404, are normal operation and would drown the signal. The
-consequence is that a bug which returns a wrong answer with a `200` is invisible to
-Sentry. ANO-01 was exactly that, which is why the anomaly register does not rely on
-Sentry alone.
+**Sentry only sees real 500s, on purpose.** The exception filter reports non-`HttpException`
+errors only. Deliberate 4xx responses (a validation error, a 404) are normal and would
+bury the signal. So a bug that returns a wrong answer with a `200` never reaches Sentry.
+ANO-01 was one of those, which is why we do not rely on Sentry alone to find bugs.
 
-## What is actually switched on
+**The worker reports too, but not everything.** BullMQ swallows whatever the processor
+throws, so for a while a failed OCR job only showed up in the queue counters. The
+processor now reports to Sentry on a job's last attempt. It skips the failures we throw
+on purpose for bad input (dead URL, file over 5 MB, host resolving somewhere private),
+because those are the queue's version of a 400 and would bury the real faults. That
+check matches on the error message for now, which is a stopgap until the processor
+throws typed errors.
 
-Three of the six probes are instrumented in code but not activated in production,
-because the environment variables that turn them on are not set. Saying they are
-running would be wrong, and checkable in one request.
+## What is switched on
 
-| Probe                     | State                      | What is missing                               |
-| ------------------------- | -------------------------- | --------------------------------------------- |
-| `GET /health`             | **live**                   | nothing                                       |
-| Railway healthcheck       | **live**                   | nothing                                       |
-| Supabase keep-alive       | **live** since 1.0.1       | nothing, `SUPABASE_DB_URL` secret is set      |
-| Uptime Robot monitor      | to switch on               | create the monitor and the alert contact      |
-| Sentry exception capture  | instrumented, to switch on | set `SENTRY_DSN` on Railway                   |
-| BullMQ dashboard counters | instrumented, to switch on | set `BULLBOARD_USER` and `BULLBOARD_PASSWORD` |
+All six have been running since 14/08/2026. Sentry and the queue dashboard sat in the
+code unused for a while because the environment variables were not set, so it is worth
+saying plainly which ones are live and since when.
 
-All three are configuration, not development. Until they are set, the error rate and
-the OCR p95 are targets we state rather than numbers we measure. The setup steps are in
-the sections below.
+| Probe                     | Live since |
+| ------------------------- | ---------- |
+| `GET /health`             | 1.0.0      |
+| Railway healthcheck       | 1.0.0      |
+| Supabase keep-alive       | 1.0.1      |
+| Uptime Robot monitor      | 14/08/2026 |
+| Sentry exception capture  | 14/08/2026 |
+| BullMQ dashboard counters | 14/08/2026 |
+
+The last three took no code, only configuration: create the monitor and its alert
+contact on Uptime Robot, and set `SENTRY_DSN`, `BULLBOARD_USER` and `BULLBOARD_PASSWORD`
+on Railway.
+
+You can check each one yourself:
+
+```bash
+curl -s https://<api>/health                                        # {"status":"ok",...}
+curl -o /dev/null -w "%{http_code}\n" https://<api>/admin/queues    # 401, mounted and protected
+```
+
+One caveat on the availability number: the monitor was only created on 14/08/2026, so
+the percentage covers the window since then, not a full week.
 
 ## What we measure against
 
@@ -105,9 +114,9 @@ These come from the KPIs in the conception dossier, and each one is checkable.
 | Error rate            | no unresolved Sentry issue carried past a release             | Sentry issue list             |            |
 | Database availability | keep-alive green, project never paused                        | Actions tab                   | CR-PERF-04 |
 
-Availability at 99% allows about 1 hour 40 minutes of downtime a week, which is a
-realistic target on free-tier hosting with a single API instance. We would rather
-state a number we can hold than claim a number that sounds better.
+99% works out at about 1 hour 40 minutes of downtime a week. That is what we can
+actually hold on free hosting with one API instance, so that is the number we put
+down rather than a nicer-looking one.
 
 ## Alerting
 
@@ -121,21 +130,19 @@ Who gets told, when, and through what.
 | A CI or deploy run fails             | GitHub Actions failure email               | Immediate                                 |
 | The OCR queue backs up               | Nothing automatic. Read from the dashboard | Only when someone looks                   |
 
-Two consecutive failures rather than one is on purpose: a single missed check on free
-hosting is usually a cold start or a transient network blip, and an alert that cries
-wolf gets ignored, which is worse than no alert.
+Two failures in a row rather than one, on purpose. A single missed check on free
+hosting is usually a cold start or a brief network blip. If the alert goes off for
+nothing too often we stop reading it.
 
-**Escalation.** A Critical anomaly (one filed through
-[the bug report form](../.github/ISSUE_TEMPLATE/bug_report.yml) at Critical severity) is fixed the
-same day, and the fix goes to `master` as a hotfix so Railway redeploys immediately.
-Anything else waits for the normal release cycle. The first move on an alert is
-always `GET /health`, because it separates "the API is down" from "one feature is
-broken" in one request.
+**Escalation.** Anything filed at Critical severity through
+[the bug report form](../.github/ISSUE_TEMPLATE/bug_report.yml) gets fixed the same day
+and merged to `master`, which redeploys straight away. Everything else waits for the
+next release. First thing to do on any alert is call `GET /health`: one request tells
+you whether the API is down or just one feature is broken.
 
-**The queue alert is the honest gap.** Nothing tells us the OCR queue is backing up;
-we find out by opening the dashboard. During the validation period we check it daily.
-That is a manual process pretending to be supervision, and it is on the improvement
-list.
+**The queue is the weak spot.** Nothing warns us when it backs up, we find out by
+opening the dashboard. During validation we check it daily, which is a manual check
+rather than real monitoring. It is on the improvement list.
 
 ## Health endpoint
 
@@ -227,24 +234,21 @@ failure surfaces in Sentry if it throws, and otherwise passes unnoticed.
 
 ## What this setup does not cover
 
-Being clear about the limits is more useful than overstating the setup, and each of
-these is costed in
+Worth writing down rather than glossing over. All of these are in
 [FUTURE.md](../help/FUTURE.md):
 
-- **Three probes are not switched on yet.** See the table above. This is the biggest
-  gap and the cheapest to close.
 - **No crash reporting on mobile.** An APK crash is invisible unless a tester says so.
-- **No structured logging.** We use the NestJS `Logger`, so logs are plain text on
-  the host with no aggregation, no search, and no retention policy. Debugging a past
-  incident means hoping the container has not been recycled.
-- **No metrics or APM.** There is no `/metrics` endpoint and no traces. The
-  performance KPIs are read by hand off the BullMQ dashboard, which means they are
-  measured during validation and not continuously.
+- **No structured logging.** We use the NestJS `Logger`, so logs are plain text on the
+  host: no search, no aggregation, nothing kept. Debugging something from last week
+  means hoping the container was not recycled.
+- **No metrics or APM.** No `/metrics` endpoint, no traces. The performance numbers are
+  read by hand off the BullMQ dashboard, so we get them during validation and not the
+  rest of the time.
 - **No alert on queue depth.** Covered above.
 - **The unused deploy workflow has a bad health check.** The `api` job in `deploy.yml`
-  polls `/api/docs` rather than `/health`, and Swagger answers even when the database
-  is unreachable. It has never run against anything, since that job targets a server we
-  decided not to build. The job should be deleted rather than fixed.
+  polls `/api/docs` instead of `/health`, and Swagger answers even when the database is
+  unreachable. It has never run against anything, since it targets a server we decided
+  not to build. It should be deleted rather than fixed.
 
 ## What each KPI maps to
 
