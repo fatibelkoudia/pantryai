@@ -99,7 +99,7 @@ that new Prisma migrations are committed under `packages/api/prisma/migrations/`
 ## Secrets the workflows need
 
 Repository settings, under Actions secrets. Check what is actually there with
-`gh secret list`, because the table below is what the workflows *would* use, not what is
+`gh secret list`, because the table below is what the workflows _would_ use, not what is
 configured.
 
 | Secret              | Used for                                                    | Set? |

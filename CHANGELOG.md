@@ -13,7 +13,11 @@ Nothing yet.
 
 A second maintenance release. It closes the gaps the 1.0.1 work turned up: a blind spot
 in the error reporting, a deploy job for infrastructure we decided not to build, and a
-few places where the docs described something other than what the repo does.
+few places where the docs described something other than what the repo does. It also
+carries the first fix that came from a tester rather than from us.
+
+Unlike 1.0.1, this one **does** change the mobile app, so `app.json` moves to 1.0.2 and
+a new APK is built from the tag.
 
 ### Added
 
@@ -48,6 +52,9 @@ few places where the docs described something other than what the repo does.
 
 ### Fixed
 
+- The scan result screen no longer flashes "no items found" for a moment before showing
+  the products. It could not tell "not loaded yet" from "loaded and empty". Reported by
+  a tester, ANO-04.
 - The bug report and improvement issue forms no longer link to two documents that were
   never committed, so anyone opening an issue no longer lands on a dead link.
 
