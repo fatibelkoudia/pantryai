@@ -23,33 +23,38 @@ A few things we learned:
 
 ## Option 1: GitHub Actions keep-alive (what we use)
 
-This runs on GitHub's cron for free and runs a tiny query every few days, well inside the 7 day
-window.
+[`.github/workflows/supabase-keepalive.yml`](../.github/workflows/supabase-keepalive.yml) runs on
+GitHub's cron for free. It runs a small query every 3 days, well inside the 7 day window.
 
-`.github/workflows/supabase-keepalive.yml`
-
-```yaml
-name: Supabase keep-alive
-on:
-  schedule:
-    - cron: '0 6 */3 * *' # every 3 days at 06:00 UTC
-  workflow_dispatch: {} # also lets us run it by hand
-jobs:
-  ping:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: npm i pg
-      - run: node -e "const{Client}=require('pg');(async()=>{const c=new Client(process.env.DB_URL);await c.connect();await c.query('select 1');await c.end();console.log('kept alive');})()"
-        env:
-          DB_URL: ${{ secrets.SUPABASE_DB_URL }}
-```
+**The workflow file is the source of truth, not this page.**
 
 Setup:
 
-1. Add a repo secret called `SUPABASE_DB_URL` (the pooler or direct connection string) under
-   Settings > Secrets and variables > Actions. We never commit the URL (no keys in code).
+1. Add a repo secret called `SUPABASE_DB_URL` under Settings > Secrets and variables >
+   Actions. **It has to be the transaction pooler string (port 6543), not the direct
+   connection (port 5432)** — see the note below. We never commit the URL (no keys in code).
 2. A `select 1` is enough to reset the inactivity timer.
+
+**Use the pooler, not the direct connection.** Supabase's direct host
+(`db.<ref>.supabase.co`) only resolves to IPv6, and GitHub Actions runners have no IPv6
+connectivity, so the job dies in a few seconds with:
+
+```
+keep-alive failed: connect ENETUNREACH 2xxx:...:5432 - Local (:::0)
+```
+
+The pooler host (`aws-0-<region>.pooler.supabase.com`, port 6543) is reachable over IPv4,
+so that is the one to put in the secret. It is the same string the API already uses as
+`DATABASE_TRANSACTION_POOLER_URL`. Transaction mode is fine here: `select 1` takes no
+parameters, so node-pg sends it over the simple query protocol and never allocates a
+prepared statement.
+
+We hit this for real on 2026-08-14: the first manual run failed with the error above
+because the secret held the direct string. Swapping it for the pooler fixed it.
+
+The step exits non-zero on any error instead of passing quietly. That matters: a keep-alive that
+silently does nothing is worse than not having one, because we would think we were covered. The
+failed run then the green one on 2026-08-14 show the failure path works.
 
 One thing to watch: GitHub turns off scheduled workflows after 60 days with no commits to the
 repo. Normal work keeps it on, otherwise we re-enable it from the Actions tab.

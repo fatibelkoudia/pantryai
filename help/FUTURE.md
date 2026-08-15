@@ -119,15 +119,6 @@ tell us when they remember to.
 the scrubbing rules already written for the API in `instrument.ts`. Enable only on the
 `preview` and `production` EAS profiles so dev noise stays out.
 
-### Worker errors never reach Sentry
-
-**Why:** `Sentry.captureException` is called in exactly one place, the HTTP exception
-filter. The OCR processor catches its own errors, logs them and marks the job `FAILED`
-without telling Sentry. So a failure in the OCR pipeline shows up in the BullMQ
-counters and nowhere else, which is the part of the product that fails quietly.
-**Approach:** One `Sentry.captureException(err)` in the processor's catch, on the
-final-attempt branch so intermediate retries that will succeed do not report.
-
 ### Alert when the OCR queue backs up
 
 **Why:** The dashboard shows waiting and failed counts but nothing tells us when they

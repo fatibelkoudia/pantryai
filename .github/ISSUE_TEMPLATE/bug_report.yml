@@ -6,10 +6,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        Fill in every field. The point is that someone else can reproduce the bug
-        from this issue alone, without asking you anything. The fields below are the
-        same ones as the consignation sheet in
-        [plan-de-correction-des-bogues.md](../blob/master/docs/plan-de-correction-des-bogues.md).
+        Fill in every field. The idea is that someone can reproduce the bug from this
+        issue alone, without having to come back and ask you for the missing bits.
 
   - type: textarea
     id: context

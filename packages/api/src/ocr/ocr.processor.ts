@@ -4,6 +4,7 @@ import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { lookup } from 'node:dns/promises';
 import Tesseract from 'tesseract.js';
+import { Sentry } from '../instrument.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { R2StorageService } from '../storage/r2-storage.service.js';
 import { OcrService } from './ocr.service.js';
@@ -24,6 +25,17 @@ Only include actual food/drink products. Skip totals, taxes, loyalty points, and
 Respond with valid JSON only.`;
 
 // Run max 3 OCR jobs at once so the API stays responsive.
+// Failures we throw on purpose when the input is bad: a dead URL, a file that is too
+// big, a host that resolves somewhere private. They are the queue's version of a 400,
+// so they don't go to Sentry, the same way the HTTP filter skips HttpExceptions.
+// Matching on the message is a stopgap. Once the processor throws typed errors
+// (help/FUTURE.md) this can check the class instead.
+const EXPECTED_INPUT_FAILURES = [/^Remote URL returned HTTP /, /exceeds 5 MB limit$/, /^SSRF: /];
+
+function isExpectedInputFailure(message: string): boolean {
+  return EXPECTED_INPUT_FAILURES.some((re) => re.test(message));
+}
+
 @Processor('ocr', { concurrency: 3 })
 export class OcrProcessor extends WorkerHost {
   private readonly logger = new Logger(OcrProcessor.name);
@@ -125,6 +137,11 @@ export class OcrProcessor extends WorkerHost {
 
       // Last try failed: mark FAILED and delete the image (RGPD).
       this.logger.error(`Job ${jobId} failed (no attempts left): ${message}`);
+      // BullMQ swallows whatever the processor throws, so nothing else would report
+      // this. Only on the last attempt: the earlier ones are retried and usually pass.
+      if (!isExpectedInputFailure(message)) {
+        Sentry.captureException(err, { tags: { queue: 'ocr', jobId } });
+      }
       await this.prisma.ocrJob.update({
         where: { id: jobId },
         data: { status: 'FAILED', error: message },
@@ -207,6 +224,11 @@ export class OcrProcessor extends WorkerHost {
       }
 
       this.logger.error(`QR job ${jobId} failed (no attempts left): ${message}`);
+      // BullMQ swallows whatever the processor throws, so nothing else would report
+      // this. Only on the last attempt: the earlier ones are retried and usually pass.
+      if (!isExpectedInputFailure(message)) {
+        Sentry.captureException(err, { tags: { queue: 'ocr', jobId } });
+      }
       await this.prisma.ocrJob.update({
         where: { id: jobId },
         data: { status: 'FAILED', error: message },

@@ -9,9 +9,9 @@ There are four moving parts in production:
 - The **web app** runs on Vercel.
 - The **API** runs as a Docker container on Railway, in the EU West region
   (Amsterdam). Railway terminates TLS, so there is no reverse proxy to administer.
-- The **OCR worker** runs inside the same process as the API today. It can be split
-  into its own container by setting `RUN_OCR_WORKER=false` on the API, which is the
-  first lever if OCR work ever starts crowding the event loop.
+- The **OCR worker** runs in the same process as the API for now. Setting
+  `RUN_OCR_WORKER=false` on the API splits it into its own container, which is what we
+  would do first if OCR work starts getting in the way of requests.
 - The **database** is PostgreSQL on Supabase (EU), and **Redis** is a Railway managed
   service that backs the BullMQ queue.
 
@@ -207,28 +207,28 @@ later).
 
 ## Rollback
 
-This is the mitigation for risk R6. Two layers protect a release:
+This covers risk R6. Two things protect a release:
 
 **Before traffic switches.** Railway checks `/health` on the new instance. If it does
 not come up, the previous version keeps serving and the deploy is marked failed. A
 broken build never takes the API down.
 
-**After traffic switches.** If a release is bad in a way a health check cannot see, open
-the Railway console, pick the previous deployment and reactivate it. It is reapplied
-without rebuilding, so it takes seconds. This has been exercised for real: a deployment
-was deliberately failed and the previous version restored from the console.
+**After traffic switches.** If a release is broken in a way the health check cannot
+see, open the Railway console, pick the previous deployment and reactivate it. No
+rebuild, so it takes seconds. We have done this for real: we made a deployment fail on
+purpose and restored the previous one from the console.
 
-The one rule that keeps this working: **migrations have to stay backward compatible.**
-Rolling back restores the code, it does not undo a migration. Add nullable columns
-rather than renaming or dropping, or the rollback becomes impossible at the exact
-moment you need it.
+One rule keeps this working: **migrations have to stay backward compatible.** Rolling
+back restores the code, it does not undo a migration. Add nullable columns rather than
+renaming or dropping things, otherwise the rollback stops working at the exact moment
+you need it.
 
 ## The OCR worker
 
-**Today the API and the OCR worker share one process on Railway.** That is fine at
-current volumes, and it is the known scaling limit: a heavy OCR job competes for the
-same event loop as HTTP requests. Splitting them is the first lever if that starts to
-show, and the code is already prepared for it.
+**The API and the OCR worker share one process on Railway.** That is fine at the
+volumes we have. It is also the known limit: a heavy OCR job competes with HTTP requests
+for the same event loop. Splitting them is the first thing to do if that starts showing,
+and the code already handles it.
 
 Which process does the background work is decided by one env var, `RUN_OCR_WORKER`:
 

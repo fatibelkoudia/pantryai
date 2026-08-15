@@ -89,7 +89,9 @@ env vars listed further down.
    password from step 1.
 
 Free projects pause after 7 days idle; [docs/supabase-keepalive.md](docs/supabase-keepalive.md)
-covers keeping one awake.
+covers keeping one awake. A scheduled workflow does this in CI — note that its
+`SUPABASE_DB_URL` secret has to hold the **pooler** string, not the direct one: the direct
+host only resolves over IPv6 and GitHub runners have no IPv6.
 
 **Mistral (OCR)**
 

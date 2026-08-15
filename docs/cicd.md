@@ -51,21 +51,20 @@ catches a build that compiles in dev but breaks in a production build.
 
 ## Continuous delivery
 
-Two things ship the app today, and neither of them is the tag.
+Two things ship the app, and the tag is neither of them.
 
 **The API redeploys on every push to `master`.** Railway watches the branch, builds
 `packages/api/Dockerfile` (that is what `railway.json` tells it to do) and swaps the
-container. So merging a pull request into `master` _is_ the production deploy. There is
-no separate step to run.
+container. Merging a pull request into `master` is the deploy, there is no extra step.
 
 **The web app goes to Vercel** from the `web` job of `deploy.yml`, triggered by hand.
 
-A `v1.x.x` Git tag is a version marker only. It records which commit a release points
-at so `CHANGELOG.md` and the repo agree, and it triggers nothing.
+A `v1.x.x` Git tag is just a marker. It records which commit a release points at, so the
+changelog and the repo agree. It does not trigger anything.
 
 ### How the API deploy works
 
-Railway does the work, and it is worth knowing what it does on each push to `master`:
+Railway does the work. On each push to `master`:
 
 1. builds the image from `packages/api/Dockerfile`, as `railway.json` tells it to. If
    the build fails, the previous version keeps serving.
@@ -73,28 +72,25 @@ Railway does the work, and it is worth knowing what it does on each push to `mas
 3. checks `/health` before routing traffic to the new instance.
 4. switches traffic over.
 
-Migrations are deliberately **not** run at container start. Replaying a migration on a
-restart would be dangerous, and keeping them separate means a schema failure and an
-application failure do not look alike. Apply them before merging, as described in
-[update-guide.md](./update-guide.md#database-migrations).
+Migrations are **not** run at container start, on purpose. A restart would replay them,
+and keeping them separate means a schema problem does not look like an app problem.
+Apply them before merging, see [update-guide.md](./update-guide.md#database-migrations).
 
 ### The rollback
 
-The Railway console can reactivate a previous deployment without rebuilding it. That
-holds only as long as migrations stay backward compatible (add nullable columns rather
-than renaming or dropping): rolling back restores the code, it does not undo a
-migration. If the previous code cannot run against the current schema, the rollback
-becomes impossible exactly when it is needed.
+The Railway console can bring back a previous deployment without rebuilding it. This
+only works if migrations stay backward compatible, so add nullable columns rather than
+renaming or dropping. Rolling back restores the code but does not undo a migration, and
+if the old code cannot run on the current schema you are stuck at the worst moment.
 
 ### `deploy.yml`
 
 Only the `web` job is used, and it is triggered by hand from the Actions tab. It builds
 the Next.js app and deploys it to Vercel through the Vercel CLI.
 
-The file also contains an `api` job that deploys over SSH to a self-managed VPS. **It is
-dead code.** That infrastructure route was considered and dropped, Railway stays the
-production platform, and the job has never run against anything. It should be deleted;
-that is tracked as recommendation 3 in
+The file also has an `api` job that deploys over SSH to a self-managed VPS. It is dead
+code: we looked at that route and dropped it, Railway stays the production platform, and
+the job has never run against anything. It should be deleted, see
 [FUTURE.md](../help/FUTURE.md).
 
 ## Secrets
