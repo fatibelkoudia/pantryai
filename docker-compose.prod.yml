@@ -1,8 +1,7 @@
-# Self-hosted production stack for the PantryAI API. NOT what runs in production:
-# the API runs on Railway, which builds packages/api/Dockerfile directly and needs
-# none of this. Kept as a reference for running the full stack on a single host
-# (API, worker, Redis, Nginx), and as the closest thing we have to a portable
-# deployment. See docs/deployment.md for what actually runs.
+# Self-hosted stack for the API. This is NOT what runs in production: the API runs on
+# Railway, which builds packages/api/Dockerfile itself and needs none of this. Kept as a
+# reference for running everything on one host (API, worker, Redis, Nginx). See
+# docs/deployment.md for what actually runs.
 #
 # Postgres is NOT here on purpose: in production the database is Supabase, so we
 # only run the API, a dedicated OCR worker, Redis (queue), and Nginx (SSL

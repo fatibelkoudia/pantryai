@@ -1,6 +1,7 @@
 name: Supabase keep-alive
 
-# Keeps Supabase free tier alive by hitting Postgres every 3 days (avoids the 7-day auto-pause).
+# Supabase pauses a free project after 7 days with no activity, and every query fails
+# while it is paused. This runs a select every 3 days so that never happens.
 on:
   schedule:
     - cron: '0 6 */3 * *' # every 3 days at 06:00 UTC
