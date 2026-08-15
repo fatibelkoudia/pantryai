@@ -1,5 +1,5 @@
-import { Controller, Get, Inject, NotFoundException, Query } from '@nestjs/common';
-import { ApiExcludeEndpoint, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Inject } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Redis } from 'ioredis';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { REDIS_CLIENT } from '../redis/redis.constants.js';
@@ -50,14 +50,5 @@ export class HealthController {
     } catch {
       return 'down';
     }
-  }
-  // This endpoint is used to verify that Sentry is correctly configured. It is not
-  // part of the public API and is excluded from the Swagger docs
-  @Get('sentry-test')
-  @ApiExcludeEndpoint()
-  sentryTest(@Query('token') token?: string) {
-    const expected = process.env['SENTRY_TEST_TOKEN'];
-    if (!expected || token !== expected) throw new NotFoundException();
-    throw new Error('Verification Sentry — erreur de test volontaire');
   }
 }
