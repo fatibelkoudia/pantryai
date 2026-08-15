@@ -85,19 +85,26 @@ if the old code cannot run on the current schema you are stuck at the worst mome
 
 ### `deploy.yml`
 
-Only the `web` job is used, and it is triggered by hand from the Actions tab. It builds
-the Next.js app and deploys it to Vercel through the Vercel CLI.
+The `web` job builds the Next.js app and deploys it to Vercel through the Vercel CLI,
+triggered by hand from the Actions tab.
 
-The file also has an `api` job that deploys over SSH to a self-managed VPS. It is dead
-code: we looked at that route and dropped it, Railway stays the production platform, and
-the job has never run against anything. It should be deleted, see
-[FUTURE.md](../help/FUTURE.md).
+**It is not wired up yet.** The three Vercel secrets it needs are not set on the repo,
+so the job would fail on its first step and it has never run. The web app is deployed by
+running the `vercel` commands locally instead, which is what we have always done: the
+native Vercel Git integration could not be set up on the private repo. The workflow is
+there and correct, it is the configuration that is missing.
+
+It used to carry a second job that deployed the API over SSH to a self-managed VPS. We
+looked at that route and dropped it, Railway stays the production platform, and the job
+had never run against anything, so it was removed in 1.0.2.
 
 ## Secrets
 
-The `web` deploy job needs `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`. The
-keep-alive workflow needs `SUPABASE_DB_URL`. CI needs none of them, it uses
-placeholders. The full list is in
+Only one secret is set today: `SUPABASE_DB_URL`, for the keep-alive workflow.
+
+The `web` deploy job would need `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`,
+and they are not there, which is why it has never run. CI needs no secrets at all, it
+uses placeholders. The full list is in
 [deployment.md](./deployment.md#secrets-the-workflows-need).
 
 ## Running the same checks locally

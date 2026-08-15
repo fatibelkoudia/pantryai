@@ -109,6 +109,9 @@ This is the raw backlog: anything goes in here, evidence or not.
 These came out of auditing the monitoring setup. They are the gaps `docs/monitoring.md`
 admits to, in the order we would close them.
 
+Entries that get done are ~~struck through~~ with the version they shipped in, not
+deleted. Keeping them makes the list a record of what was actually worked through.
+
 ### Crash reporting on the Android app
 
 **Why:** There is no crash reporting on the client, so an APK crash produces no signal
@@ -118,6 +121,18 @@ tell us when they remember to.
 **Approach:** `@sentry/react-native` in `packages/mobile`, second Sentry project, reuse
 the scrubbing rules already written for the API in `instrument.ts`. Enable only on the
 `preview` and `production` EAS profiles so dev noise stays out.
+
+### ~~Worker errors never reach Sentry~~ — ✅ fait en 1.0.2
+
+~~**Why:** `Sentry.captureException` is called in exactly one place, the HTTP exception
+filter. The OCR processor catches its own errors, logs them and marks the job `FAILED`
+without telling Sentry. So a failure in the OCR pipeline shows up in the BullMQ
+counters and nowhere else, which is the part of the product that fails quietly.
+**Approach:** One `Sentry.captureException(err)` in the processor's catch, on the
+final-attempt branch so intermediate retries that will succeed do not report.~~
+
+Done: the processor now reports on a job's last attempt, and skips the errors we throw
+on purpose for bad input so they do not bury the real faults.
 
 ### Alert when the OCR queue backs up
 
@@ -135,19 +150,22 @@ recycle is guesswork, and it slowed down every one of the 1.0.0 production fixes
 **Approach:** `nestjs-pino` for JSON logs with a request id, redaction configured on the
 same fields the Sentry `beforeSend` already strips so the RGPD position is unchanged.
 
+### ~~Delete the dead deploy job~~ — ✅ fait en 1.0.2
+
+~~**Why:** The `api` job in `deploy.yml` deploys over SSH to a self-managed VPS we decided
+not to build. It also health-checks `/api/docs` rather than `/health`, and Swagger
+answers even when the database is unreachable, so its automatic rollback would pass a
+deploy that came up broken. Keep the `web` job, drop the rest.~~
+
+Done: the job is gone, the `web` job stays, and the three guides that announced the
+removal now describe it as done.
+
 ### A metrics endpoint
 
 **Why:** The performance KPIs are read by hand off the BullMQ dashboard, so we have
 numbers for a test window and nothing continuous. Worth doing after the queue alert
 above, which delivers most of the benefit for less work.
 **Approach:** `/metrics` exposing OCR durations and queue depth.
-
-### Delete the dead deploy job
-
-**Why:** The `api` job in `deploy.yml` deploys over SSH to a self-managed VPS we decided
-not to build. It also health-checks `/api/docs` rather than `/health`, and Swagger
-answers even when the database is unreachable, so its automatic rollback would pass a
-deploy that came up broken. Keep the `web` job, drop the rest.
 
 ---
 

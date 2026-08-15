@@ -245,10 +245,9 @@ Worth writing down rather than glossing over. All of these are in
   read by hand off the BullMQ dashboard, so we get them during validation and not the
   rest of the time.
 - **No alert on queue depth.** Covered above.
-- **The unused deploy workflow has a bad health check.** The `api` job in `deploy.yml`
-  polls `/api/docs` instead of `/health`, and Swagger answers even when the database is
-  unreachable. It has never run against anything, since it targets a server we decided
-  not to build. It should be deleted rather than fixed.
+- **The OCR p95 is over its threshold.** Measured at 6.76 s against a 5 s target, logged
+  as ANO-03. Not a hole in the monitoring, the monitoring is what found it, but the
+  criterion is not met and the analysis is in the issue.
 
 ## What each KPI maps to
 

@@ -7,6 +7,18 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [1.0.2] - 2026-08-15
+
+A second maintenance release. It closes the gaps the 1.0.1 work turned up: a blind spot
+in the error reporting, a deploy job for infrastructure we decided not to build, and a
+few places where the docs described something other than what the repo does. It also
+carries the first fix that came from a tester rather than from us.
+
+Unlike 1.0.1, this one **does** change the mobile app, so `app.json` moves to 1.0.2 and
+a new APK is built from the tag.
+
 ### Added
 
 - The OCR worker reports failures to Sentry. BullMQ swallows whatever the processor
@@ -14,6 +26,44 @@ and this project follows [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   a job's last attempt, and skips the failures we raise on purpose for bad input (dead
   URL, oversized file, host resolving somewhere private) so they do not bury the real
   faults.
+
+### Changed
+
+- The acceptance test book now checks that a partial stock update leaves the fields it
+  did not send alone. `CR-STOCK-07` only changed the quantity and only checked the
+  quantity, so it would have passed while the location was being silently reset.
+- The keep-alive setup guide says to use the transaction pooler connection string. The
+  direct Supabase host only resolves over IPv6 and GitHub runners have none, which is
+  what made the first manual run fail. The page also stopped carrying its own copy of
+  the workflow YAML, which had already drifted from the real file.
+- The CI/CD and deployment guides no longer claim the `web` deploy job is in use. Its
+  three Vercel secrets are not set, so it has never run; the web app is deployed by
+  running the `vercel` commands locally.
+
+### Removed
+
+- The `api` job in `deploy.yml`, which deployed over SSH to a self-managed VPS. That
+  route was considered and dropped, Railway stays the production platform, and the job
+  had never run against anything. Its health check polled `/api/docs` rather than
+  `/health`, and Swagger answers even when the database is unreachable, so it would have
+  judged a broken deploy healthy. The `web` job stays.
+- The temporary `GET /health/sentry-test` endpoint added in 1.0.1, now that it has done
+  its job.
+
+### Fixed
+
+- The scan result screen no longer flashes "no items found" for a moment before showing
+  the products. It could not tell "not loaded yet" from "loaded and empty". Reported by
+  a tester, ANO-04.
+- The bug report and improvement issue forms no longer link to two documents that were
+  never committed, so anyone opening an issue no longer lands on a dead link.
+
+### Note
+
+- The 1.0.0 entry said the review screen lets you "fix anything the OCR got wrong". That
+  is not accurate: quantity, unit and expiration date can be edited, but the product
+  name cannot, and the name is what the OCR gets wrong most often. Being able to fix it
+  is tracked as an improvement.
 
 ## [1.0.1] - 2026-08-14
 
@@ -190,6 +240,7 @@ set, the Trashy brand layer, security hardening, and the test suite.
 - Unit and integration test suites (Vitest and Supertest) with a coverage gate of
   80% on services and 60% overall.
 
-[Unreleased]: https://github.com/fatibelkoudia/pantryai/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/fatibelkoudia/pantryai/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/fatibelkoudia/pantryai/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/fatibelkoudia/pantryai/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/fatibelkoudia/pantryai/releases/tag/v1.0.0
