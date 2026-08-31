@@ -30,8 +30,8 @@
     "docker:reset": "podman-compose down -v && podman-compose up -d"
   },
   "devDependencies": {
-    "prettier": "^3.5.3",
-    "turbo": "^2.10.4",
+    "prettier": "^3.9.6",
+    "turbo": "^2.10.12",
     "typescript": "^5.8.3"
   },
   "packageManager": "pnpm@10.33.0",
